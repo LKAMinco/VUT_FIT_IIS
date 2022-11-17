@@ -1,4 +1,27 @@
 <?php
-$_POST['foo'] = 'bar';
-echo "Hello World";
-?>
+session_start();
+/*if isset($_POST['login']) {
+    $_SESSION['username'] = $_POST['username'];
+    $_SESSION['password'] = $_POST['password'];
+    header('Location: main.php');
+    exit;
+}*/
+if (isset($_POST['login'])) {
+    if ($_POST['uname'] != "") {
+        if ($_POST['uname'] == "Mylan"){
+            echo "<h2>". $_POST['uname']." nema malý penis</h2>";
+        } else {
+            echo "<h2>". $_POST['uname']." má malý penis</h2>";
+        }
+
+    }else{
+        echo "<h2>nikto nema maly penis</h2>";
+    }
+    ?>
+    <form action="main.php" method="post">
+        <button id="clear" type="submit" name="bubak">Back</button>
+    </form>
+<?php } else echo "BBBBBBBBB\n";
+if (isset($_POST['bubak'])) {
+    header('Location: index.html');
+}
