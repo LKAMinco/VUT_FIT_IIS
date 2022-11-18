@@ -102,3 +102,12 @@ form {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
+
+#names_id {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-left: 15px;
+}
+#names_id input {
+    width: 90%;
+}
