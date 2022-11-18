@@ -10,12 +10,34 @@
     <div class="body">
         <h1>Report problem</h1>
         <form id="form_report">
-            <input id="email_id" type="email" name="email" placeholder="Email" required><br>
             <input id="address_id" type="text" name="address" placeholder="Address" required><br>
-            <textarea id="problem_id" type="text" name="problem" placeholder="Problem description ..." required></textarea><br>
+            <!-- DIRTY STREETS | ROADS | PLAYGROUNDS | BENCHES | ABANDONED VEHICLES | ILLEGAL DUMPS | PARKS | VANDALISM | OTHERS -->
+            <select id="type_id" name="type" required>
+                <option disabled selected value> -- select an option --</option>
+                <option name="playground">Playground</option>
+                <option name="bench">Bench</option>
+                <option name="vegetation">Vegetation</option>
+                <option name="vandalism">Vandalism</option>
+                <option name="dirty_streets">Dirty street</option>
+                <option name="roads">Road</option>
+                <option name="vehicle">Abandoned vehicle</option>
+                <option name="dump">Illegal dump</option>
+                <option name="other">Other</option>
+            </select>
+            <textarea id="problem_id" type="text" name="problem" placeholder="Problem description ..."
+                      required></textarea><br>
             <div id="btns">
+                <label for="file_id">Please select image ...</label>
+                <input id="file_id" type="file" name="file" accept="image/png, image/gif, image/jpeg" required>
+                <script type="text/javascript">
+                    <!--change label name to filename -->
+                    document.getElementById('file_id').onchange = function () {
+                        document.getElementById('file_id').previousElementSibling.innerHTML = this.files[0].name;
+                    };
+                </script>
                 <button id="submit_btn" type="submit" name="submit">Submit</button>
                 <button id="clear_btn" type="reset">Clear</button>
+                <!--TODO remove connection to main page-->
                 <button id="back_btn" type="button" onclick="location.href='index.html'">Back</button>
             </div>
         </form>
