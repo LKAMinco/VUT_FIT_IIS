@@ -1,0 +1,104 @@
+html {
+    font-family: "Bahnschrift", serif;
+    scroll-behavior: smooth;
+    background-color: #6d1625;
+}
+
+body {
+    margin: auto;
+    max-width: 1080px;
+}
+
+h1 {
+    font-size: xxx-large;
+    color: whitesmoke;
+    text-align: center;
+}
+
+.body {
+    margin-top: 200px;
+    margin-right: auto;
+    margin-left: auto;
+    display: block;
+    left: 50%;
+    right: 50%;
+    max-width: 800px;
+}
+
+button {
+    height: 50px;
+    width: 90%;
+    font-size: large;
+    color: whitesmoke;
+    background-color: darkslategray;
+    border: 0;
+    border-radius: 10px;
+    justify-self: center;
+    margin: 20px 5px 5px;
+}
+
+button:hover {
+    color: black;
+    background-color: lightslategray;
+}
+
+input {
+    background-color: darkslategray;
+    color: whitesmoke;
+    margin: 5px;
+    padding-left: 15px;
+    height: 40px;
+    border: 0;
+    border-radius: 10px;
+    width: 100%;
+}
+
+textarea {
+    background-color: darkslategray;
+    color: whitesmoke;
+    margin: 5px;
+    padding-left: 15px;
+    padding-top: 15px;
+    height: 40px;
+    border: 0;
+    border-radius: 10px;
+    width: 100%;
+    resize: none;
+}
+
+#problem_id {
+    height: 300px;
+}
+
+::placeholder {
+    color: lightslategray;
+}
+
+::-webkit-calendar-picker-indicator {
+    padding-right: 15px;
+}
+
+::-webkit-calendar-picker-indicator:hover {
+    padding-bottom: 15px;
+}
+
+label {
+    color: whitesmoke;
+    font-size: larger;
+    padding-left: 15px;
+    margin-right: 10px;
+}
+
+#date_id {
+    width: 75%;
+}
+
+form {
+    margin: auto;
+}
+
+#btns {
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
