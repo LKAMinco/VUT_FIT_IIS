@@ -146,19 +146,22 @@ form {
     color: black;
 }
 
+#btns_reg {
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
 #submit_btn {
     grid-column: 1;
-    grid-row: 2;
 }
 
 #clear_btn {
     grid-column: 2;
-    grid-row: 2;
 }
 
 #back_btn {
     grid-column: 3;
-    grid-row: 2;
 }
 
 #names_id {
