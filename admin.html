@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<header>
+    <div class="body">
+        <h1>Admin</h1>
+        <form id="form_search" action="admin.php" method="post">
+            <div id="search_field">
+                <select id="filter_id" name="filter" required>
+                    <option name="All">All Users</option>
+                    <option name="Admins">Admins</option>
+                    <option name="Managers">Managers</option>
+                    <option name="Technicians">Technicians</option>
+                    <option name="Users">Users</option>
+                </select>
+                <button id="search_btn" type="submit">Search</button>
+                <button id="back_btn" type="button" onclick="location.href='index.html'">Back</button>
+            </div>
+        </form>
+    </div>
+    <div id="search_results">
+
+    </div>
+</header>
+</body>
+</html>
