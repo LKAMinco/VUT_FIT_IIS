@@ -20,7 +20,7 @@ CREATE TABLE user (
 CREATE TABLE ticket (
     id_ticket int NOT NULL AUTO_INCREMENT,
     title varchar(255) NOT NULL,
-    category varchar(20) NOT NULL, /* DIRTY STREETS | ROADS | PLAYGROUNDS | BENCHES | ABANDONED VEHICLES | ILLEGAL DUMPS | PARKS | VANDALISM | OTHERS */
+    category varchar(20) NOT NULL, /* DIRTY STREETS | ROADS | PLAYGROUNDS | BENCHES | ABANDONED VEHICLES | ILLEGAL DUMPS | VEGETATION | VANDALISM | OTHERS */
     descript varchar(1024) NOT NULL,
     cond varchar(12) NOT NULL, /* UNDER REVIEW | IN PROGRESS | DONE | SUSPENDED | REJECTED */
     author varchar(255) NOT NULL,
@@ -82,7 +82,7 @@ VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'USER', NULL,
 -- INSERT TICKETS --
 
 INSERT INTO ticket(title, category, descript, cond, author, date_add)
-VALUE ('Homeless man in park', 'PARKS', 'There is a homeless man in the park.', 'IN-PROGRESS', 'mkapusta@gmail.com', '2021-11-29 22:51:32');
+VALUE ('Homeless man in park', 'VEGETATION', 'There is a homeless man in the park.', 'IN-PROGRESS', 'mkapusta@gmail.com', '2021-11-29 22:51:32');
 
 INSERT INTO ticket(title, category, descript, cond, author, date_add)
 VALUE ('Abandoned car near cemetery', 'ABANDONED VEHICLES', 'Rusted mazda in the parking lot.', 'DONE', 'mkapusta@gmail.com', '2022-07-11 12:34:12');
@@ -94,13 +94,13 @@ INSERT INTO ticket(title, category, descript, cond, author, date_add)
 VALUE ('Old couch in the parking lot', 'ILLEGAL DUMPS', 'Somebody threw out old couch.', 'IN PROGRESS', 'mzemiak@gmail.com', '2021-04-20 12:21:47');
 
 INSERT INTO ticket(title, category, descript, cond, author, date_add)
-VALUE ('Unnecessary irrigation in parks', 'PARKS', 'Turn off the irrigation, it is flooding my home.', 'DONE', 'pslivka@gmail.com', '2011-07-13 07:41:37');
+VALUE ('Unnecessary irrigation in parks', 'VEGETATION', 'Turn off the irrigation, it is flooding my home.', 'DONE', 'pslivka@gmail.com', '2011-07-13 07:41:37');
 
 INSERT INTO ticket(title, category, descript, cond, author, date_add)
 VALUE ('Noisy people near PPVs bar', 'OTHERS', 'Stop selling alcohol.', 'SUSPENDED', 'mzemiak@gmail.com', '2022-12-24 22:12:57');
 
 INSERT INTO ticket(title, category, descript, cond, author, date_add)
-VALUE ('Stray dog pees on people and things', 'PARKS', 'Call animal control on stray dog in the park.', 'IN-PROGRESS', 'mzemiak@gmail.com', '1998-01-03 11:31:07');
+VALUE ('Stray dog pees on people and things', 'VEGETATION', 'Call animal control on stray dog in the park.', 'IN-PROGRESS', 'mzemiak@gmail.com', '1998-01-03 11:31:07');
 
 INSERT INTO ticket(title, category, descript, cond, author, date_add)
 VALUE ('Old couch in the park', 'ILLEGAL DUMPS', 'There is an old smelly couch in the park.', 'UNDER REVIEW', 'mzemiak@gmail.com', '2021-04-20 14:41:47');
