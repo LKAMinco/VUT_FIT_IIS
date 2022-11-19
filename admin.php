@@ -1,7 +1,128 @@
 <?php
     session_start();
 
-    function listUsers($db){
+    function listTickets($db, $file){
+        $query_cond = "";
+
+        if($_POST['ticket_type_filter'] != "All Ticket Types"){
+            $query_cond = " where category = '" . $_POST['ticket_type_filter'] . "'";
+        }
+
+        if($_POST['ticket_cond_filter'] != "All Ticket Conditions"){
+            if($query_cond == "") {
+                $query_cond = " where cond = '" . $_POST['ticket_cond_filter'] . "'";
+            }
+            else{
+                $query_cond = $query_cond . " and cond = '" . $_POST['ticket_cond_filter'] . "'";
+            }
+        }
+
+        if($query_cond == "") {
+            $stmt = $db->query("SELECT id_ticket, title, category, date_add, cond FROM ticket");
+        }
+        else{
+            $stmt = $db->query("SELECT id_ticket, title, category, date_add, cond FROM ticket" . $query_cond);
+        }
+
+        $html = file_get_contents($file);
+        $doc = new DOMDocument();
+        $doc->loadHTML($html);
+        $table = $doc->getElementById('tickets_search_results');
+
+        $filterForm = $doc->getElementById($_POST['ticket_type_filter']);
+        $filterForm->setAttribute('selected', 'True');
+
+        $filterForm = $doc->getElementById($_POST['ticket_cond_filter']);
+        $filterForm->setAttribute('selected', 'True');
+
+        $tableRow = $doc->createElement('tr');
+        $tableCol = $doc->createElement('th', 'Title');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'Category');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'Date');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'Condition');
+        $tableRow->appendChild($tableCol);
+        $table->appendChild($tableRow);
+
+        foreach ($stmt as $row){
+            $tableRow = $doc->createElement('tr');
+
+            $tableCol = $doc->createElement('td', $row['title']);
+            $tableRow->appendChild($tableCol);
+            $tableCol = $doc->createElement('td', $row['category']);
+            $tableRow->appendChild($tableCol);
+            $tableCol = $doc->createElement('td', $row['date_add']);
+            $tableRow->appendChild($tableCol);
+            $tableCol = $doc->createElement('td', $row['cond']);
+            $tableRow->appendChild($tableCol);
+
+            /* FORM FOR CHANGING CONDITION IN TICKET*/
+
+            $tableCol = $doc->createElement('td');
+            $form = $doc->createElement('form');
+
+            $form->setAttribute('id', 'form_ticket_cond');
+            $form->setAttribute('action', 'admin.php');
+            $form->setAttribute('method', 'post');
+            $form->setAttribute('name', 'change_cond');
+
+            $button = $doc->createElement('button', 'Set Condition');
+            $button->setAttribute('id', 'set_cond_btn');
+            $button->setAttribute('name', 'set_cond');
+            $button->setAttribute('value', $row['id_ticket']);
+            $button->setAttribute('type', 'submit');
+
+            $tableCol->appendChild($form);
+            $tableRow->appendChild($tableCol);
+
+            /* FORM FOR OPENING/CREATING SERVICE APPOINTMENTS*/
+
+            $tableCol = $doc->createElement('td');
+            $form = $doc->createElement('form');
+            $form->setAttribute('id', 'form_create_service');
+            $form->setAttribute('action', 'admin.php');
+            $form->setAttribute('method', 'post');
+            $form->setAttribute('name', 'create_service');
+            $form->setAttribute('value', $_POST['admin_filter']);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'filter_type');
+            $input->setAttribute('value', $_POST['ticket_type_filter']);
+            $form->appendChild($input);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'filter_cond');
+            $input->setAttribute('value', $_POST['ticket_cond_filter']);
+            $form->appendChild($input);
+
+            $div = $doc->createElement('div');
+            $div->setAttribute('id', 'ticket_list_btn_div');
+            $form->appendChild($div);
+
+            $button = $doc->createElement('button', 'Service');
+            $button->setAttribute('id', 'create_service_btn');
+            $button->setAttribute('name', 'create_service');
+            $button->setAttribute('value', $row['id_ticket']);
+            $button->setAttribute('type', 'submit');
+            $div->appendChild($button);
+            $tableCol->appendChild($form);
+            $tableRow->appendChild($tableCol);
+
+
+
+            $table->appendChild($tableRow);
+        }
+
+        echo $doc->saveHTML();
+
+        return NULL;
+    }
+
+    function listUsers($db, $file){
         if($_POST['admin_filter'] == "All Users") {
             $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user");
         }
@@ -9,14 +130,16 @@
             $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user where access_type = '" . $_POST['admin_filter'] . "'");
         }
 
-        $html = file_get_contents('admin.html');
+        $html = file_get_contents($file);
         $doc = new DOMDocument();
         $doc->loadHTML($html);
         $table = $doc->getElementById('users_search_results');
         //$appended = $doc->createElement('tr', 'This is a test element.');
         //$table->appendChild($appended);
-        $filterForm = $doc->getElementById($_POST['admin_filter']);
-        $filterForm->setAttribute('selected', 'True');
+        if(isset($_POST['admin_search'])) {
+            $filterForm = $doc->getElementById($_POST['admin_filter']);
+            $filterForm->setAttribute('selected', 'True');
+        }
 
         $tableRow = $doc->createElement('tr');
         $tableCol = $doc->createElement('th', 'First Name');
@@ -83,10 +206,10 @@
     if(isset($_POST['remove'])){
         $stmt = $db->query("DELETE FROM user where email = '" . $_POST['remove'] . "'");
         $_POST['admin_filter'] = $_POST['filter_status'];
-        listUsers($db);
+        listUsers($db, 'admin.html');
     }
-    else if (isset($_POST['admin_filter'])){
-        listUsers($db);
+    else if (isset($_POST['admin_search'])){
+        listUsers($db, 'admin.html');
     }
     else if (isset($_POST['add_manager'])){
         $html = file_get_contents('register.html');
@@ -140,11 +263,20 @@
 
         echo $doc->saveHTML();
     }
+    else if(isset($_POST['search_tickets_mgr'])){
+        if(!isset($_POST['ticket_type_filter'])) {
+            $_POST['ticket_type_filter'] = "All Ticket Types";
+        }
+        if(!isset($_POST['ticket_cond_filter'])) {
+            $_POST['ticket_cond_filter'] = "All Ticket Conditions";
+        }
+        listTickets($db, 'list_tickets.html');
+    }
+    else if(isset($_POST['load_cityman'])) {
+        $_POST['admin_filter'] = 'TECHNICIAN';
+        listUsers($db, 'cityman.html');
+    }
     else{
         var_dump($_POST);
-        if(!isset($_POST['admin_filter'])) {
-            $_POST['admin_filter'] = 'All Users';
-        }
-        listUsers($db);
     }
 ?>

@@ -212,7 +212,7 @@ form {
 
 table{
     margin: 2% auto auto auto;
-    width: 74%;
+    width: 100%;
     color: white;
     border-spacing: 10px;
 }
@@ -232,8 +232,11 @@ table tr td,th{
     background:dimgray;
 }
 
-table tr td:nth-child(5){
-    border-radius: 10px;
+#users_search_results tr td:nth-child(5){
+    background: none;
+}
+
+#tickets_search_results tr:not(:first-child) td:last-child{
     background: none;
 }
 
@@ -252,6 +255,27 @@ table td form{
 
 #mgr_searches button{
     width: 94%;
+}
+
+#search_tickets_field{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+}
+
+#ticket_type_filter, #ticket_cond_filter{
+    width: 93.5%;
+    height: 66%;
+    margin-top: 8%;
+}
+
+#get_back_btn{
+    width: 98%;
+}
+
+#ticket_list_btn_div{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 select {

@@ -82,7 +82,7 @@ VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'USER', NULL,
 -- INSERT TICKETS --
 
 INSERT INTO ticket(title, category, descript, cond, author, date_add)
-VALUE ('Homeless man in park', 'VEGETATION', 'There is a homeless man in the park.', 'IN-PROGRESS', 'mkapusta@gmail.com', '2021-11-29 22:51:32');
+VALUE ('Homeless man in park', 'VEGETATION', 'There is a homeless man in the park.', 'IN PROGRESS', 'mkapusta@gmail.com', '2021-11-29 22:51:32');
 
 INSERT INTO ticket(title, category, descript, cond, author, date_add)
 VALUE ('Abandoned car near cemetery', 'ABANDONED VEHICLES', 'Rusted mazda in the parking lot.', 'DONE', 'mkapusta@gmail.com', '2022-07-11 12:34:12');
@@ -100,7 +100,7 @@ INSERT INTO ticket(title, category, descript, cond, author, date_add)
 VALUE ('Noisy people near PPVs bar', 'OTHERS', 'Stop selling alcohol.', 'SUSPENDED', 'mzemiak@gmail.com', '2022-12-24 22:12:57');
 
 INSERT INTO ticket(title, category, descript, cond, author, date_add)
-VALUE ('Stray dog pees on people and things', 'VEGETATION', 'Call animal control on stray dog in the park.', 'IN-PROGRESS', 'mzemiak@gmail.com', '1998-01-03 11:31:07');
+VALUE ('Stray dog pees on people and things', 'VEGETATION', 'Call animal control on stray dog in the park.', 'IN PROGRESS', 'mzemiak@gmail.com', '1998-01-03 11:31:07');
 
 INSERT INTO ticket(title, category, descript, cond, author, date_add)
 VALUE ('Old couch in the park', 'ILLEGAL DUMPS', 'There is an old smelly couch in the park.', 'UNDER REVIEW', 'mzemiak@gmail.com', '2021-04-20 14:41:47');
@@ -108,7 +108,7 @@ VALUE ('Old couch in the park', 'ILLEGAL DUMPS', 'There is an old smelly couch i
 -- INSERT APPOINTMENTS --
 
 INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'technician02', 'The man in a bush is stinky',  date('2024-08-11'), 'IN-PROGRESS', 2, 1);
+VALUES ('manager', 'technician02', 'The man in a bush is stinky',  date('2024-08-11'), 'IN PROGRESS', 2, 1);
 
 INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
 VALUES ('manager', 'technician01', 'Parks do not need to be irrigated',  date('2025-01-12'), 'DONE', 34, 5);
@@ -117,7 +117,7 @@ INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_
 VALUES ('manager', 'technician01', 'Noise from pub near PPV',  date('2022-12-24'), 'SUSPENDED', 13, 6);
 
 INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'technician02', 'Dog pees on my bike',  date('2025-01-03'), 'IN-PROGRESS', 20, 7);
+VALUES ('manager', 'technician02', 'Dog pees on my bike',  date('2025-01-03'), 'IN PROGRESS', 20, 7);
 
 INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
 VALUES ('manager', 'technician02', 'Rusted mazda in the parking lot.',  date('2023-01-09'), 'DONE', 11, 2);
