@@ -9,15 +9,15 @@
 <header>
     <div class="body">
         <h1>Login user</h1>
-        <h3 id="info_msg">Please insert your email and password</h3>
-        <form id="form_login" action="login.php" method="post">
+        <h3 id="info_msg">Please insert your email and password.</h3>
+        <form id="form_login" action="main.php" method="post">
             <!--label for="uname_id">Username</label-->
-            <input id="uemail_id" type="text" name="uemail" placeholder="Email" required><br>
+            <input id="uemail_id" type="text" name="uemail_login" placeholder="Email" required><br>
             <!--label for="pwd_id">Password</label-->
-            <input id="pwd_id" type="password" name="pwd" placeholder="Password" required><br>
+            <input id="pwd_id" type="password" name="pwd_login" placeholder="Password" required><br>
             <div id="btns">
                 <button id="login_btn" type="submit" name="login">Login</button>
-                <button id="clear_btn" type="reset" name="aaa">Clear</button>
+                <button id="clear_btn" type="reset">Clear</button>
                 <button id="back_btn" type="button" onclick="location.href='index.html'">Back</button>
             </div>
         </form>

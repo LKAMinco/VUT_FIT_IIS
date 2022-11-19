@@ -9,19 +9,20 @@
 <header>
     <div class="body">
         <h1>Register user</h1>
-        <form id="form_register">
+        <h3 id="info_msg">Please fill your information.</h3>
+        <form id="form_register" action="main.php" method="post">
             <div id="names_id">
-                <input id="name_id" type="text" name="firstname" placeholder="First name" required>
-                <input id="surename_id" type="text" name="lasttname" placeholder="Last name" required><br>
+                <input id="name_id" type="text" name="ufirstname_register" placeholder="First name" required>
+                <input id="surename_id" type="text" name="ulastname_register" placeholder="Last name" required><br>
             </div>
             <label for="date_id">Date of birth</label>
-            <input id="date_id" type="date" name="date" required><br>
-            <input id="uaddress_id" type="text" name="uaddress" placeholder="Addresss" required><br>
-            <input id="uemail_id" type="email" name="uemail" placeholder="Email" required><br>
-            <input id="upwd_id" type="password" name="upwd" placeholder="Password" required><br>
-            <input id="ipwdconf_id" type="password" name="upwdconf" placeholder="Confirm password" required><br>
+            <input id="date_id" type="date" name="udate_register" required><br>
+            <input id="uaddress_id" type="text" name="uaddress_register" placeholder="Addresss" required><br>
+            <input id="uemail_id" type="email" name="uemail_register" placeholder="Email" required><br>
+            <input id="upwd_id" type="password" name="upwd_register" placeholder="Password" required><br>
+            <input id="ipwdconf_id" type="password" name="upwdconf_register" placeholder="Confirm password" required><br>
             <div id="btns_reg">
-                <button id="register_btn" type="submit" name="register">Register</button>
+                <button id="register_btn" type="submit" name="register_submit">Register</button>
                 <button id="clear_btn" type="reset">Clear</button>
                 <button id="back_btn" type="button" onclick="location.href='index.html'">Back</button>
             </div>
