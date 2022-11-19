@@ -6,6 +6,7 @@ session_start();
     header('Location: main.php');
     exit;
 }*/
+phpinfo();
 if (isset($_POST['login'])) {
     if ($_POST['uname'] != "") {
         if ($_POST['uname'] == "Mylan"){
@@ -24,4 +25,11 @@ if (isset($_POST['login'])) {
 <?php } else echo "BBBBBBBBB\n";
 if (isset($_POST['bubak'])) {
     header('Location: index.html');
+}
+
+try {
+    $db = new PDO("mysql:host=remotemysql.com;dbname=eUGDvDb3sy;port=3306", 'eUGDvDb3sy', '7tTC6lIx7i');
+} catch (PDOException $e) {
+    echo "Connection error: ".$e->getMessage();
+    die();
 }

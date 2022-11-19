@@ -15,6 +15,12 @@ h1 {
     text-align: center;
 }
 
+h3 {
+    font-size: large;
+    color: whitesmoke;
+    text-align: center;
+}
+
 .body {
     margin-top: 200px;
     margin-right: auto;
@@ -95,6 +101,20 @@ label {
 
 form {
     margin: auto;
+}
+
+#btns_main {
+    margin: auto;
+    display: grid;
+    grid-auto-columns: 1fr 1fr;
+}
+
+#signin_btn {
+    grid-column: 1;
+}
+
+#signup_btn {
+    grid-column: 2;
 }
 
 #btns {
