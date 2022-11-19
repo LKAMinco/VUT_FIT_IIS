@@ -257,13 +257,13 @@ table td form{
     width: 94%;
 }
 
-#search_tickets_field{
+#search_tickets_field, #search_appointments_field{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
 }
 
-#ticket_type_filter, #ticket_cond_filter{
+#ticket_type_filter, #ticket_cond_filter, #appointments_cond_filter, #appointments_assignee_filter{
     width: 93.5%;
     height: 66%;
     margin-top: 8%;
@@ -285,6 +285,20 @@ table td form{
 
 #ticket_list_btn_div button{
     margin-top: 35%;
+}
+
+#appointment_list_btn_div{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#appointment_list_btn_div select{
+    width: 160px;
+    margin-top: 25%;
+}
+
+#appointment_list_btn_div button{
+    margin-top: 22%;
 }
 
 select {

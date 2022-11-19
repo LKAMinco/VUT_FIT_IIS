@@ -23,7 +23,7 @@ if (isset($_POST['login'])) {
         $row = $stmt->fetch();
         if ($row['pwd'] == $_POST['pwd_login']) {
             if ($row['access_type'] == 'ADMIN') {
-                header('Location: admin.php');
+                header('Location: admin.html');
             } elseif ($row['access_type'] == 'CITYMAN') {
                 header("Location: cityman.html");
             } elseif ($row['access_type'] == 'TECHNICIAN') {

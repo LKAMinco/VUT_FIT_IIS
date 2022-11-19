@@ -1,14 +1,152 @@
 <?php
     session_start();
 
-    function listTickets($db, $file){
+    function addOption($doc, $parent, $value, $string){
+        $option = $doc->createElement('option');
+        $option->setAttribute('id', $string);
+        $option->nodeValue = $string;
+        if($value == $string)
+            $option->setAttribute('selected', 'True');
+        $parent->appendChild($option);
+    }
+
+    function listAppointmentsMgr($db, $file){
+        $html = file_get_contents($file);
+        $doc = new DOMDocument();
+        $doc->loadHTML($html);
+        $combox = $doc->getElementById('appointments_assignee_filter');
+
+        $assignees = $db->query("SELECT email FROM user where access_type = 'TECHNICIAN'");
+
+        foreach ($assignees as $row){
+            $option = $doc->createElement('option');
+            $option->setAttribute('id', $row['email']);
+            $option->nodeValue = $row['email'];
+            $combox->appendChild($option);
+        }
+
         $query_cond = "";
 
-        if($_POST['ticket_type_filter'] != "All Ticket Types"){
+        if($_POST['appointments_assignee_filter'] != "All Assignees"){
+            $query_cond = " where assignee = '" . $_POST['appointments_assignee_filter'] . "'";
+        }
+
+        if($_POST['appointments_cond_filter'] != "All Conditions"){
+            if($query_cond == "") {
+                $query_cond = " where cond = '" . $_POST['appointments_cond_filter'] . "'";
+            }
+            else{
+                $query_cond = $query_cond . " and cond = '" . $_POST['appointments_cond_filter'] . "'";
+            }
+        }
+
+        if($query_cond == "") {
+            $stmt = $db->query("SELECT id_appointment, title, assignee, estimation_date, cond FROM appointment");
+        }
+        else{
+            $stmt = $db->query("SELECT id_appointment, title, assignee, estimation_date, cond FROM appointment" . $query_cond);
+        }
+
+        $table = $doc->getElementById('appointments_search_results');
+
+        $filterForm = $doc->getElementById($_POST['appointments_assignee_filter']);
+        $filterForm->setAttribute('selected', 'True');
+
+        $filterForm = $doc->getElementById($_POST['appointments_cond_filter']);
+        $filterForm->setAttribute('selected', 'True');
+
+        $tableRow = $doc->createElement('tr');
+        $tableCol = $doc->createElement('th', 'Title');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'Assignee');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'Estimation Date');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'Condition');
+        $tableRow->appendChild($tableCol);
+        $table->appendChild($tableRow);
+
+        foreach ($stmt as $row){
+            $tableRow = $doc->createElement('tr');
+
+            $tableCol = $doc->createElement('td', $row['title']);
+            $tableRow->appendChild($tableCol);
+
+            /* FORM FOR CHANGING CONDITION IN TICKET*/
+
+            $tableCol = $doc->createElement('td');
+            $form = $doc->createElement('form');
+
+            $form->setAttribute('id', 'form_appointments_assignee');
+            $form->setAttribute('action', 'admin.php');
+            $form->setAttribute('method', 'post');
+            $form->setAttribute('name', 'change_cond');
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'appointments_assignee_filter');
+            $input->setAttribute('value', $_POST['appointments_assignee_filter']);
+            $form->appendChild($input);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'appointments_cond_filter');
+            $input->setAttribute('value', $_POST['appointments_cond_filter']);
+            $form->appendChild($input);
+
+            $div = $doc->createElement('div');
+            $div->setAttribute('id', 'appointment_list_btn_div');
+            $form->appendChild($div);
+
+            $combox = $doc->createElement('select');
+            $combox->setAttribute('name', 'new_assignee');
+
+            //Needs to be done in every cycle, otherwise it ends up empty
+            $assignees = $db->query("SELECT email FROM user where access_type = 'TECHNICIAN'");
+
+            foreach ($assignees as $assignee){
+                addOption($doc, $combox, $row['assignee'], $assignee['email']);
+            }
+
+            $div->appendChild($combox);
+
+            $button = $doc->createElement('button', 'Set');
+            $button->setAttribute('id', 'set_assignee_btn');
+            $button->setAttribute('name', 'set_assignee');
+            $button->setAttribute('value', $row['id_appointment']);
+            $button->setAttribute('type', 'submit');
+
+            $div->appendChild($button);
+            $tableCol->appendChild($form);
+            $tableRow->appendChild($tableCol);
+
+
+            if ($row['estimation_date'] == NULL){
+                $tableCol = $doc->createElement('td', 'NONE');
+            }
+            else{
+                $tableCol = $doc->createElement('td', $row['estimation_date']);
+            }
+            $tableRow->appendChild($tableCol);
+            $tableCol = $doc->createElement('td', $row['cond']);
+            $tableRow->appendChild($tableCol);
+
+            $table->appendChild($tableRow);
+        }
+
+        echo $doc->saveHTML();
+
+        return NULL;
+    }
+
+    function listTicketsMgr($db, $file){
+        $query_cond = "";
+
+        if($_POST['ticket_type_filter'] != "All Types"){
             $query_cond = " where category = '" . $_POST['ticket_type_filter'] . "'";
         }
 
-        if($_POST['ticket_cond_filter'] != "All Ticket Conditions"){
+        if($_POST['ticket_cond_filter'] != "All Conditions"){
             if($query_cond == "") {
                 $query_cond = " where cond = '" . $_POST['ticket_cond_filter'] . "'";
             }
@@ -84,40 +222,13 @@
 
             $combox = $doc->createElement('select');
             $combox->setAttribute('name', 'new_cond');
-            $option = $doc->createElement('option');
-            $option->setAttribute('id', 'UNDER REVIEW');
-            $option->nodeValue = 'UNDER REVIEW';
-            if($row['cond'] == 'UNDER REVIEW')
-                $option->setAttribute('selected', 'True');
-            $combox->appendChild($option);
 
-            $option = $doc->createElement('option');
-            $option->setAttribute('id', 'IN PROGRESS');
-            $option->nodeValue = 'IN PROGRESS';
-            if($row['cond'] == 'IN PROGRESS')
-                $option->setAttribute('selected', 'True');
-            $combox->appendChild($option);
 
-            $option = $doc->createElement('option');
-            $option->setAttribute('id', 'DONE');
-            $option->nodeValue = 'DONE';
-            if($row['cond'] == 'DONE')
-                $option->setAttribute('selected', 'True');
-            $combox->appendChild($option);
-
-            $option = $doc->createElement('option');
-            $option->setAttribute('id', 'SUSPENDED');
-            $option->nodeValue = 'SUSPENDED';
-            if($row['cond'] == 'SUSPENDED')
-                $option->setAttribute('selected', 'True');
-            $combox->appendChild($option);
-
-            $option = $doc->createElement('option');
-            $option->setAttribute('id', 'REJECTED');
-            $option->nodeValue = 'REJECTED';
-            if($row['cond'] == 'REJECTED')
-                $option->setAttribute('selected', 'True');
-            $combox->appendChild($option);
+            addOption($doc, $combox, $row['cond'], 'UNDER REVIEW');
+            addOption($doc, $combox, $row['cond'], 'IN PROGRESS');
+            addOption($doc, $combox, $row['cond'], 'DONE');
+            addOption($doc, $combox, $row['cond'], 'SUSPENDED');
+            addOption($doc, $combox, $row['cond'], 'REJECTED');
 
             $div->appendChild($combox);
 
@@ -130,39 +241,6 @@
             $div->appendChild($button);
             $tableCol->appendChild($form);
             $tableRow->appendChild($tableCol);
-
-            /* FORM FOR OPENING/CREATING SERVICE APPOINTMENTS*/
-
-            $tableCol = $doc->createElement('td');
-            $form = $doc->createElement('form');
-            $form->setAttribute('id', 'form_create_service');
-            $form->setAttribute('action', 'admin.php');
-            $form->setAttribute('method', 'post');
-            $form->setAttribute('name', 'create_service');
-            $form->setAttribute('value', $_POST['admin_filter']);
-
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'filter_type');
-            $input->setAttribute('value', $_POST['ticket_type_filter']);
-            $form->appendChild($input);
-
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'filter_cond');
-            $input->setAttribute('value', $_POST['ticket_cond_filter']);
-            $form->appendChild($input);
-
-            $button = $doc->createElement('button', 'Service');
-            $button->setAttribute('id', 'create_service_btn');
-            $button->setAttribute('name', 'create_service');
-            $button->setAttribute('value', $row['id_ticket']);
-            $button->setAttribute('type', 'submit');
-            $form->appendChild($button);
-            $tableCol->appendChild($form);
-            $tableRow->appendChild($tableCol);
-
-
 
             $table->appendChild($tableRow);
         }
@@ -258,10 +336,10 @@
         $_POST['admin_filter'] = $_POST['filter_status'];
         listUsers($db, 'admin.html');
     }
-    else if (isset($_POST['admin_search'])){
+    if (isset($_POST['admin_search'])){
         listUsers($db, 'admin.html');
     }
-    else if (isset($_POST['add_manager'])){
+    if (isset($_POST['add_manager'])){
         $html = file_get_contents('register.html');
         $doc = new DOMDocument();
         $doc->loadHTML($html);
@@ -283,7 +361,7 @@
 
         echo $doc->saveHTML();
     }
-    else if(isset($_POST['add_tech'])){
+    if(isset($_POST['add_tech'])){
         $html = file_get_contents('register.html');
         $doc = new DOMDocument();
         $doc->loadHTML($html);
@@ -313,26 +391,34 @@
 
         echo $doc->saveHTML();
     }
-    else if(isset($_POST['search_tickets_mgr'])){
+    if(isset($_POST['search_tickets_mgr'])){
         if(!isset($_POST['ticket_type_filter'])) {
-            $_POST['ticket_type_filter'] = "All Ticket Types";
+            $_POST['ticket_type_filter'] = "All Types";
         }
         if(!isset($_POST['ticket_cond_filter'])) {
-            $_POST['ticket_cond_filter'] = "All Ticket Conditions";
+            $_POST['ticket_cond_filter'] = "All Conditions";
         }
-        listTickets($db, 'list_tickets.html');
+        listTicketsMgr($db, 'list_tickets.html');
     }
-    else if(isset($_POST['load_cityman'])) {
+    if(isset($_POST['load_cityman'])) {
         $_POST['admin_filter'] = 'TECHNICIAN';
         listUsers($db, 'cityman.html');
     }
-    else if(isset($_POST['set_cond'])){
-        var_dump($_POST);
+    if(isset($_POST['set_cond'])){
         $stmt = $db->query("UPDATE ticket SET cond = '" . $_POST['new_cond'] . "' where id_ticket = " . $_POST['set_cond']);
-        echo("test\n");
-        listTickets($db, 'list_tickets.html');
+        listTicketsMgr($db, 'list_tickets.html');
     }
-    else{
-        var_dump($_POST);
+    if(isset($_POST['search_appointments_mgr'])){
+        if(!isset($_POST['appointments_assignee_filter'])) {
+            $_POST['appointments_assignee_filter'] = "All Assignees";
+        }
+        if(!isset($_POST['appointments_cond_filter'])) {
+            $_POST['appointments_cond_filter'] = "All Conditions";
+        }
+        listAppointmentsMgr($db, 'list_serviceapp.html');
+    }
+    if(isset($_POST['set_assignee'])){
+        $stmt = $db->query("UPDATE appointment SET assignee = '" . $_POST['new_assignee'] . "' where id_appointment = " . $_POST['set_assignee']);
+        listAppointmentsMgr($db, 'list_serviceapp.html');
     }
 ?>
