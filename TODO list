@@ -1,0 +1,8 @@
+MILAN:
+TODO list:
+-porobit stranky pre uživatela, technika, a citymana, pridat mu tlačitka na akcie čo bude vykonávať, porobit css aby sedelo do našho štýlu (html stránky sú už implementované)
+-treba implementovať pridávanie a odoberanie osôb nadradenou osobou.
+-pridať spätné vyplnenie údajov
+-spraviť hashovaciu funkciu na heslo
+-ked bude implementovaný uživateľ treba implementovať môžnosť nahlásenia problemu
+-ked bude implementovane nahlasovanie problemov, treba pre citymana, implementovat priradzvoanie technikov, a pre technikov menenie stavu problemu
