@@ -11,21 +11,21 @@
         <h1>Admin</h1>
         <form id="form_search" action="admin.php" method="post">
             <div id="search_field">
-                <select id="filter_id" name="filter" required>
-                    <option name="All">All Users</option>
-                    <option name="Admins">Admins</option>
-                    <option name="Managers">Managers</option>
-                    <option name="Technicians">Technicians</option>
-                    <option name="Users">Users</option>
+                <select id="admin_filter" name="admin_filter" required>
+                    <option id="All Users" name="All">All Users</option>
+                    <option id="Admin" name="Admins">Admin</option>
+                    <option id="Manager" name="Managers">Manager</option>
+                    <option id="Technician" name="Technicians">Technician</option>
+                    <option id="User" name="Users">User</option>
                 </select>
-                <button id="search_btn" type="submit">Search</button>
+                <button id="search_btn" name="admin_search" type="submit">Search</button>
                 <button id="back_btn" type="button" onclick="location.href='index.html'">Back</button>
             </div>
         </form>
     </div>
-    <div id="search_results">
+    <table id="admin_search_results">
 
-    </div>
+    </table>
 </header>
 </body>
 </html>
