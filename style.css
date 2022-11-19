@@ -206,6 +206,43 @@ form {
     margin-top: 8%;
 }
 
+#addmgr_btn{
+    width: 98%;
+}
+
+table{
+    margin: 2% auto auto auto;
+    width: 74%;
+    color: white;
+    border-spacing: 10px;
+}
+
+table tr{
+    width: auto;
+    height: 60px;
+    text-align: center;
+}
+
+table tr:first-child{
+    height: auto;
+}
+
+table tr td,th{
+    border-radius: 10px;
+    background:dimgray;
+}
+
+table tr td:nth-child(5){
+    border-radius: 10px;
+    background: none;
+}
+
+table td form{
+    margin-top: -10%;
+    vertical-align: center;
+}
+
+
 select {
     background-color: darkslategray;
     color: lightslategray;

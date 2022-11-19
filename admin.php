@@ -18,6 +18,17 @@
         $filterForm = $doc->getElementById($_POST['admin_filter']);
         $filterForm->setAttribute('selected', 'True');
 
+        $tableRow = $doc->createElement('tr');
+        $tableCol = $doc->createElement('th', 'First Name');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'Last Name');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'Email');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'User Type');
+        $tableRow->appendChild($tableCol);
+        $table->appendChild($tableRow);
+
         foreach ($stmt as $row){
             $tableRow = $doc->createElement('tr');
 
@@ -30,29 +41,30 @@
             $tableCol = $doc->createElement('td', $row['access_type']);
             $tableRow->appendChild($tableCol);
 
-            $tableCol = $doc->createElement('td');
-            $form = $doc->createElement('form');
-            $form->setAttribute('id', 'form_remove');
-            $form->setAttribute('action', 'admin.php');
-            $form->setAttribute('method', 'post');
-            $form->setAttribute('name', 'filter_status');
-            $form->setAttribute('value', $_POST['admin_filter']);
+            if($row['access_type'] != 'ADMIN') {
+                $tableCol = $doc->createElement('td');
+                $form = $doc->createElement('form');
+                $form->setAttribute('id', 'form_remove');
+                $form->setAttribute('action', 'admin.php');
+                $form->setAttribute('method', 'post');
+                $form->setAttribute('name', 'filter_status');
+                $form->setAttribute('value', $_POST['admin_filter']);
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'filter_status');
-            $input->setAttribute('value', $_POST['admin_filter']);
-            $form->appendChild($input);
+                $input = $doc->createElement('input');
+                $input->setAttribute('type', 'hidden');
+                $input->setAttribute('name', 'filter_status');
+                $input->setAttribute('value', $_POST['admin_filter']);
+                $form->appendChild($input);
 
-            $button = $doc->createElement('button', 'Remove');
-            $button->setAttribute('id', 'remove_btn');
-            $button->setAttribute('name', 'remove');
-            $button->setAttribute('value', $row['email']);
-            $button->setAttribute('type', 'submit');
-            $form->appendChild($button);
-            $tableCol->appendChild($form);
-
-            $tableRow->appendChild($tableCol);
+                $button = $doc->createElement('button', 'Remove');
+                $button->setAttribute('id', 'remove_btn');
+                $button->setAttribute('name', 'remove');
+                $button->setAttribute('value', $row['email']);
+                $button->setAttribute('type', 'submit');
+                $form->appendChild($button);
+                $tableCol->appendChild($form);
+                $tableRow->appendChild($tableCol);
+            }
             $table->appendChild($tableRow);
         }
         echo $doc->saveHTML();
