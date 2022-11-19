@@ -278,6 +278,15 @@ table td form{
     grid-template-columns: 1fr 1fr;
 }
 
+#ticket_list_btn_div select{
+    width: 160px;
+    margin-top: 22%;
+}
+
+#ticket_list_btn_div button{
+    margin-top: 35%;
+}
+
 select {
     background-color: darkslategray;
     color: lightslategray;

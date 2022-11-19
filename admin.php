@@ -55,8 +55,6 @@
             $tableRow->appendChild($tableCol);
             $tableCol = $doc->createElement('td', $row['date_add']);
             $tableRow->appendChild($tableCol);
-            $tableCol = $doc->createElement('td', $row['cond']);
-            $tableRow->appendChild($tableCol);
 
             /* FORM FOR CHANGING CONDITION IN TICKET*/
 
@@ -68,12 +66,68 @@
             $form->setAttribute('method', 'post');
             $form->setAttribute('name', 'change_cond');
 
-            $button = $doc->createElement('button', 'Set Condition');
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'ticket_type_filter');
+            $input->setAttribute('value', $_POST['ticket_type_filter']);
+            $form->appendChild($input);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'ticket_cond_filter');
+            $input->setAttribute('value', $_POST['ticket_cond_filter']);
+            $form->appendChild($input);
+
+            $div = $doc->createElement('div');
+            $div->setAttribute('id', 'ticket_list_btn_div');
+            $form->appendChild($div);
+
+            $combox = $doc->createElement('select');
+            $combox->setAttribute('name', 'new_cond');
+            $option = $doc->createElement('option');
+            $option->setAttribute('id', 'UNDER REVIEW');
+            $option->nodeValue = 'UNDER REVIEW';
+            if($row['cond'] == 'UNDER REVIEW')
+                $option->setAttribute('selected', 'True');
+            $combox->appendChild($option);
+
+            $option = $doc->createElement('option');
+            $option->setAttribute('id', 'IN PROGRESS');
+            $option->nodeValue = 'IN PROGRESS';
+            if($row['cond'] == 'IN PROGRESS')
+                $option->setAttribute('selected', 'True');
+            $combox->appendChild($option);
+
+            $option = $doc->createElement('option');
+            $option->setAttribute('id', 'DONE');
+            $option->nodeValue = 'DONE';
+            if($row['cond'] == 'DONE')
+                $option->setAttribute('selected', 'True');
+            $combox->appendChild($option);
+
+            $option = $doc->createElement('option');
+            $option->setAttribute('id', 'SUSPENDED');
+            $option->nodeValue = 'SUSPENDED';
+            if($row['cond'] == 'SUSPENDED')
+                $option->setAttribute('selected', 'True');
+            $combox->appendChild($option);
+
+            $option = $doc->createElement('option');
+            $option->setAttribute('id', 'REJECTED');
+            $option->nodeValue = 'REJECTED';
+            if($row['cond'] == 'REJECTED')
+                $option->setAttribute('selected', 'True');
+            $combox->appendChild($option);
+
+            $div->appendChild($combox);
+
+            $button = $doc->createElement('button', 'Set');
             $button->setAttribute('id', 'set_cond_btn');
             $button->setAttribute('name', 'set_cond');
             $button->setAttribute('value', $row['id_ticket']);
             $button->setAttribute('type', 'submit');
 
+            $div->appendChild($button);
             $tableCol->appendChild($form);
             $tableRow->appendChild($tableCol);
 
@@ -99,16 +153,12 @@
             $input->setAttribute('value', $_POST['ticket_cond_filter']);
             $form->appendChild($input);
 
-            $div = $doc->createElement('div');
-            $div->setAttribute('id', 'ticket_list_btn_div');
-            $form->appendChild($div);
-
             $button = $doc->createElement('button', 'Service');
             $button->setAttribute('id', 'create_service_btn');
             $button->setAttribute('name', 'create_service');
             $button->setAttribute('value', $row['id_ticket']);
             $button->setAttribute('type', 'submit');
-            $div->appendChild($button);
+            $form->appendChild($button);
             $tableCol->appendChild($form);
             $tableRow->appendChild($tableCol);
 
@@ -275,6 +325,12 @@
     else if(isset($_POST['load_cityman'])) {
         $_POST['admin_filter'] = 'TECHNICIAN';
         listUsers($db, 'cityman.html');
+    }
+    else if(isset($_POST['set_cond'])){
+        var_dump($_POST);
+        $stmt = $db->query("UPDATE ticket SET cond = '" . $_POST['new_cond'] . "' where id_ticket = " . $_POST['set_cond']);
+        echo("test\n");
+        listTickets($db, 'list_tickets.html');
     }
     else{
         var_dump($_POST);
