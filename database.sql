@@ -32,6 +32,7 @@ CREATE TABLE ticket (
 
 CREATE TABLE appointment (
     id_appointment int NOT NULL AUTO_INCREMENT,
+    title varchar(255) NOT NULL,
     author varchar(255) NOT NULL,
     assignee varchar(255) NOT NULL,
     descript varchar(1024) NOT NULL,
@@ -107,26 +108,26 @@ VALUE ('Old couch in the park', 'ILLEGAL DUMPS', 'There is an old smelly couch i
 
 -- INSERT APPOINTMENTS --
 
-INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'tech02', 'The man in a bush is stinky',  date('2024-08-11'), 'IN PROGRESS', 2, 1);
+INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond, time_spent, parent_ticket)
+VALUES ('manager', 'tech02', 'Homeless man in park', 'The man in a bush is stinky',  date('2024-08-11'), 'IN PROGRESS', 2, 1);
 
-INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'tech01', 'Parks do not need to be irrigated',  date('2025-01-12'), 'DONE', 34, 5);
+INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond, time_spent, parent_ticket)
+VALUES ('manager', 'tech01', 'Park irrigation', 'Parks do not need to be irrigated',  date('2025-01-12'), 'DONE', 34, 5);
 
-INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'tech01', 'Noise from pub near PPV',  date('2022-12-24'), 'SUSPENDED', 13, 6);
+INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond, time_spent, parent_ticket)
+VALUES ('manager', 'tech01', 'Noisy people in bars', 'Noise from pub near PPV',  date('2022-12-24'), 'SUSPENDED', 13, 6);
 
-INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'tech02', 'Dog pees on my bike',  date('2025-01-03'), 'IN PROGRESS', 20, 7);
+INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond, time_spent, parent_ticket)
+VALUES ('manager', 'tech02', 'Annoying dog in park', 'Dog pees on my bike',  date('2025-01-03'), 'IN PROGRESS', 20, 7);
 
-INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'tech02', 'Rusted mazda in the parking lot.',  date('2023-01-09'), 'DONE', 11, 2);
+INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond, time_spent, parent_ticket)
+VALUES ('manager', 'tech02', 'Rusted car in the lot', 'Remove the car.',  date('2023-01-09'), 'DONE', 11, 2);
 
-INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'tech02', 'Somebody painted images of glasses on the walls.',  NULL, 'SUSPENDED', 0, 3);
+INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond, time_spent, parent_ticket)
+VALUES ('manager', 'tech02', 'Graffiti on Institute walls', 'No need to do anything.',  NULL, 'SUSPENDED', 0, 3);
 
-INSERT INTO appointment(author, assignee, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'tech01', 'Somebody threw out old couch.',  date('2022-12-20'), 'IN-PROGRESS', 6, 4);
+INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond, time_spent, parent_ticket)
+VALUES ('manager', 'tech01', 'Old couch', 'Remove the couch.',  date('2022-12-20'), 'IN-PROGRESS', 6, 4);
 
 -- INSERT COMMENTS --
 
