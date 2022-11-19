@@ -94,12 +94,15 @@
         $element->setAttribute('value', 'CITYMAN');
 
         $element = $doc->getElementById('back_btn');
-        $element->setAttribute('onclick', "location.href='admin.html'");
+        $element->setAttribute('onclick', "location.href='admin.php'");
 
         echo $doc->saveHTML();
     }
     else{
-        var_dump($_POST);
-        //header("Location: admin.html");
+        //var_dump($_POST);
+        if(!isset($_POST['admin_filter'])) {
+            $_POST['admin_filter'] = 'All Users';
+        }
+        listUsers($db);
     }
 ?>
