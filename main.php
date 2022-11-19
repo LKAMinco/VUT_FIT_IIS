@@ -69,7 +69,7 @@ if (isset($_POST['register_submit'])) {
                 'last_name' => $_POST['ulastname_register'],
                 'date_of_birth' => $_POST['udate_register'],
                 'residence' => $_POST['uaddress_register'],
-                'access_type' => 'USER',
+                'access_type' => $_POST['utype_register'],
             ];
             $stmt = $db->prepare("INSERT INTO user (email, pwd, first_name, last_name, date_of_birth, residence, access_type) VALUES (:email, :pwd, :first_name, :last_name, :date_of_birth, :residence, :access_type)");
             $stmt->execute($values);
