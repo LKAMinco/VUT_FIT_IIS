@@ -71,6 +71,7 @@ if (isset($_POST['register_submit'])) {
                 'residence' => $_POST['uaddress_register'],
                 'access_type' => $_POST['utype_register'],
             ];
+            //TODO prerobit stranku uspesnej registracie podla typu registrovaneho uzivatela, aby sa to vedelo spravne vratit cez tlacidlo back
             $stmt = $db->prepare("INSERT INTO user (email, pwd, first_name, last_name, date_of_birth, residence, access_type) VALUES (:email, :pwd, :first_name, :last_name, :date_of_birth, :residence, :access_type)");
             $stmt->execute($values);
             $descBox->nodeValue = 'Nice, you are registered';

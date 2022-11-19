@@ -1,22 +1,7 @@
 <?php
     session_start();
 
-    //phpinfo();
-
-    try {
-        $db = new PDO("mysql:host=remotemysql.com;dbname=eUGDvDb3sy;port=3306", 'eUGDvDb3sy', '7tTC6lIx7i');
-    } catch (PDOException $e) {
-        echo "Connection error: ".$e->getMessage();
-        die();
-    }
-
-    if(isset($_POST['remove'])){
-        $stmt = $db->query("DELETE FROM user where email = '" . $_POST['remove'] . "'");
-        //echo $_POST['remove'];
-        $_POST['admin_filter'] = $_POST['filter_status'];
-        //var_dump($_POST);
-    }
-    if (isset($_POST['admin_filter'])){
+    function listUsers($db){
         if($_POST['admin_filter'] == "All Users") {
             $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user");
         }
@@ -69,15 +54,49 @@
 
             $tableRow->appendChild($tableCol);
             $table->appendChild($tableRow);
-            /*
-            echo $row['first_name'] . "  " . $row['last_name'] . "  " . $row['email'] . "  " . $row['access_type'];
-            echo "<form id=\"form_remove\" action=\"admin.php\" method=\"post\">";
-            <input type="hidden" name="field" value="fieldname"/>
-            echo "<button id=\"remove_btn\" name=\"remove\" value=\"" . $row['email'] . "\" type=\"submit\">Remove</button>";
-            echo "</form>";*/
         }
         echo $doc->saveHTML();
-        var_dump($_POST);
+        return NULL;
+    }
+
+    try {
+        $db = new PDO("mysql:host=remotemysql.com;dbname=eUGDvDb3sy;port=3306", 'eUGDvDb3sy', '7tTC6lIx7i');
+    } catch (PDOException $e) {
+        echo "Connection error: ".$e->getMessage();
+        die();
+    }
+
+
+
+    if(isset($_POST['remove'])){
+        $stmt = $db->query("DELETE FROM user where email = '" . $_POST['remove'] . "'");
+        $_POST['admin_filter'] = $_POST['filter_status'];
+        listUsers($db);
+    }
+    else if (isset($_POST['admin_filter'])){
+        listUsers($db);
+    }
+    else if (isset($_POST['add_manager'])){
+        $html = file_get_contents('register.html');
+        $doc = new DOMDocument();
+        $doc->loadHTML($html);
+
+        $element = $doc->getElementById('register_header');
+        $element->nodeValue = 'Register City Manager';
+
+        $element = $doc->getElementById('info_msg');
+        $element->nodeValue = 'Please fill employee\'s information.';
+
+        $element = $doc->getElementById('uemail_id');
+        $element->setAttribute('type', 'text');
+
+        $element = $doc->getElementById('type_id');
+        $element->setAttribute('value', 'CITYMAN');
+
+        $element = $doc->getElementById('back_btn');
+        $element->setAttribute('onclick', "location.href='admin.html'");
+
+        echo $doc->saveHTML();
     }
     else{
         var_dump($_POST);
