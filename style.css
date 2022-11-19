@@ -206,7 +206,7 @@ form {
     margin-top: 8%;
 }
 
-#addmgr_btn{
+#addmgr_btn, #addtech_btn, #logout_btn{
     width: 98%;
 }
 
@@ -242,6 +242,17 @@ table td form{
     vertical-align: center;
 }
 
+#mgr_searches{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: 0;
+    margin: auto;
+}
+
+#mgr_searches button{
+    width: 94%;
+}
 
 select {
     background-color: darkslategray;

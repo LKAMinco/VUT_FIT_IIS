@@ -2,12 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Citiman</title>
+    <title>City Manager Page</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<header>
-    <h1>Cityman</h1>
-    <button type="button" onclick="location.href='index.html'">Back</button>
-</header>
+    <div class="body">
+        <h1>City Manager</h1>
+        <form id="form_addtech" action="admin.php" method="post">
+            <button id="addtech_btn" name="add_tech" type="submit">Add New Technician</button>
+            <div id="mgr_searches">
+                <button id="search_ticket_mgr" name="search_ticket_mgr" type="submit">Search Tickets</button>
+                <button id="search_appointment_mgr" name="search_appointment_mgr" type="submit">Search Service Appointments</button>
+            </div>
+            <button id="logout_btn" type="button" onclick="location.href='index.html'">Logout</button>
+        </form>
+
+        <table id="users_search_results">
+
+        </table>
+    </div>
 </body>
 </html>

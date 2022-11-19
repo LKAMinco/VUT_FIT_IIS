@@ -12,7 +12,7 @@
         $html = file_get_contents('admin.html');
         $doc = new DOMDocument();
         $doc->loadHTML($html);
-        $table = $doc->getElementById('admin_search_results');
+        $table = $doc->getElementById('users_search_results');
         //$appended = $doc->createElement('tr', 'This is a test element.');
         //$table->appendChild($appended);
         $filterForm = $doc->getElementById($_POST['admin_filter']);
@@ -110,8 +110,38 @@
 
         echo $doc->saveHTML();
     }
+    else if(isset($_POST['add_tech'])){
+        $html = file_get_contents('register.html');
+        $doc = new DOMDocument();
+        $doc->loadHTML($html);
+
+        $element = $doc->getElementById('register_header');
+        $element->nodeValue = 'Register Service Technician';
+
+        $element = $doc->getElementById('info_msg');
+        $element->nodeValue = 'Please fill employee\'s information.';
+
+        $element = $doc->getElementById('uemail_id');
+        $element->setAttribute('type', 'text');
+
+        $element = $doc->getElementById('type_id');
+        $element->setAttribute('value', 'TECHNICIAN');
+
+        $element = $doc->getElementById('tech_form');
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'text');
+        $input->setAttribute('name', 'tech_specialization');
+        $input->setAttribute('placeholder', 'Specialization');
+        $input->setAttribute('required', 'True');
+        $element->appendChild($input);
+
+        $element = $doc->getElementById('back_btn');
+        $element->setAttribute('onclick', "location.href='cityman.html'");
+
+        echo $doc->saveHTML();
+    }
     else{
-        //var_dump($_POST);
+        var_dump($_POST);
         if(!isset($_POST['admin_filter'])) {
             $_POST['admin_filter'] = 'All Users';
         }
