@@ -68,6 +68,9 @@ INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, s
 VALUES ('Igor', 'Celer', date('1969-04-20'), 'Old building next to main cemetery', 'CITYMAN', NULL, 'admin', 'manager', 'manager');
 
 INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
+VALUES ('aaa', 'aaa', date('1969-04-20'), 'aaa', 'USER', NULL, 'aaa', 'aaa', 'aaa');
+
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
 VALUES ('Jozef', 'Mak', date('1989-11-17'), 'Parking lot near main cemetery', 'TECHNICIAN', 'Mandatory community service', 'manager', 'tech01', 'tech01');
 
 INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
