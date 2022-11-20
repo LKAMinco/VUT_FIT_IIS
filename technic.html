@@ -2,12 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Technic</title>
+    <title>Technic Page</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<header>
+<div class="body">
     <h1>Technic</h1>
-    <button type="button" onclick="location.href='index.html'">Back</button>
-</header>
+    <form id="form_searchtapp" action="main.php" method="post">
+        <form id="form_tapp_search" action="main.php" method="post">
+            <div id="search_field">
+                <select id="tapp_filter1" name="tapp_filter1" required>
+                    <option id="All my appoinments" name="All">All appoinments</option>
+                    <option id="Latest to oldest" name="LtO">Latest to oldest</option>
+                    <option id="Oldest to latest" name="OtL">Oldest to latest</option>
+                </select>
+                <select id="tapp_filter2" name="tapp_filter2" required>
+                    <option id="All my appoinments" name="All">All appoinments</option>
+                </select>
+                <button id="search_tapp_btn" name="search_tapp" value="." type="submit">Search</button>
+            </div>
+        </form>
+        <button id="logout_btn" type="button" onclick="location.href='index.html'">Logout</button>
+    </form>
+
+    <table id="appointment_search_results">
+
+    </table>
+</div>
 </body>
 </html>

@@ -43,6 +43,88 @@ if (isset($_POST['login'])) {
     }
 }
 
+function listAppTech($db, $file){
+    if($_POST['tapp_filter1'] == "All appoinments") {
+        $stmt = $db->query("SELECT descript, time_spent, estimation_date, cond FROM appointment");
+    }
+    else{
+        $stmt = $db->query("SELECT descript, time_spent, estimation_date, cond FROM appointment");
+    }
+    # where access_type = '" . $_POST['admin_filter'] . "'"
+    $html = file_get_contents($file);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+    $table = $doc->getElementById('appointment_search_results');
+
+
+    /*if(isset($_POST['tapp_filter1'])) {
+        $filterForm = $doc->getElementById($_POST['tapp_filter1']);
+        $filterForm->setAttribute('selected', 'True');
+    }*/
+
+    $tableRow = $doc->createElement('tr');
+    $tableCol = $doc->createElement('th', 'Title');
+    $tableRow->appendChild($tableCol);
+    $tableCol = $doc->createElement('th', 'Time spent');
+    $tableRow->appendChild($tableCol);
+    $tableCol = $doc->createElement('th', 'Estimation Date');
+    $tableRow->appendChild($tableCol);
+    $tableCol = $doc->createElement('th', 'Condition');
+    $tableRow->appendChild($tableCol);
+    $table->appendChild($tableRow);
+
+    foreach ($stmt as $row){
+        $tableRow = $doc->createElement('tr');
+        $tableCol = $doc->createElement('td', $row['descript']);
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('td', $row['time_spent']);
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('td', $row['estimation_date']);
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('td', $row['cond']);
+        $tableRow->appendChild($tableCol);
+
+        $tableCol = $doc->createElement('td');
+        $form = $doc->createElement('form');
+        $form->setAttribute('id', 'form_set');
+        $form->setAttribute('action', 'main.php');
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('name', 'filter_status');
+        $form->setAttribute('value', $_POST['tapp_filter1']);
+
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'hidden');
+        $input->setAttribute('name', 'filter_status');
+        $input->setAttribute('value', $_POST['tapp_filter1']);
+        $form->appendChild($input);
+
+        #TODO SET
+        $button = $doc->createElement('button', 'Set');
+        $button->setAttribute('id', 'set_tapp_btn');
+        $button->setAttribute('name', 'Set_tapp');
+        $button->setAttribute('value', $row['id_appointment']);
+        $button->setAttribute('type', 'submit');
+        $form->appendChild($button);
+        $tableCol->appendChild($form);
+        $tableRow->appendChild($tableCol);
+
+        #TODO SHOW MORE
+        $button = $doc->createElement('button', 'Show more');
+        $button->setAttribute('id', 'show_btn');
+        $button->setAttribute('name', 'show_tapp');
+        $button->setAttribute('value', $row['id_appointment']);
+        $button->setAttribute('type', 'submit');
+        $form->appendChild($button);
+        $tableCol->appendChild($form);
+        $tableRow->appendChild($tableCol);
+
+        $table->appendChild($tableRow);
+    }
+    echo $doc->saveHTML();
+    return NULL;
+}
+
+
 if (isset($_POST['register_submit'])) {
     $stmt = $db->query("SELECT pwd, access_type FROM user WHERE email = '" . $_POST['uemail_register'] . "'");
     $html = file_get_contents('register.html');
@@ -78,5 +160,14 @@ if (isset($_POST['register_submit'])) {
             $descBox->appendChild($fragment);
             echo $doc->saveHTML();
         }
+    }
+    else if (isset($_POST['search_tapp'])){
+        listAppTech($db, 'technic.html');
+    }
+    else if(isset($_POST['Set_tapp'])){
+        #TODO remove
+        $stmt = $db->query(" " . $_POST['Set_tapp'] . "'");
+        $_POST['tapp_filter1'] = $_POST['filter_status'];
+        listUsers($db, 'technic.html');
     }
 }
