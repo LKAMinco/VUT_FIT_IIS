@@ -285,7 +285,7 @@ table td form{
     width: 98%;
 }
 
-#ticket_list_btn_div, #ticket_detail_list_btn_div, #appointment_list_btn_div{
+#ticket_list_btn_div, #ticket_detail_list_btn_div, #appointment_list_btn_div, #appointment_detail_list_btn_div{
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
@@ -314,6 +314,20 @@ table td form{
 }
 
 #ticket_detail_list_btn_div button{
+    margin-top: 27%;
+}
+
+#appointment_detail_list_btn_div{
+    width: 200px;
+}
+
+#appointment_detail_list_btn_div select{
+    width: 140px;
+    margin-top: 23%;
+}
+
+#appointment_detail_list_btn_div button{
+    width: 100px;
     margin-top: 27%;
 }
 
@@ -364,8 +378,12 @@ a{
     grid-template-rows: auto;
 }
 
-#create_appointment_btn, #open_appointment_from_ticket_btn{
+#create_appointment_btn, #open_appointment_from_ticket_btn, #ticket_from_appointment_btn{
     width: 98%;
+}
+
+#appointments_search_results tr:not(:first-child) td:first-child{
+    background: none;
 }
 
 select {

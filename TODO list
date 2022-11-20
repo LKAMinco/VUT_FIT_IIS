@@ -10,3 +10,7 @@ TODO list:
 -treba si nevšímať zle uložené elementy v ui, toto nie je itu
 -treba dorobiť vymazávanie osôb, kedy sa ich tickety, komentáre prepíšu na iný účet aby sa nezmazali
 -treba spojiť admin.php a main.php do jedného súboru
+-skontrolovať potrebnosť added_by pri userovi
+-premenovat v databaze cityman na manazer
+-prepisat stav in-progress na in progress
+-pridat vymazavanie komentarov
