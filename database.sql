@@ -50,11 +50,13 @@ CREATE TABLE comment (
     id_comment int NOT NULL AUTO_INCREMENT,
     content varchar(1024) NOT NULL,
     author varchar(255) NOT NULL,
-    parent_ticket int NOT NULL,
+    parent_ticket int NULL,
+    parent_appointment int NULL,
     date_add datetime NOT NULL,
     PRIMARY KEY(id_comment),
     FOREIGN KEY(author) REFERENCES user(email),
-    FOREIGN KEY(parent_ticket) REFERENCES ticket(id_ticket)
+    FOREIGN KEY(parent_ticket) REFERENCES ticket(id_ticket),
+    FOREIGN KEY(parent_appointment) REFERENCES appointment(id_appointment)
 );
 
 -- INSERT USERS --
@@ -131,32 +133,32 @@ VALUES ('manager', 'tech01', 'Old couch', 'Remove the couch.',  date('2022-12-20
 
 -- INSERT COMMENTS --
 
-INSERT INTO comment(content, author, parent_ticket, date_add)
-VALUES ('He peed on my house too, luckily the irrigation cleaned it.', 'pslivka@gmail.com', 7, '2018-07-11 10:27:42');
+INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
+VALUES ('He peed on my house too, luckily the irrigation cleaned it.', 'pslivka@gmail.com', 7, NULL, '2018-07-11 10:27:42');
 
-INSERT INTO comment(content, author, parent_ticket, date_add)
-VALUES ('Dont bother, i already took it to my tent.', 'pslivka@gmail.com', 6, '2021-04-20 13:31:47');
+INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
+VALUES ('Dont bother, i already took it to my tent.', 'pslivka@gmail.com', 6, NULL, '2021-04-20 13:31:47');
 
-INSERT INTO comment(content, author, parent_ticket, date_add)
-VALUES ('It wasnt rusty last week, but it was raining for few days.', 'mzemiak@gmail.com', 2, '2022-07-12 10:14:44');
+INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
+VALUES ('It wasnt rusty last week, but it was raining for few days.', 'mzemiak@gmail.com', 2, NULL, '2022-07-12 10:14:44');
 
-INSERT INTO comment(content, author, parent_ticket, date_add)
-VALUES ('He should have stored it in the garage.', 'pslivka@gmail.com', 2, '2022-07-12 10:18:44');
+INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
+VALUES ('He should have stored it in the garage.', 'pslivka@gmail.com', 2, NULL, '2022-07-12 10:18:44');
 
-INSERT INTO comment(content, author, parent_ticket, date_add)
-VALUES ('Why bother, they cant see it anyway.', 'admin', 3, '2021-12-24 10:24:59');
+INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
+VALUES ('Why bother, they cant see it anyway.', 'manager', NULL, 6,'2021-12-24 10:24:59');
 
-INSERT INTO comment(content, author, parent_ticket, date_add)
-VALUE ('After this post, the rusted car is missing wheels.', 'mzemiak@gmail.com', 2, '2022-08-11 10:32:54');
+INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
+VALUE ('After this post, the rusted car is missing wheels.', 'mzemiak@gmail.com', 2, NULL, '2022-08-11 10:32:54');
 
-INSERT INTO comment(content, author, parent_ticket, date_add)
-VALUE ('In my younger years children were good and not nasty like today.', 'mzemiak@gmail.com', 3, '2022-08-11 11:12:09');
+INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
+VALUE ('In my younger years children were good and not nasty like today.', 'mzemiak@gmail.com', 3, NULL, '2022-08-11 11:12:09');
 
-INSERT INTO comment(content, author, parent_ticket, date_add)
-VALUE ('If butter was not so expensive, we could eat real bread and not just drink it.', 'mkapusta@gmail.com', 6, '2023-02-02 4:20:54');
+INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
+VALUE ('If butter was not so expensive, we could eat real bread and not just drink it.', 'mkapusta@gmail.com', 6, NULL, '2023-02-02 4:20:54');
 
-INSERT INTO comment(content, author, parent_ticket, date_add)
-VALUE ('I sadhuwh hink it are okey, we waant funnnn', 'pslivka@gmail.com', 6, '2023-01-02 19:22:47');
+INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
+VALUE ('I sadhuwh hink it are okey, we waant funnnn', 'pslivka@gmail.com', 6, NULL, '2023-01-02 19:22:47');
 
-INSERT INTO comment(content, author, parent_ticket, date_add)
-VALUE ('But my dog goes there to drink water when he is thirsty.', 'mkapusta@gmail.com', 5, '2022-11-28 16:02:38');
+INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
+VALUE ('But my dog goes there to drink water when he is thirsty.', 'mkapusta@gmail.com', 5, NULL, '2022-11-28 16:02:38');
