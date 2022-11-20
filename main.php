@@ -98,6 +98,13 @@
             $input->setAttribute('value', $_POST['tapp_filter1']);
             $form->appendChild($input);
 
+            /*
+            $combox = $doc->createElement('condition_select');
+            $combox->setAttribute('name', 'new_cond');
+            addOption($doc, $combox, $row['cond'], 'IN PROGRESS');
+            addOption($doc, $combox, $row['cond'], 'DONE');
+            addOption($doc, $combox, $row['cond'], 'SUSPENDED');
+*/
             #TODO SET
             $button = $doc->createElement('button', 'Set');
             $button->setAttribute('id', 'set_tapp_btn');
@@ -111,7 +118,7 @@
             #TODO SHOW MORE
             $button = $doc->createElement('button', 'Show more');
             $button->setAttribute('id', 'show_btn');
-            $button->setAttribute('name', 'show_tapp');
+            $button->setAttribute('name', 'Show_tapp');
             $button->setAttribute('value', $row['id_appointment']);
             $button->setAttribute('type', 'submit');
             $form->appendChild($button);
@@ -167,9 +174,15 @@
         listAppTech($db, 'technic.html');
     }
     else if(isset($_POST['Set_tapp'])){
-        #TODO remove
-        $stmt = $db->query(" " . $_POST['Set_tapp'] . "'");
+        #TODO SET
+        $stmt = $db->query("UPDATE appointment SET assignee = '" . $_POST['new_assignee'] . "' where id_appointment = " . $_POST['Set_tapp']);
         $_POST['tapp_filter1'] = $_POST['filter_status'];
-        listUsers($db, 'technic.html');
+        listAppTech($db, 'technic.html');
+    }
+    else if(isset($_POST['Show_tapp'])){
+        #TODO SHOW
+        $stmt = $db->query("UPDATE appointment SET assignee = '" . $_POST['new_assignee'] . "' where id_appointment = " . $_POST['Set_tapp']);
+        $_POST['tapp_filter1'] = $_POST['filter_status'];
+        listAppTech($db, 'technic.html');
     }
 ?>
