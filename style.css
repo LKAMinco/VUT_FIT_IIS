@@ -15,6 +15,14 @@ h1 {
     text-align: center;
 }
 
+#register_login {
+    color: black;
+}
+
+#register_login:hover {
+    color: whitesmoke;
+}
+
 h3 {
     font-size: large;
     color: whitesmoke;
@@ -206,7 +214,7 @@ form {
     margin-top: 8%;
 }
 
-#addmgr_btn, #addtech_btn, #logout_btn{
+#addmgr_btn, #addtech_btn, #logout_btn, #report_btn, #search_btn{
     width: 98%;
 }
 

@@ -10,6 +10,7 @@
     <div class="body">
         <h1>Report problem</h1>
         <form id="form_report">
+            <input id="desc_id" type="text" name="desc" placeholder="Description" required><br>
             <input id="address_id" type="text" name="address" placeholder="Address" required><br>
             <!-- DIRTY STREETS | ROADS | PLAYGROUNDS | BENCHES | ABANDONED VEHICLES | ILLEGAL DUMPS | PARKS | VANDALISM | OTHERS -->
             <select id="type_id" name="type" required>
@@ -35,10 +36,10 @@
                         document.getElementById('file_id').previousElementSibling.innerHTML = this.files[0].name;
                     };
                 </script>
-                <button id="submit_btn" type="submit" name="submit">Submit</button>
+                <button id="submit_btn" type="submit" name="submit_problem">Submit</button>
                 <button id="clear_btn" type="reset">Clear</button>
                 <!--TODO remove connection to main page-->
-                <button id="back_btn" type="button" onclick="location.href='index.html'">Back</button>
+                <button id="back_btn" type="button" onclick="location.href='user.html'">Back</button>
             </div>
         </form>
     </div>
