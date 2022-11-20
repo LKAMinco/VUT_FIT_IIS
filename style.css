@@ -248,6 +248,10 @@ table tr td,th{
     background: none;
 }
 
+#tickets_search_results tr:not(:first-child) td:first-child{
+    background: none;
+}
+
 table td form{
     margin-top: -10%;
     vertical-align: center;
@@ -281,7 +285,7 @@ table td form{
     width: 98%;
 }
 
-#ticket_list_btn_div{
+#ticket_list_btn_div, #ticket_detail_list_btn_div, #appointment_list_btn_div{
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
@@ -295,11 +299,6 @@ table td form{
     margin-top: 35%;
 }
 
-#appointment_list_btn_div{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
 #appointment_list_btn_div select{
     width: 160px;
     margin-top: 25%;
@@ -307,6 +306,15 @@ table td form{
 
 #appointment_list_btn_div button{
     margin-top: 22%;
+}
+
+#ticket_detail_list_btn_div select{
+    width: 180px;
+    margin-top: 23%;
+}
+
+#ticket_detail_list_btn_div button{
+    margin-top: 27%;
 }
 
 #add_comment_form{
@@ -342,12 +350,22 @@ a{
     text-align: start;
 }
 
-#ticket_desc_div, #ticket_title_div{
+.ticket_details_class{
     width: 96%;
     margin: auto;
     background: darkslategray;
     border-radius: 10px;
     padding: 10px;
+}
+
+.comment_print_div{
+    display: grid;
+    grid-template-columns: 30% 30%;
+    grid-template-rows: auto;
+}
+
+#create_appointment_btn, #open_appointment_from_ticket_btn{
+    width: 98%;
 }
 
 select {
