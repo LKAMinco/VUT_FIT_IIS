@@ -61,6 +61,7 @@
         $button = $doc->getElementById('get_back_btn');
 
         if(isset($_POST['open_appointment_from_ticket_mgr'])){
+            echo "test";
             $input = $doc->createElement('input');
             $input->setAttribute('type', 'hidden');
             $input->setAttribute('name', 'ticket_type_filter');
@@ -75,7 +76,7 @@
 
             $button->setAttribute('name', 'open_ticket_mgr');
             $button->setAttribute('value', $_POST['open_appointment_from_ticket_mgr']);
-            //vracai sa to napicu, treba opravit
+            //vracia sa to napicu, treba opravit
         }
         else{
             $input = $doc->createElement('input');
@@ -293,6 +294,7 @@
             $button->setAttribute('value', $_POST['open_ticket_from_appointment_mgr']);
         }
         else{
+            $button->setAttribute('name', 'search_tickets_mgr');
 
             $div = $doc->getElementById('ticket_create_appointment_div');
             $stmt = $db->query("SELECT IFNULL((SELECT id_appointment FROM appointment where parent_ticket = '" . $_POST['open_ticket_mgr'] . "'), 'not_found')");
@@ -339,8 +341,6 @@
                     $form->appendChild($button);
                 }
             }
-
-            $button->setAttribute('name', 'search_tickets_mgr');
         }
 
         $stmt = $db->query("SELECT id_ticket, title, category, descript, cond, author, date_add FROM ticket where id_ticket = '" . $_POST['open_ticket_mgr'] . "'");
@@ -1134,6 +1134,9 @@
     else if(isset($_POST['create_appointment'])){
         var_dump($_POST);
     }
+    else if(isset($_POST['open_appointment_mgr'])){
+        openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
+    }
     else if(isset($_POST['open_appointment_from_ticket_mgr'])){
         $_POST['open_appointment_mgr'] = $_POST['open_appointment_from_ticket_mgr'];
         openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
@@ -1141,9 +1144,6 @@
     else if(isset($_POST['open_ticket_from_appointment_mgr'])){
         $_POST['open_ticket_mgr'] = $_POST['open_ticket_from_appointment_mgr'];
         openTicketDetailsMgr($db, 'ticket_detail.html');
-    }
-    else if(isset($_POST['open_appointment_mgr'])){
-        openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
     }
     else if(isset($_POST['add_appointment_comment'])){
         $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('". $_POST['appointment_comment_content'] . "', '" . $_POST['appointment_comment_author'] . "', NULL, '" . $_POST['add_appointment_comment'] . "', '" . $_POST['appointment_comment_date'] . "')";
