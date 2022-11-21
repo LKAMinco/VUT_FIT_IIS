@@ -14,3 +14,6 @@ TODO list:
 -premenovat v databaze cityman na manazer
 -prepisat stav in-progress na in progress
 -pridat vymazavanie komentarov
+-pridat parametre na navrat pre registraciu manazerov/technikov
+-prerobit registraciu aby sa back button fungovalo cez zvlast foromular TODO TODO TODO
+                            -- toto potrebujem na nacitavanie veci pri manazerovi a technikovi
