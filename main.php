@@ -79,26 +79,13 @@
             $tableRow->appendChild($tableCol);
             $tableCol = $doc->createElement('td', $row['date_add']);
             $tableRow->appendChild($tableCol);
+            $table->appendChild($tableRow);
 
-            $tableCol = $doc->createElement('td');
-            $form = $doc->createElement('form');
-            $form->setAttribute('id', 'form_set');
-            $form->setAttribute('action', 'main.php');
-            $form->setAttribute('method', 'post');
-            $form->setAttribute('name', 'filter_status');
-            $form->setAttribute('value', $_POST['tapp_filter1']);
-
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'filter_status');
-            $input->setAttribute('value', $_POST['tapp_filter1']);
-            $form->appendChild($input);
         }
 
         /*
         $element = $doc->getElementById('back_btn');
-        $element->setAttribute('onclick', "location.href='technic.html'");
-*/
+        $element->setAttribute('onclick', "location.href='technic.html'");*/
         echo $doc->saveHTML();
         return NULL;
     }
@@ -114,19 +101,6 @@
         $doc->loadHTML($html);
         $table = $doc->getElementById('appointment_search_results');
 
-        $tableCol = $doc->createElement('td');
-        $form = $doc->createElement('form');
-        $form->setAttribute('id', 'form_set');
-        $form->setAttribute('action', 'main.php');
-        $form->setAttribute('method', 'post');
-        $form->setAttribute('name', 'filter_status');
-        $form->setAttribute('value', $_POST['tapp_filter1']);
-
-        $input = $doc->createElement('input');
-        $input->setAttribute('type', 'hidden');
-        $input->setAttribute('name', 'filter_status');
-        $input->setAttribute('value', $_POST['tapp_filter1']);
-        $form->appendChild($input);
         /*
         if(isset($_POST['tapp_filter1'])) {
             $filterForm = $doc->getElementById($_POST['tapp_filter1']);
@@ -162,12 +136,6 @@
             $form->setAttribute('method', 'post');
             $form->setAttribute('name', 'filter_status');
             $form->setAttribute('value', $_POST['tapp_filter1']);
-
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'filter_status');
-            $input->setAttribute('value', $_POST['tapp_filter1']);
-            $form->appendChild($input);
 
             #TODO SET
             $button = $doc->createElement('button', 'Set');
