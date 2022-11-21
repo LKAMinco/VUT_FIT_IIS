@@ -8,10 +8,10 @@
 <body>
 <div class="body">
     <h1>Service Appointment Detail</h1>
-    <form id="show_appointment_from_ticket" action="admin.php" method="post">
+    <form id="show_appointment_from_ticket" action="main.php" method="post">
         <button id="ticket_from_appointment_btn" type="submit" name="ticket_from_appointment" value=".">Show Ticket</button>
     </form>
-    <form id="get_back" action="admin.php" method="post">
+    <form id="get_back" action="main.php" method="post">
         <button id="get_back_btn" type="submit" value=".">Back</button>
     </form>
     <h2>Title</h2>
@@ -36,7 +36,7 @@
     <div id="appointment_comments_div">
 
     </div>
-    <form id="add_comment_form" action="admin.php" method="post">
+    <form id="add_comment_form" action="main.php" method="post">
         <input id="appointment_comment_content" type="text" name="appointment_comment_content" placeholder="Write Comment Here..." required value=""><br>
         <button id="add_appointment_comment_btn" type="submit" name="add_appointment_comment">Send</button>
     </form>
