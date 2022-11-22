@@ -1,5 +1,6 @@
 <?php
     session_start();
+    date_default_timezone_set('Europe/Prague');
 
     try {
         $db = new PDO("mysql:host=remotemysql.com;dbname=eUGDvDb3sy;port=3306", 'eUGDvDb3sy', '7tTC6lIx7i');
@@ -24,7 +25,7 @@
             if ($row['pwd'] == $_POST['pwd_login']) {
                 if ($row['access_type'] == 'ADMIN') {
                     header('Location: admin.html');
-                } elseif ($row['access_type'] == 'CITYMAN') {
+                } elseif ($row['access_type'] == 'MANAGER') {
                     header("Location: cityman.html");
                 } elseif ($row['access_type'] == 'TECHNICIAN') {
                     header('Location: technic.html');
@@ -61,7 +62,6 @@
         $button = $doc->getElementById('get_back_btn');
 
         if(isset($_POST['open_appointment_from_ticket_mgr'])){
-            echo "test";
             $input = $doc->createElement('input');
             $input->setAttribute('type', 'hidden');
             $input->setAttribute('name', 'ticket_type_filter');
@@ -76,7 +76,6 @@
 
             $button->setAttribute('name', 'open_ticket_mgr');
             $button->setAttribute('value', $_POST['open_appointment_from_ticket_mgr']);
-            //vracia sa to napicu, treba opravit
         }
         else{
             $input = $doc->createElement('input');
@@ -890,6 +889,7 @@
         echo $doc->saveHTML();
         return NULL;
     }
+
     function listAppTech($db, $file)
     {
         if ($_POST['tapp_filter1'] == "All appoinments") {
@@ -1050,7 +1050,7 @@
         $element->setAttribute('type', 'text');
 
         $element = $doc->getElementById('type_id');
-        $element->setAttribute('value', 'CITYMAN');
+        $element->setAttribute('value', 'MANAGER');
 
         $element = $doc->getElementById('back_btn');
         $element->setAttribute('onclick', "location.href='admin.html'");

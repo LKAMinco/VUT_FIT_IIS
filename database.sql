@@ -10,7 +10,7 @@ CREATE TABLE user (
     last_name varchar(255) NOT NULL,
     date_of_birth date NOT NULL,
     residence varchar(255) NOT NULL,
-    access_type varchar(12) NOT NULL, /* USER | ADMIN | CITYMAN | TECHNICIAN */
+    access_type varchar(12) NOT NULL, /* USER | ADMIN | MANAGER | TECHNICIAN */
     specialization varchar(255) NULL,
     added_by varchar(255) NULL,
     PRIMARY KEY (email),
@@ -37,7 +37,7 @@ CREATE TABLE appointment (
     assignee varchar(255) NOT NULL,
     descript varchar(1024) NOT NULL,
     estimation_date date NULL,
-    cond varchar(12) NOT NULL,  /* IN-PROGRESS | DONE | SUSPENDED */
+    cond varchar(12) NOT NULL,  /* IN PROGRESS | DONE | SUSPENDED */
     time_spent int NOT NULL, /* in hours */
     parent_ticket int NOT NULL,
     PRIMARY KEY(id_appointment),
@@ -65,7 +65,7 @@ INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, s
 VALUES ('Fero', 'Mrkva', date('1979-08-11'), 'Main cemetery', 'ADMIN', NULL, NULL, 'admin', 'admin');
 
 INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Igor', 'Celer', date('1969-04-20'), 'Old building next to main cemetery', 'CITYMAN', NULL, 'admin', 'manager', 'manager');
+VALUES ('Igor', 'Celer', date('1969-04-20'), 'Old building next to main cemetery', 'MANAGER', NULL, 'admin', 'manager', 'manager');
 
 INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
 VALUES ('aaa', 'aaa', date('1969-04-20'), 'aaa', 'USER', NULL, 'aaa', 'aaa', 'aaa');
@@ -132,7 +132,7 @@ INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond
 VALUES ('manager', 'tech02', 'Graffiti on Institute walls', 'No need to do anything.',  NULL, 'SUSPENDED', 0, 3);
 
 INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'tech01', 'Old couch', 'Remove the couch.',  date('2022-12-20'), 'IN-PROGRESS', 6, 4);
+VALUES ('manager', 'tech01', 'Old couch', 'Remove the couch.',  date('2022-12-20'), 'IN PROGRESS', 6, 4);
 
 -- INSERT COMMENTS --
 
