@@ -1,5 +1,6 @@
 <?php
     session_start();
+    date_default_timezone_set('Europe/Prague');
 
 
     try {
@@ -86,7 +87,6 @@
         $button = $doc->getElementById('get_back_btn');
 
         if(isset($_POST['open_appointment_from_ticket_mgr'])){
-            echo "test";
             $input = $doc->createElement('input');
             $input->setAttribute('type', 'hidden');
             $input->setAttribute('name', 'ticket_type_filter');
@@ -101,7 +101,6 @@
 
             $button->setAttribute('name', 'open_ticket_mgr');
             $button->setAttribute('value', $_POST['open_appointment_from_ticket_mgr']);
-            //vracia sa to napicu, treba opravit
         }
         else{
             $input = $doc->createElement('input');
@@ -460,13 +459,47 @@
             $text->nodeValue = $row['date_add'];
             $divInternal->appendChild($text);
 
-            $divInternal = $doc->createElement('div');
-            $divInternal->setAttribute('class', 'ticket_details_class');
-            $div->appendChild($divInternal);
+            $divInternal2 = $doc->createElement('div');
+            $divInternal2->setAttribute('class', 'ticket_details_class');
+            $div->appendChild($divInternal2);
 
             $text = $doc->createElement('a');
             $text->nodeValue = $row['content'];
-            $divInternal->appendChild($text);
+            $divInternal2->appendChild($text);
+
+
+            $form = $doc->createElement('form');
+            $form->setAttribute('id', 'form_ticket_detail_remove_comment');
+            $form->setAttribute('action', 'main.php');
+            $form->setAttribute('method', 'post');
+            $form->setAttribute('name', 'ticket_detail_remove_comment');
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'ticket_type_filter');
+            $input->setAttribute('value', $_POST['ticket_type_filter']);
+            $form->appendChild($input);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'ticket_cond_filter');
+            $input->setAttribute('value', $_POST['ticket_cond_filter']);
+            $form->appendChild($input);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'id_comment');
+            $input->setAttribute('value', $row['id_comment']);
+            $form->appendChild($input);
+
+            $button = $doc->createElement('button', 'Remove');
+            $button->setAttribute('id', 'remove_comment_ticket_btn');
+            $button->setAttribute('name', 'remove_comment_ticket');
+            $button->setAttribute('value', $_POST['open_ticket_mgr']);
+            $button->setAttribute('type', 'submit');
+            $form->appendChild($button);
+
+            $divInternal->appendChild($form);
         }
 
         $form = $doc->getElementById('add_comment_form');
@@ -875,7 +908,8 @@
 
     function listOneAppoitment($db, $file)
     {
-        $stmt = $db->query("SELECT title, category, descript, author, date_add FROM ticket");
+        $stmt = $db->query("SELECT IFNULL((SELECT id_appointment FROM appointment where parent_ticket = '" . $_POST['Show_tapp'] . "'), 'not_found')");
+        #$stmt = $db->query("SELECT title, category, descript, author, date_add FROM ticket");
         $html = file_get_contents($file);
         $doc = new DOMDocument();
         $doc->loadHTML($html);
@@ -911,6 +945,22 @@
             $tableRow->appendChild($tableCol);
             $table->appendChild($tableRow);
 
+            $tableCol = $doc->createElement('td');
+            $form = $doc->createElement('form');
+            $form->setAttribute('id', 'form_set');
+            $form->setAttribute('action', 'main.php');
+            $form->setAttribute('method', 'post');
+
+            $button = $doc->createElement('button', 'Add coment');
+            $button->setAttribute('id', 'coment_btn');
+            $button->setAttribute('name', 'add_coment');
+            $button->setAttribute('value', $row['add_comment']);
+            $button->setAttribute('type', 'submit');
+            $form->appendChild($button);
+            $tableCol->appendChild($form);
+            $tableRow->appendChild($tableCol);
+
+            $table->appendChild($tableRow);
         }
 
         /*
@@ -919,6 +969,7 @@
         echo $doc->saveHTML();
         return NULL;
     }
+
     function listAppTech($db, $file)
     {
         if ($_POST['tapp_filter1'] == "All appoinments") {
@@ -1088,6 +1139,13 @@
         $_POST['admin_filter'] = $_POST['filter_status'];
         listUsers($db, 'admin.html');
     }
+    else if(isset($_POST['add_comment'])){
+        $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('". $_POST['comment_content'] . "', '" . $_POST['comment_author'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
+        $stmt = $db->query($string);
+        $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
+        ticketComment($db, 'technic.html');
+        //TODO:
+    }
     else if (isset($_POST['admin_search'])){
         listUsers($db, 'admin.html');
     }
@@ -1106,7 +1164,7 @@
         $element->setAttribute('type', 'text');
 
         $element = $doc->getElementById('type_id');
-        $element->setAttribute('value', 'CITYMAN');
+        $element->setAttribute('value', 'MANAGER');
 
         $element = $doc->getElementById('back_btn');
         $element->setAttribute('onclick', "location.href='admin.html'");
@@ -1206,6 +1264,11 @@
         $stmt = $db->query($string);
         $_POST['open_appointment_mgr'] = $_POST['add_appointment_comment'];
         openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
+    }
+    else if(isset($_POST['remove_comment_ticket'])){
+        $stmt = $db->query("DELETE FROM comment WHERE id_comment = '" . $_POST['id_comment'] . "'");
+        $_POST['open_ticket_mgr'] = $_POST['remove_comment_ticket'];
+        openTicketDetailsMgr($db, 'ticket_detail.html');
     }
     else{
         var_dump($_POST);

@@ -3,19 +3,16 @@ DROP TABLE IF EXISTS appointment;
 DROP TABLE IF EXISTS ticket;
 DROP TABLE IF EXISTS user;
 
-CREATE TABLE user
-(
-    email          varchar(255) NOT NULL,
-    pwd            varchar(24)  NOT NULL,
-    first_name     varchar(255) NOT NULL,
-    last_name      varchar(255) NOT NULL,
-    date_of_birth  date         NOT NULL,
-    residence      varchar(255) NOT NULL,
-    access_type    varchar(12)  NOT NULL, /* USER | ADMIN | MANAGER | TECHNICIAN */
+CREATE TABLE user (
+    email varchar(255) NOT NULL,
+    pwd varchar(24) NOT NULL,
+    first_name varchar(255) NOT NULL,
+    last_name varchar(255) NOT NULL,
+    date_of_birth date NOT NULL,
+    residence varchar(255) NOT NULL,
+    access_type varchar(12) NOT NULL, /* USER | ADMIN | MANAGER | TECHNICIAN */
     specialization varchar(255) NULL,
-    added_by       varchar(255) NULL,
-    PRIMARY KEY (email),
-    FOREIGN KEY (added_by) REFERENCES user (email)
+    PRIMARY KEY (email)
 );
 
 CREATE TABLE ticket
@@ -34,21 +31,20 @@ CREATE TABLE ticket
     FOREIGN KEY (author) REFERENCES user (email)
 );
 
-CREATE TABLE appointment
-(
-    id_appointment  int           NOT NULL AUTO_INCREMENT,
-    title           varchar(255)  NOT NULL,
-    author          varchar(255)  NOT NULL,
-    assignee        varchar(255)  NOT NULL,
-    descript        varchar(1024) NOT NULL,
-    estimation_date date          NULL,
-    cond            varchar(12)   NOT NULL, /* IN PROGRESS | DONE | SUSPENDED */
-    time_spent      int           NOT NULL, /* in hours */
-    parent_ticket   int           NOT NULL,
-    PRIMARY KEY (id_appointment),
-    FOREIGN KEY (author) REFERENCES user (email),
-    FOREIGN KEY (assignee) REFERENCES user (email),
-    FOREIGN KEY (parent_ticket) REFERENCES ticket (id_ticket)
+CREATE TABLE appointment (
+    id_appointment int NOT NULL AUTO_INCREMENT,
+    title varchar(255) NOT NULL,
+    author varchar(255) NOT NULL,
+    assignee varchar(255) NOT NULL,
+    descript varchar(1024) NOT NULL,
+    estimation_date date NULL,
+    cond varchar(12) NOT NULL,  /* IN PROGRESS | DONE | SUSPENDED */
+    time_spent int NOT NULL, /* in hours */
+    parent_ticket int NOT NULL,
+    PRIMARY KEY(id_appointment),
+    FOREIGN KEY(author) REFERENCES user(email),
+    FOREIGN KEY(assignee) REFERENCES user(email),
+    FOREIGN KEY(parent_ticket) REFERENCES ticket(id_ticket)
 );
 
 CREATE TABLE comment
@@ -67,32 +63,29 @@ CREATE TABLE comment
 
 -- INSERT USERS --
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Fero', 'Mrkva', date('1979-08-11'), 'Main cemetery', 'ADMIN', NULL, NULL, 'admin', 'admin');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Fero', 'Mrkva', date('1979-08-11'), 'Main cemetery', 'ADMIN', NULL, 'admin', 'admin');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Igor', 'Celer', date('1969-04-20'), 'Old building next to main cemetery', 'MANAGER', NULL, 'admin', 'manager',
-        'manager');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Igor', 'Celer', date('1969-04-20'), 'Old building next to main cemetery', 'MANAGER', NULL, 'manager', 'manager');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('aaa', 'aaa', date('1969-04-20'), 'aaa', 'USER', NULL, 'aaa', 'aaa', 'aaa');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('aaa', 'aaa', date('1969-04-20'), 'aaa', 'USER', NULL, 'aaa', 'aaa');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Jozef', 'Mak', date('1989-11-17'), 'Parking lot near main cemetery', 'TECHNICIAN',
-        'Mandatory community service', 'manager', 'tech01', 'tech01');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Jozef', 'Mak', date('1989-11-17'), 'Parking lot near main cemetery', 'TECHNICIAN', 'Mandatory community service', 'tech01', 'tech01');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'TECHNICIAN', 'Gardener', 'manager', 'tech02',
-        'tech02');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'TECHNICIAN', 'Gardener', 'tech02', 'tech02');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Martin', 'Kapusta', date('1998-10-29'), 'PPV A01', 'USER', NULL, NULL, 'mkapusta@gmail.com', 'kapusta1');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Martin', 'Kapusta', date('1998-10-29'), 'PPV A01', 'USER', NULL, 'mkapusta@gmail.com', 'kapusta1');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Michal', 'Zemiak', date('2001-01-24'), 'PPV A03', 'USER', NULL, NULL, 'mzemiak@gmail.com', 'zemiak1');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Michal', 'Zemiak', date('2001-01-24'), 'PPV A03', 'USER', NULL, 'mzemiak@gmail.com', 'zemiak1');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'USER', NULL, NULL, 'pslivka@gmail.com', 'slivka1');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'USER', NULL, 'pslivka@gmail.com', 'slivka1');
 
 -- INSERT TICKETS --
 
@@ -151,7 +144,7 @@ INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond
 VALUES ('manager', 'tech02', 'Graffiti on Institute walls', 'No need to do anything.', NULL, 'SUSPENDED', 0, 3);
 
 INSERT INTO appointment(author, assignee, title, descript, estimation_date, cond, time_spent, parent_ticket)
-VALUES ('manager', 'tech01', 'Old couch', 'Remove the couch.', date('2022-12-20'), 'IN PROGRESS', 6, 4);
+VALUES ('manager', 'tech01', 'Old couch', 'Remove the couch.',  date('2022-12-20'), 'IN PROGRESS', 6, 4);
 
 -- INSERT COMMENTS --
 

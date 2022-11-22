@@ -374,8 +374,20 @@ a{
 
 .comment_print_div{
     display: grid;
-    grid-template-columns: 30% 30%;
+    grid-template-columns: 30% 30% 68%;
     grid-template-rows: auto;
+}
+
+.comment_print_div form{
+    align-self: end;
+}
+
+.comment_print_div form button{
+    height: 30px;
+}
+
+.comment_print_div h2{
+    margin-top: 12%;
 }
 
 #create_appointment_btn, #open_appointment_from_ticket_btn, #ticket_from_appointment_btn{
