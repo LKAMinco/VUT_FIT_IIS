@@ -12,15 +12,15 @@
         <h3 id="info_msg">Please fill your information.</h3>
         <form id="form_register" action="main.php" method="post">
             <div id="names_id">
-                <input id="name_id" type="text" name="ufirstname_register" placeholder="First name" required value="">
-                <input id="surename_id" type="text" name="ulastname_register" placeholder="Last name" required value=""><br>
+                <input id="name_id" type="text" name="ufirstname_register" placeholder="First name" required value="" maxlength="250">
+                <input id="surename_id" type="text" name="ulastname_register" placeholder="Last name" required value="" maxlength="250"><br>
             </div>
             <label for="date_id">Date of birth</label>
             <input id="date_id" type="date" name="udate_register" required value=""><br>
-            <input id="uaddress_id" type="text" name="uaddress_register" placeholder="Addresss" required value=""><br>
-            <input id="uemail_id" type="email" name="uemail_register" placeholder="Email" required value=""><br>
-            <input id="upwd_id" type="password" name="upwd_register" placeholder="Password" required><br>
-            <input id="ipwdconf_id" type="password" name="upwdconf_register" placeholder="Confirm password" required><br>
+            <input id="uaddress_id" type="text" name="uaddress_register" placeholder="Addresss" required value="" maxlength="250"><br>
+            <input id="uemail_id" type="email" name="uemail_register" placeholder="Email" required value="" maxlength="250"><br>
+            <input id="upwd_id" type="password" name="upwd_register" placeholder="Password" required><br maxlength="250">
+            <input id="ipwdconf_id" type="password" name="upwdconf_register" placeholder="Confirm password" required maxlength="250"><br>
             <input id="type_id" type="hidden" name="utype_register" value="USER">
             <div id="tech_form">
 

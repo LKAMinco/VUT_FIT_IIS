@@ -9,9 +9,10 @@
 <header>
     <div class="body">
         <h1>Report problem</h1>
-        <form id="form_report">
-            <input id="desc_id" type="text" name="desc" placeholder="Description" required><br>
-            <input id="address_id" type="text" name="address" placeholder="Address" required><br>
+        <h3 id="info_msg">Please fill problem information.</h3>
+        <form id="form_report" action="main.php" method="post" enctype="multipart/form-data">
+            <input id="desc_id" type="text" name="desc" placeholder="Description" required maxlength="250"><br>
+            <input id="address_id" type="text" name="address" placeholder="Address" required maxlength="250"><br>
             <!-- DIRTY STREETS | ROADS | PLAYGROUNDS | BENCHES | ABANDONED VEHICLES | ILLEGAL DUMPS | PARKS | VANDALISM | OTHERS -->
             <select id="type_id" name="type" required>
                 <option disabled selected value> -- select an option --</option>
@@ -26,10 +27,10 @@
                 <option name="other">Other</option>
             </select>
             <textarea id="problem_id" type="text" name="problem" placeholder="Problem description ..."
-                      required></textarea><br>
+                      required maxlength="1000"></textarea><br>
             <div id="btns">
                 <label for="file_id">Please select image ...</label>
-                <input id="file_id" type="file" name="file" accept="image/png, image/gif, image/jpeg" required>
+                <input id="file_id" type="file" name="uploadfile" accept="image/png, image/gif, image/jpeg" required>
                 <script type="text/javascript">
                     <!--change label name to filename -->
                     document.getElementById('file_id').onchange = function () {

@@ -15,5 +15,7 @@ TODO list:
 -prepisat stav in-progress na in progress
 -pridat vymazavanie komentarov
 -pridat parametre na navrat pre registraciu manazerov/technikov
--prerobit registraciu aby sa back button fungovalo cez zvlast foromular TODO TODO TODO
+-prerobit registraciu aby back button fungovalo cez zvlast formular TODO TODO TODO
                             -- toto potrebujem na nacitavanie veci pri manazerovi a technikovi
+
+                            !OPRAVIŤ !VšETKY !TABULKY !S !TIKETOM !PRIDALA !SA !ADDRESSA !A !IMAGE

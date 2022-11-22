@@ -1,6 +1,7 @@
 <?php
     session_start();
 
+
     try {
         $db = new PDO("mysql:host=remotemysql.com;dbname=eUGDvDb3sy;port=3306", 'eUGDvDb3sy', '7tTC6lIx7i');
     } catch (PDOException $e) {
@@ -22,13 +23,26 @@
         if ($stmt->rowCount() == 1) {
             $row = $stmt->fetch();
             if ($row['pwd'] == $_POST['pwd_login']) {
+                $_SESSION['username'] = $_POST['uemail_login'];
                 if ($row['access_type'] == 'ADMIN') {
+                    setcookie('access_type', 'ADMIN', time() + 3600);
+                    setcookie('username', $_POST['uemail_login'], time() + 3600);
+                    $_SESSION['access_type'] = 'ADMIN';
                     header('Location: admin.html');
                 } elseif ($row['access_type'] == 'CITYMAN') {
+                    setcookie('access_type', 'CITYMAN', time() + 3600);
+                    setcookie('username', $_POST['uemail_login'], time() + 3600);
+                    $_SESSION['access_type'] = 'CITYMAN';
                     header("Location: cityman.html");
                 } elseif ($row['access_type'] == 'TECHNICIAN') {
+                    setcookie('access_type', 'TECHNICIAN', time() + 3600);
+                    setcookie('username', $_POST['uemail_login'], time() + 3600);
+                    $_SESSION['access_type'] = 'TECHNICIAN';
                     header('Location: technic.html');
                 } elseif ($row['access_type'] == 'USER') {
+                    setcookie('access_type', 'USER', time() + 3600);
+                    setcookie('username', $_POST['uemail_login'], time() + 3600);
+                    $_SESSION['access_type'] = 'USER';
                     header('Location: user.html');
                 } else {
                     echo "This should never happened";
@@ -41,6 +55,17 @@
             $descBox->appendChild($fragment);
             echo $doc->saveHTML();
         }
+    }
+
+    if (isset($_POST['logout'])){
+        if (isset($_COOKIE['access_type'])) {
+            setcookie('access_type', '', time() - 3600);
+        }
+        if (isset($_COOKIE['username'])) {
+            setcookie('username', '', time() - 3600);
+        }
+        session_destroy();
+        header('Location: index.html');
     }
 
     function addOption($doc, $parent, $value, $string){
@@ -343,7 +368,7 @@
             }
         }
 
-        $stmt = $db->query("SELECT id_ticket, title, category, descript, cond, author, date_add FROM ticket where id_ticket = '" . $_POST['open_ticket_mgr'] . "'");
+        $stmt = $db->query("SELECT id_ticket,author title, category, descript, cond, author, date_add, image FROM ticket where id_ticket = '" . $_POST['open_ticket_mgr'] . "'");
 
         foreach ($stmt as $row) {
             $text = $doc->getElementById('ticket_title_a');
@@ -351,6 +376,10 @@
 
             $text = $doc->getElementById('ticket_desc_a');
             $text->nodeValue = $row['descript'];
+
+            $img = $doc->createElement('img');//TODO uprav si to julo
+            $img->setAttribute('src', './images/' . $row['image']);
+            $doc->getElementById('ticket_id')->appendChild($img);
 
             $table = $doc->getElementById('ticket_info_table');
 
@@ -982,6 +1011,33 @@
         return NULL;
     }
 
+    function reportProblem($db){
+        $tempname = $_FILES["uploadfile"]["tmp_name"];
+        $ext = pathinfo($_FILES["uploadfile"]["name"], PATHINFO_EXTENSION);
+        $folder = "./images/". $_SESSION['username'] . date("Ymd_His") . "."  . $ext;
+        move_uploaded_file($tempname, $folder);
+        $values = [
+            'title' => $_POST['desc'],
+            'address' => $_POST['address'],
+            'category' => $_POST['type'],
+            'descript' => $_POST['problem'],
+            'cond' => 'UNDER REVIEW',
+            'author' => $_SESSION['username'], //TODO to som zvedavy čo mi toto vypíše
+            'date_add' => date("Y-m-d H:i:s"),
+            'image' => $_SESSION['username'] . date("Ymd_His") . "."  . $ext,
+        ];
+        $html = file_get_contents('report.html');
+        libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
+        $doc->loadHTML($html);
+        $stmt = $db->prepare("INSERT INTO ticket (title, address, category, descript, cond, author, date_add, image) VALUES (:title, :address, :category, :descript, :cond, :author, :date_add, :image)");
+        $stmt->execute($values);
+        $msg = "Problem was reported";
+        $descBox = $doc->getElementById('info_msg')->nodeValue = $msg;
+        echo $doc->saveHTML();
+        return NULL;
+    }
+
     if (isset($_POST['register_submit'])) {
         $stmt = $db->query("SELECT pwd, access_type FROM user WHERE email = '" . $_POST['uemail_register'] . "'");
         $html = file_get_contents('register.html');
@@ -1002,7 +1058,6 @@
             returnData($doc, $values, $msg, false);
         } else {
             if ($stmt->rowCount() == 1) {
-                //TODO vratit udaje do formularu po reloade
                 $msg = 'User already exists, please choose another email';
                 returnData($doc, $values, $msg, true);
             } else {
@@ -1024,6 +1079,7 @@
     } else if (isset($_POST['Show_tapp'])) {
         listOneAppoitment($db, 'technic.html');
     }else if (isset($_POST['submit_problem'])){
+        reportProblem($db);
         //TODO save problem into db
         //TODO add image into db
     }
