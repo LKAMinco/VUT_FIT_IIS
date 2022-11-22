@@ -4,3 +4,12 @@ TODO list:
 -treba si nevšímať zle uložené elementy v ui, toto nie je itu
 -treba dorobiť vymazávanie osôb, kedy sa ich tickety, komentáre prepíšu na iný účet aby sa nezmazali
 -pridat parametre na navrat pre registraciu manazerov/technikov
+
+SIMIR:
+TODO list:
+-výpis apointmentu jako form
+-SET tlačítko při apointment
+-přidat komentář
+-smazat komentář
+-tlačítko BACK
+-formátování
