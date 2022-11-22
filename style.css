@@ -416,3 +416,8 @@ select:valid {
 select:hover {
     color: whitesmoke;
 }
+
+#ticket_id img {
+    margin-left: 50px;
+    margin-top: 50px;
+}

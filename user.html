@@ -8,11 +8,12 @@
 <body>
 <header>
     <h1>User Page</h1>
-    <div id="btns_reg">
-        <button id="report_btn" type="button" name="report" onclick="location.href='report.html'">Report problem</button>
-        <button id="search_btn" type="button" name="search" >Search problem</button>
+    <form id="btns_reg" action="main.php" method="post">
+        <button id="report_btn" type="button" name="report" onclick="location.href='report.html'">Report problem
+        </button>
+        <button id="search_btn" type="submit" name="search_tickets_mgr">Search problem</button>
         <button id="logout_btn" type="button" name="logout" onclick="location.href='index.html'">Logout</button>
-    </div>
+    </form>
 </header>
 </body>
 </html>
