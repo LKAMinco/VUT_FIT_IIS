@@ -91,36 +91,36 @@ VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'USER', NULL,
 
 INSERT INTO ticket(title, address, category, descript, cond, author, date_add, image)
     VALUE ('Homeless man in park', 'Park', 'VEGETATION', 'There is a homeless man in the park.', 'IN PROGRESS',
-           'mkapusta@gmail.com', '2021-11-29 22:51:32', 'aaa20221122_041026.png');
+           'mkapusta@gmail.com', '2021-11-29 22:51:32', 'aaa.jpg');
 
 INSERT INTO ticket(title, address, category, descript, cond, author, date_add, image)
     VALUE ('Abandoned car near cemetery', 'Cemetery', 'ABANDONED VEHICLES', 'Rusted mazda in the parking lot.', 'DONE',
-           'mkapusta@gmail.com', '2022-07-11 12:34:12','aaa20221122_041026.png');
+           'mkapusta@gmail.com', '2022-07-11 12:34:12','aaa.jpg');
 
 INSERT INTO ticket(title, address, category, descript, cond, author, date_add, image)
     VALUE ('Graffiti on walls of Institute for blind people', 'Wall', 'VANDALISM',
            'Somebody painted images of glasses on the walls.', 'SUSPENDED', 'mkapusta@gmail.com',
-           '2021-12-23 23:59:10','aaa20221122_041026.png');
+           '2021-12-23 23:59:10','aaa.jpg');
 
 INSERT INTO ticket(title, address, category, descript, cond, author, date_add, image)
     VALUE ('Old couch in the parking lot', 'Parking lot', 'ILLEGAL DUMPS', 'Somebody threw out old couch.',
-           'IN PROGRESS', 'mzemiak@gmail.com', '2021-04-20 12:21:47','aaa20221122_041026.png');
+           'IN PROGRESS', 'mzemiak@gmail.com', '2021-04-20 12:21:47','aaa.jpg');
 
 INSERT INTO ticket(title, address, category, descript, cond, author, date_add, image)
     VALUE ('Unnecessary irrigation in parks', 'Park', 'VEGETATION', 'Turn off the irrigation, it is flooding my home.',
-           'DONE', 'pslivka@gmail.com', '2011-07-13 07:41:37','aaa20221122_041026.png');
+           'DONE', 'pslivka@gmail.com', '2011-07-13 07:41:37','aaa.jpg');
 
 INSERT INTO ticket(title, address, category, descript, cond, author, date_add, image)
     VALUE ('Noisy people near PPVs bar', 'PPVs bar', 'OTHERS', 'Stop selling alcohol.', 'SUSPENDED',
-           'mzemiak@gmail.com', '2022-12-24 22:12:57','aaa20221122_041026.png');
+           'mzemiak@gmail.com', '2022-12-24 22:12:57','aaa.jpg');
 
 INSERT INTO ticket(title, address, category, descript, cond, author, date_add, image)
     VALUE ('Stray dog pees on people and things', 'Park', 'VEGETATION', 'Call animal control on stray dog in the park.',
-           'IN PROGRESS', 'mzemiak@gmail.com', '1998-01-03 11:31:07','aaa20221122_041026.png');
+           'IN PROGRESS', 'mzemiak@gmail.com', '1998-01-03 11:31:07','aaa.jpg');
 
 INSERT INTO ticket(title, address, category, descript, cond, author, date_add, image)
     VALUE ('Old couch in the park', 'Park again', 'ILLEGAL DUMPS', 'There is an old smelly couch in the park.',
-           'UNDER REVIEW', 'mzemiak@gmail.com', '2021-04-20 14:41:47','aaa20221122_041026.png');
+           'UNDER REVIEW', 'mzemiak@gmail.com', '2021-04-20 14:41:47','aaa.jpg');
 
 -- INSERT APPOINTMENTS --
 
