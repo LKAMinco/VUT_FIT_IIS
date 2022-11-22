@@ -607,6 +607,8 @@ function openTicketDetailsMgr($db, $file)
         $text->nodeValue = $row['content'];
         $divInternal2->appendChild($text);
 
+        if ($row['author'] ==$_SESSION['username'] || $_SESSION['access_type'] == 'MANAGER') {
+
         $form = $doc->createElement('form');
         $form->setAttribute('id', 'form_ticket_detail_remove_comment');
         $form->setAttribute('action', 'main.php');
@@ -652,14 +654,14 @@ function openTicketDetailsMgr($db, $file)
         $input->setAttribute('value', $row['id_comment']);
         $form->appendChild($input);
 
-        $button = $doc->createElement('button', 'Remove');
-        $button->setAttribute('id', 'remove_comment_ticket_btn');
-        $button->setAttribute('name', 'remove_comment_ticket');
-        $button->setAttribute('value', $_POST['open_ticket_mgr']);
-        $button->setAttribute('type', 'submit');
-        $form->appendChild($button);
-
-        $divInternal->appendChild($form);
+            $button = $doc->createElement('button', 'Remove');
+            $button->setAttribute('id', 'remove_comment_ticket_btn');
+            $button->setAttribute('name', 'remove_comment_ticket');
+            $button->setAttribute('value', $_POST['open_ticket_mgr']);
+            $button->setAttribute('type', 'submit');
+            $form->appendChild($button);
+            $divInternal->appendChild($form);
+        }
     }
 
     $form = $doc->getElementById('add_comment_form');

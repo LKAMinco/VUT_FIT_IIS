@@ -177,6 +177,12 @@ form {
 #btns_reg {
     margin: auto;
     display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#btns_reg_back {
+    margin: auto;
+    display: grid;
     grid-template-columns: 1fr 1fr;
     width: 102%;
 }
