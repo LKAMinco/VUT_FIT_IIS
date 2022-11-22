@@ -908,8 +908,7 @@
 
     function listOneAppoitment($db, $file)
     {
-        var_dump($_POST['Show_tapp']);
-        $stmt = $db->query("SELECT id_appointment FROM appointment where parent_ticket = '" . $_POST['Show_tapp'] . "'");
+        $stmt = $db->query("SELECT id_ticket, title, category, descript, author, date_add FROM ticket where id_ticket = " . $_POST['Show_tapp']);
         #$stmt = $db->query("SELECT title, category, descript, author, date_add FROM ticket");
         $html = file_get_contents($file);
         $doc = new DOMDocument();
@@ -943,21 +942,16 @@
             $tableRow->appendChild($tableCol);
             $table->appendChild($tableRow);
 
-            /*
-            var_dump($row);
-            $temp = $db->query("SELECT content, author, date_add, parent_appointment FROM comment  WHERE parent_appointment = '" . $row['id_appointment'] . "'");
+            $temp = $db->query("SELECT content, author, date_add, parent_appointment FROM comment  WHERE parent_ticket = " . $row['id_ticket']);
             #$stmt = $db->query("SELECT title, category, descript, author, date_add FROM ticket");
-            $html = file_get_contents($file);
-            $doc = new DOMDocument();
-            $doc->loadHTML($html);
             $table = $doc->getElementById('comment_section');
 
             $tableRow = $doc->createElement('tr');
-            $tableCol = $doc->createElement('th', 'Content');
+            $tableCol = $doc->createElement('th', 'Comment');
             $tableRow->appendChild($tableCol);
             $tableCol = $doc->createElement('th', 'Author');
             $tableRow->appendChild($tableCol);
-            $tableCol = $doc->createElement('th', 'Added at');
+            $tableCol = $doc->createElement('th', 'Added on');
             $tableRow->appendChild($tableCol);
             $table->appendChild($tableRow);
 
@@ -978,22 +972,27 @@
             $form->setAttribute('action', 'main.php');
             $form->setAttribute('method', 'post');
 
-            $button = $doc->createElement('button', 'Add coment');
-            $button->setAttribute('id', 'coment_btn');
-            $button->setAttribute('name', 'add_coment');
-            $button->setAttribute('value', $row['add_comment']);
+            $button = $doc->createElement('button', 'Add_comment');
+            $button->setAttribute('id', 'Add_comment_btn');
+            $button->setAttribute('name', 'Add_comment');
+            $button->setAttribute('value', $row['Add_comment']);
+            $button->setAttribute('type', 'submit');
+            $form->appendChild($button);
+            $tableCol->appendChild($form);
+            $tableRow->appendChild($tableCol);
+
+            $button = $doc->createElement('button', 'Back');
+            $button->setAttribute('id', 'Back_btn');
+            $button->setAttribute('name', 'Back');
+            $button->setAttribute('value', $row['Back']);
             $button->setAttribute('type', 'submit');
             $form->appendChild($button);
             $tableCol->appendChild($form);
             $tableRow->appendChild($tableCol);
             $table->appendChild($tableRow);
-        */
         }
         echo $doc->saveHTML();
         return NULL;
-        /*
-        $element = $doc->getElementById('back_btn');
-        $element->setAttribute('onclick', "location.href='technic.html'");*/
     }
 
     function listAppTech($db, $file)
@@ -1067,7 +1066,7 @@
             $temp_a->appendChild($temp_b);
             $tableCol->appendChild($temp_a);
             $tableRow->appendChild($tableCol);
-            $statement_temp = $db->query("SELECT id_appointment, cond FROM appointment where id_appointment = " . $row['id_appointment']);
+            $statement_temp = $db->query("SELECT id_appointment, parent_ticket, cond FROM appointment where id_appointment = " . $row['id_appointment']);
             foreach ($statement_temp as $each) {
                 $combox = $doc->createElement('select');
                 $combox->setAttribute('name', 'new_cond');
@@ -1078,39 +1077,37 @@
                 $tableCol = $doc->createElement('td');
                 $tableCol->appendChild($combox);
                 $tableRow->appendChild($tableCol);
+                $tableCol = $doc->createElement('td');
+                $form = $doc->createElement('form');
+                $form->setAttribute('id', 'form_set');
+                $form->setAttribute('action', 'main.php');
+                $form->setAttribute('method', 'post');
+                $form->setAttribute('name', 'filter_status');
+                $form->setAttribute('value', $_POST['tapp_filter1']);
+
+                #TODO SET
+                $button = $doc->createElement('button', 'Set');
+                $button->setAttribute('id', 'set_tapp_btn');
+                $button->setAttribute('name', 'Set_tapp');
+                $button->setAttribute('value', $row['id_appointment']);
+                $button->setAttribute('type', 'submit');
+                $form->appendChild($button);
+                $tableCol->appendChild($form);
+                $tableRow->appendChild($tableCol);
+
+                $button = $doc->createElement('button', 'Show more');
+                $button->setAttribute('id', 'show_btn');
+                $button->setAttribute('name', 'Show_tapp');
+                $button->setAttribute('value', $each['parent_ticket']);
+                $button->setAttribute('type', 'submit');
+                $form->appendChild($button);
+                $tableCol->appendChild($form);
+                $tableRow->appendChild($tableCol);
+
+                $table->appendChild($tableRow);
             }
-            $tableCol = $doc->createElement('td');
-            $form = $doc->createElement('form');
-            $form->setAttribute('id', 'form_set');
-            $form->setAttribute('action', 'main.php');
-            $form->setAttribute('method', 'post');
-            $form->setAttribute('name', 'filter_status');
-            $form->setAttribute('value', $_POST['tapp_filter1']);
 
-            #TODO SET
-            $button = $doc->createElement('button', 'Set');
-            $button->setAttribute('id', 'set_tapp_btn');
-            $button->setAttribute('name', 'Set_tapp');
-            $button->setAttribute('value', $row['id_appointment']);
-            $button->setAttribute('type', 'submit');
-            $form->appendChild($button);
-            $tableCol->appendChild($form);
-            $tableRow->appendChild($tableCol);
-
-            $button = $doc->createElement('button', 'Show more');
-            $button->setAttribute('id', 'show_btn');
-            $button->setAttribute('name', 'Show_tapp');
-            $button->setAttribute('value', $row['id_appointment']);
-            $button->setAttribute('type', 'submit');
-            $form->appendChild($button);
-            $tableCol->appendChild($form);
-            $tableRow->appendChild($tableCol);
-
-            $table->appendChild($tableRow);
         }
-
-
-
         echo $doc->saveHTML();
         return NULL;
     }
@@ -1202,11 +1199,12 @@
         listAppTech($db, 'technic.html');
     } else if (isset($_POST['Show_tapp'])) {
         listOneAppoitment($db, 'technic.html');
+    }else if (isset($_POST['AAA'])) {
+        listAppTech($db, 'technic.html');
     }else if(isset($_POST['add_comment'])){
-        $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('". $_POST['comment_content'] . "', '" . $_POST['comment_author'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
+        $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('". $_POST['Add_comment'] . "', '" . $_SESSION['username'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
         $stmt = $db->query($string);
-        $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
-        ticketComment($db, 'technic.html');
+        listOneAppoitment($db, 'technic.html');
         //TODO:
     }else if (isset($_POST['submit_problem'])){
         reportProblem($db);
