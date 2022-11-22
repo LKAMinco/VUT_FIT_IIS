@@ -1061,6 +1061,12 @@ function listAppTech($db, $file)
         $input->setAttribute('value', $row['estimation_date']);
         $form->appendChild($input);
 
+        $combox = $doc->createElement('select');
+        $combox->setAttribute('name', 'new_cond');
+        addOption($doc, $combox, $each['cond'], 'IN PROGRESS');
+        addOption($doc, $combox, $each['cond'], 'DONE');
+        addOption($doc, $combox, $each['cond'], 'SUSPENDED');
+
         $tableCol->appendChild($form);
         $tableRow->appendChild($tableCol);
         $table->appendChild($tableRow);
