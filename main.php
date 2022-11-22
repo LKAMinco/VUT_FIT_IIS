@@ -943,7 +943,7 @@
             $table->appendChild($tableRow);
         }
 
-        $temp = $db->query("SELECT content, author, date_add, parent_ticket FROM comment");
+        $temp = $db->query("SELECT content, author, date_add, parent_ticket FROM comment WHERE parent_ticket = ");
         #$stmt = $db->query("SELECT title, category, descript, author, date_add FROM ticket");
         $html = file_get_contents($file);
         $doc = new DOMDocument();
@@ -968,13 +968,13 @@
             $tableCol = $doc->createElement('td', $row['date_add']);
             $tableRow->appendChild($tableCol);
             $table->appendChild($tableRow);
-
-            $tableCol = $doc->createElement('td');
-            $form = $doc->createElement('form');
-            $form->setAttribute('id', 'form_set');
-            $form->setAttribute('action', 'main.php');
-            $form->setAttribute('method', 'post');
         }
+        $tableRow = $doc->createElement('tr');
+        $tableCol = $doc->createElement('td');
+        $form = $doc->createElement('form');
+        $form->setAttribute('id', 'form_set');
+        $form->setAttribute('action', 'main.php');
+        $form->setAttribute('method', 'post');
 
         $button = $doc->createElement('button', 'Add coment');
         $button->setAttribute('id', 'coment_btn');
@@ -986,6 +986,7 @@
         $tableRow->appendChild($tableCol);
         $table->appendChild($tableRow);
 
+
         echo $doc->saveHTML();
         return NULL;
         /*
@@ -995,13 +996,25 @@
 
     function listAppTech($db, $file)
     {
-        if ($_POST['tapp_filter1'] == "All appoinments") {
+        if ($_POST['tapp_filter1'] == "All my appoinments") {
             $stmt = $db->query("SELECT descript, time_spent, estimation_date, cond FROM appointment");
         } else if ($_POST['tapp_filter1'] == "Latest to oldest") {
             $stmt = $db->query("SELECT COUNT(id_appointment), descript, time_spent, estimation_date, cond FROM appointment GROUP BY estimation_date, time_spent, descript, cond");
         } else if ($_POST['tapp_filter1'] == "Oldest to latest") {
             $stmt = $db->query("SELECT COUNT(id_appointment), descript, time_spent, estimation_date, cond FROM appointment GROUP BY estimation_date, time_spent, descript, cond");
         }
+        /*
+        if ($_POST['tapp_filter2'] == "All conditions") {
+            $second_stmt = $db->query("");
+        } else if ($_POST['tapp_filter1'] == "In progress") {
+            $second_stmt = $db->query("WHERE cond = 'In progress'");
+        } else if ($_POST['tapp_filter1'] == "Done") {
+            $second_stmt = $db->query("appointment WHERE cond = 'Done'");
+        } else if ($_POST['tapp_filter1'] == "Suspended") {
+            $second_stmt = $db->query("WHERE cond = 'Suspended'");
+        }
+        $stmt = $stmt . $second_stmt;
+        */
 
         $html = file_get_contents($file);
         $doc = new DOMDocument();
