@@ -879,7 +879,8 @@
 
     function listOneAppoitment($db, $file)
     {
-        $stmt = $db->query("SELECT title, category, descript, author, date_add FROM ticket");
+        $stmt = $db->query("SELECT IFNULL((SELECT id_appointment FROM appointment where parent_ticket = '" . $_POST['Show_tapp'] . "'), 'not_found')");
+        #$stmt = $db->query("SELECT title, category, descript, author, date_add FROM ticket");
         $html = file_get_contents($file);
         $doc = new DOMDocument();
         $doc->loadHTML($html);
@@ -915,6 +916,22 @@
             $tableRow->appendChild($tableCol);
             $table->appendChild($tableRow);
 
+            $tableCol = $doc->createElement('td');
+            $form = $doc->createElement('form');
+            $form->setAttribute('id', 'form_set');
+            $form->setAttribute('action', 'main.php');
+            $form->setAttribute('method', 'post');
+
+            $button = $doc->createElement('button', 'Add coment');
+            $button->setAttribute('id', 'coment_btn');
+            $button->setAttribute('name', 'add_coment');
+            $button->setAttribute('value', $row['add_comment']);
+            $button->setAttribute('type', 'submit');
+            $form->appendChild($button);
+            $tableCol->appendChild($form);
+            $tableRow->appendChild($tableCol);
+
+            $table->appendChild($tableRow);
         }
 
         /*
@@ -1065,6 +1082,13 @@
         $stmt = $db->query("DELETE FROM user where email = '" . $_POST['remove'] . "'");
         $_POST['admin_filter'] = $_POST['filter_status'];
         listUsers($db, 'admin.html');
+    }
+    else if(isset($_POST['add_comment'])){
+        $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('". $_POST['comment_content'] . "', '" . $_POST['comment_author'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
+        $stmt = $db->query($string);
+        $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
+        ticketComment($db, 'technic.html');
+        //TODO:
     }
     else if (isset($_POST['admin_search'])){
         listUsers($db, 'admin.html');
