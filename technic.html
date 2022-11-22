@@ -5,28 +5,32 @@
     <title>Technic Page</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body>
-<div class="body">
-    <h1>Technic</h1>
-    <form id="form_searchtapp" action="main.php" method="post">
-        <form id="form_tapp_search" action="main.php" method="post">
-            <div id="search_field">
-                <select id="tapp_filter1" name="tapp_filter1" required>
-                    <option id="All my appoinments" name="All">All appoinments</option>
-                    <option id="Latest to oldest" name="LtO">Latest to oldest</option>
-                    <option id="Oldest to latest" name="OtL">Oldest to latest</option>
-                </select>
-                <select id="tapp_filter2" name="tapp_filter2" required>
-                    <option id="TODO" name="All">All appoinments</option>
-                </select>
-                <button id="search_tapp_btn" name="search_tapp" value="." type="submit">Search</button>
-            </div>
-        </form>
-        <button id="logout_btn" type="button" name="logout" onclick="location.href='index.html'">Logout</button>
-    </form>
+    <body>
+        <div class="body">
+            <h1>Technic</h1>
+            <form id="form_searchtapp" action="main.php" method="post">
+                <form id="form_tapp_search" action="main.php" method="post">
+                    <div id="search_field">
+                        <select id="tapp_filter1" name="tapp_filter1" required>
+                            <option id="All my appoinments" name="All">All appoinments</option>
+                            <option id="Latest to oldest" name="Latest to oldest">Latest to oldest</option>
+                            <option id="Oldest to latest" name="Oldest to latest">Oldest to latest</option>
+                        </select>
+                        <select id="tapp_filter2" name="tapp_filter2" required>
+                            <option id="All conditions" name="All">All condition</option>
+                            <option id="In progress" name="In progress">In progress</option>
+                            <option id="Done" name="Done">Done</option>
+                            <option id="Suspended" name="Suspended">Suspended</option>
+                        </select>
+                        <button id="search_tapp_btn" name="search_tapp" value="." type="submit">Search</button>
+                    </div>
+                </form>
+                <button id="logout_btn" type="button" name="logout" onclick="location.href='index.html'">Logout</button>
+            </form>
 
-    <table id="appointment_search_results"></table>
-    <table id="appointment_info"></table>
-</div>
-</body>
+            <table id="appointment_search_results"></table>
+            <table id="appointment_info"></table>
+            <table id="comment_section"></table>
+        </div>
+    </body>
 </html>

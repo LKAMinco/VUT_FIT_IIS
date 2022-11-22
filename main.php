@@ -914,10 +914,7 @@
         $doc = new DOMDocument();
         $doc->loadHTML($html);
         $table = $doc->getElementById('appointment_info');
-        /*
-           $filterForm = $doc->getElementById($_POST['ticket']);
-           $filterForm->setAttribute('selected', 'True');
-       */
+
         $tableRow = $doc->createElement('tr');
         $tableCol = $doc->createElement('th', 'Title');
         $tableRow->appendChild($tableCol);
@@ -944,49 +941,72 @@
             $tableCol = $doc->createElement('td', $row['date_add']);
             $tableRow->appendChild($tableCol);
             $table->appendChild($tableRow);
+        }
+
+        $temp = $db->query("SELECT content, author, date_add, parent_ticket FROM comment");
+        #$stmt = $db->query("SELECT title, category, descript, author, date_add FROM ticket");
+        $html = file_get_contents($file);
+        $doc = new DOMDocument();
+        $doc->loadHTML($html);
+        $table = $doc->getElementById('comment_section');
+
+        $tableRow = $doc->createElement('tr');
+        $tableCol = $doc->createElement('th', 'Content');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'Author');
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('th', 'Added at');
+        $tableRow->appendChild($tableCol);
+        $table->appendChild($tableRow);
+
+        foreach ($temp as $row) {
+            $tableRow = $doc->createElement('tr');
+            $tableCol = $doc->createElement('td', $row['content']);
+            $tableRow->appendChild($tableCol);
+            $tableCol = $doc->createElement('td', $row['author']);
+            $tableRow->appendChild($tableCol);
+            $tableCol = $doc->createElement('td', $row['date_add']);
+            $tableRow->appendChild($tableCol);
+            $table->appendChild($tableRow);
 
             $tableCol = $doc->createElement('td');
             $form = $doc->createElement('form');
             $form->setAttribute('id', 'form_set');
             $form->setAttribute('action', 'main.php');
             $form->setAttribute('method', 'post');
-
-            $button = $doc->createElement('button', 'Add coment');
-            $button->setAttribute('id', 'coment_btn');
-            $button->setAttribute('name', 'add_coment');
-            $button->setAttribute('value', $row['add_comment']);
-            $button->setAttribute('type', 'submit');
-            $form->appendChild($button);
-            $tableCol->appendChild($form);
-            $tableRow->appendChild($tableCol);
-
-            $table->appendChild($tableRow);
         }
 
+        $button = $doc->createElement('button', 'Add coment');
+        $button->setAttribute('id', 'coment_btn');
+        $button->setAttribute('name', 'add_coment');
+        $button->setAttribute('value', $row['add_comment']);
+        $button->setAttribute('type', 'submit');
+        $form->appendChild($button);
+        $tableCol->appendChild($form);
+        $tableRow->appendChild($tableCol);
+        $table->appendChild($tableRow);
+
+        echo $doc->saveHTML();
+        return NULL;
         /*
         $element = $doc->getElementById('back_btn');
         $element->setAttribute('onclick', "location.href='technic.html'");*/
-        echo $doc->saveHTML();
-        return NULL;
     }
 
     function listAppTech($db, $file)
     {
         if ($_POST['tapp_filter1'] == "All appoinments") {
             $stmt = $db->query("SELECT descript, time_spent, estimation_date, cond FROM appointment");
-        } else {
+        } else if ($_POST['tapp_filter1'] == "Latest to oldest") {
+            $stmt = $db->query("SELECT COUNT(id_appointment), descript, time_spent, estimation_date, cond FROM appointment GROUP BY estimation_date, time_spent, descript, cond");
+        } else if ($_POST['tapp_filter1'] == "Oldest to latest") {
             $stmt = $db->query("SELECT COUNT(id_appointment), descript, time_spent, estimation_date, cond FROM appointment GROUP BY estimation_date, time_spent, descript, cond");
         }
+
         $html = file_get_contents($file);
         $doc = new DOMDocument();
         $doc->loadHTML($html);
         $table = $doc->getElementById('appointment_search_results');
-
-        /*
-        if(isset($_POST['tapp_filter1'])) {
-            $filterForm = $doc->getElementById($_POST['tapp_filter1']);
-            $filterForm->setAttribute('selected', 'True');
-        }*/
 
         $tableRow = $doc->createElement('tr');
         $tableCol = $doc->createElement('th', 'Title');
@@ -1028,7 +1048,6 @@
             $tableCol->appendChild($form);
             $tableRow->appendChild($tableCol);
 
-            #TODO SHOW MORE
             $button = $doc->createElement('button', 'Show more');
             $button->setAttribute('id', 'show_btn');
             $button->setAttribute('name', 'Show_tapp');
@@ -1043,6 +1062,7 @@
         echo $doc->saveHTML();
         return NULL;
     }
+
 
     function returnData($doc, $values, $msg, $can_login)
     {
@@ -1129,6 +1149,12 @@
         listAppTech($db, 'technic.html');
     } else if (isset($_POST['Show_tapp'])) {
         listOneAppoitment($db, 'technic.html');
+    }else if(isset($_POST['add_comment'])){
+        $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('". $_POST['comment_content'] . "', '" . $_POST['comment_author'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
+        $stmt = $db->query($string);
+        $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
+        ticketComment($db, 'technic.html');
+        //TODO:
     }else if (isset($_POST['submit_problem'])){
         reportProblem($db);
         //TODO save problem into db
@@ -1138,13 +1164,6 @@
         $stmt = $db->query("DELETE FROM user where email = '" . $_POST['remove'] . "'");
         $_POST['admin_filter'] = $_POST['filter_status'];
         listUsers($db, 'admin.html');
-    }
-    else if(isset($_POST['add_comment'])){
-        $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('". $_POST['comment_content'] . "', '" . $_POST['comment_author'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
-        $stmt = $db->query($string);
-        $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
-        ticketComment($db, 'technic.html');
-        //TODO:
     }
     else if (isset($_POST['admin_search'])){
         listUsers($db, 'admin.html');
