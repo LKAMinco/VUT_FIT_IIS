@@ -425,3 +425,8 @@ select:hover {
     width: 30%;
     text-align: center;
 }
+
+#cond_app {
+    width: 40%;
+}
+
