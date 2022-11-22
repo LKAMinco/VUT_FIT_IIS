@@ -29,12 +29,14 @@ if (isset($_POST['login'])) {
                 setcookie('access_type', 'ADMIN', time() + 3600);
                 setcookie('username', $_POST['uemail_login'], time() + 3600);
                 $_SESSION['access_type'] = 'ADMIN';
-                header('Location: admin.html');
+                $_POST['admin_filter'] = 'All Users';
+                listUsers($db, 'admin.html');
             } elseif ($row['access_type'] == 'MANAGER') {
                 setcookie('access_type', 'MANAGER', time() + 3600);
                 setcookie('username', $_POST['uemail_login'], time() + 3600);
                 $_SESSION['access_type'] = 'MANAGER';
-                header("Location: manager.html");
+                $_POST['admin_filter'] = 'TECHNICIAN';
+                listUsers($db, 'manager.html');
             } elseif ($row['access_type'] == 'TECHNICIAN') {
                 setcookie('access_type', 'TECHNICIAN', time() + 3600);
                 setcookie('username', $_POST['uemail_login'], time() + 3600);
@@ -1027,6 +1029,17 @@ function listUsers($db, $file)
     $html = file_get_contents($file);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
+
+    if($_SESSION['access_type'] == 'ADMIN'){
+        $form = $doc->getElementById('form_addmgr');
+
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'hidden');
+        $input->setAttribute('name', 'admin_filter');
+        $input->setAttribute('value', $_POST['admin_filter']);
+        $form->appendChild($input);
+    }
+
     $table = $doc->getElementById('users_search_results');
     //$appended = $doc->createElement('tr', 'This is a test element.');
     //$table->appendChild($appended);
@@ -1240,7 +1253,7 @@ function returnData($doc, $values, $msg, $can_login)
     $doc->getElementById('date_id')->setAttribute('value', $values['date_of_birth']);
     $doc->getElementById('uaddress_id')->setAttribute('value', $values['residence']);
     $doc->getElementById('uemail_id')->setAttribute('value', $values['email']);
-    echo $doc->saveHTML();
+    //echo $doc->saveHTML();
     return NULL;
 }
 
@@ -1290,6 +1303,7 @@ if (isset($_POST['register_submit'])) {
     if ($_POST['upwd_register'] != $_POST['upwdconf_register']) {
         $msg = 'Password does not match';
         returnData($doc, $values, $msg, false);
+        echo $doc->saveHTML();
     } else {
         if ($stmt->rowCount() == 1) {
             $msg = 'User already exists, please choose another email';
@@ -1299,8 +1313,32 @@ if (isset($_POST['register_submit'])) {
             $stmt = $db->prepare("INSERT INTO user (email, pwd, first_name, last_name, date_of_birth, residence, access_type) VALUES (:email, :pwd, :first_name, :last_name, :date_of_birth, :residence, :access_type)");
             $stmt->execute($values);
             $descBox = $doc->getElementById('info_msg')->nodeValue = 'Nice, you are registered';
-            echo $doc->saveHTML();
         }
+        if($_POST['utype_register'] == 'MANAGER'){
+            $element = $doc->getElementById('reg_back_btn');
+            $element->setAttribute('name', "admin_search");
+
+            $form = $doc->getElementById('form_register_back');
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'admin_filter');
+            $input->setAttribute('value', $_POST['admin_filter']);
+            $form->appendChild($input);
+        }
+        else if($_POST['utype_register'] == 'TECHNICIAN'){
+            $element = $doc->getElementById('reg_back_btn');
+            $element->setAttribute('name', "load_cityman");
+
+            $form = $doc->getElementById('form_register_back');
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'admin_filter');
+            $input->setAttribute('value', $_POST['admin_filter']);
+            $form->appendChild($input);
+        }
+        echo $doc->saveHTML();
     }
 
 } else if (isset($_POST['search_tapp'])) {
@@ -1345,8 +1383,24 @@ if (isset($_POST['register_submit'])) {
     $element = $doc->getElementById('type_id');
     $element->setAttribute('value', 'MANAGER');
 
-    $element = $doc->getElementById('back_btn');
-    $element->setAttribute('onclick', "location.href='admin.html'");
+    $form = $doc->getElementById('form_register');
+
+    $input = $doc->createElement('input');
+    $input->setAttribute('type', 'hidden');
+    $input->setAttribute('name', 'admin_filter');
+    $input->setAttribute('value', $_POST['admin_filter']);
+    $form->appendChild($input);
+
+    $form = $doc->getElementById('form_register_back');
+
+    $input = $doc->createElement('input');
+    $input->setAttribute('type', 'hidden');
+    $input->setAttribute('name', 'admin_filter');
+    $input->setAttribute('value', $_POST['admin_filter']);
+    $form->appendChild($input);
+
+    $element = $doc->getElementById('reg_back_btn');
+    $element->setAttribute('name', "admin_search");
 
     echo $doc->saveHTML();
 } else if (isset($_POST['add_tech'])) {
@@ -1374,8 +1428,8 @@ if (isset($_POST['register_submit'])) {
     $input->setAttribute('required', 'True');
     $element->appendChild($input);
 
-    $element = $doc->getElementById('back_btn');
-    $element->setAttribute('onclick', "location.href='manager.html'");
+    $element = $doc->getElementById('reg_back_btn');
+    $element->setAttribute('name', "load_cityman");
 
     echo $doc->saveHTML();
 } else if (isset($_POST['search_tickets_mgr'])) {
@@ -1476,7 +1530,7 @@ if (isset($_POST['register_submit'])) {
     openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
 } else if (isset($_POST['open_ticket_mgr'])) {
     openTicketDetailsMgr($db, 'ticket_detail.html');
-} else {
-    var_dump($_POST);
+} else if(isset($_POST['reg_get_back'])){
+    header('Location: index.html');
 }
 ?>

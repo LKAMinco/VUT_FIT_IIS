@@ -177,7 +177,8 @@ form {
 #btns_reg {
     margin: auto;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    width: 102%;
 }
 
 #submit_btn {
@@ -405,11 +406,15 @@ a{
 #btns_create{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    width: 100%;
+    width: 103%;
 }
 
-#create_back_btn, #form_create{
-    width: 100%;
+#create_back_btn{
+    width: 102%;
+}
+
+#reg_back_btn{
+    width: 102%;
 }
 
 select {
