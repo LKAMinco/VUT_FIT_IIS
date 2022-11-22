@@ -399,7 +399,7 @@ function openAppointmentDetailsMgr($db, $file){
     $input = $doc->createElement('input');
     $input->setAttribute('type', 'hidden');
     $input->setAttribute('name', 'appointment_comment_author');
-    $input->setAttribute('value', 'manager'); //TODO add user from session superglobal
+    $input->setAttribute('value', $_SESSION['username']); //TODO add user from session superglobal
     $form->appendChild($input);
 
     $input = $doc->createElement('input');
@@ -700,7 +700,7 @@ function openTicketDetailsMgr($db, $file)
     $input = $doc->createElement('input');
     $input->setAttribute('type', 'hidden');
     $input->setAttribute('name', 'ticket_comment_author');
-    $input->setAttribute('value', 'manager'); //TODO add user from session superglobal
+    $input->setAttribute('value', $_SESSION['username']); //TODO add user from session superglobal
     $form->appendChild($input);
 
     $input = $doc->createElement('input');
