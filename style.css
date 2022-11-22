@@ -398,6 +398,20 @@ a{
     background: none;
 }
 
+#descript_id{
+    min-height: 100px;
+}
+
+#btns_create{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+}
+
+#create_back_btn, #form_create{
+    width: 100%;
+}
+
 select {
     background-color: darkslategray;
     color: lightslategray;
