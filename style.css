@@ -416,3 +416,12 @@ select:valid {
 select:hover {
     color: whitesmoke;
 }
+
+#est_date {
+    width: 80%;
+}
+
+#time_spent {
+    width: 30%;
+    text-align: center;
+}

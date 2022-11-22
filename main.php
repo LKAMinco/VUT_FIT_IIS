@@ -996,29 +996,33 @@
 
     function listAppTech($db, $file)
     {
+        $temp = "SELECT descript, time_spent, estimation_date, cond, assignee FROM appointment WHERE assignee ='" . $_SESSION['username']. "'";
         if ($_POST['tapp_filter1'] == "All my appoinments") {
-            $stmt = $db->query("SELECT descript, time_spent, estimation_date, cond FROM appointment");
+            $temp1 = "";
         } else if ($_POST['tapp_filter1'] == "Latest to oldest") {
-            $stmt = $db->query("SELECT COUNT(id_appointment), descript, time_spent, estimation_date, cond FROM appointment GROUP BY estimation_date, time_spent, descript, cond");
+            $temp1 = "ORDER BY estimation_date";
+            #$stmt = $db->query("SELECT COUNT(id_appointment), descript, time_spent, estimation_date, cond FROM appointment GROUP BY estimation_date, time_spent, descript, cond");
         } else if ($_POST['tapp_filter1'] == "Oldest to latest") {
-            $stmt = $db->query("SELECT COUNT(id_appointment), descript, time_spent, estimation_date, cond FROM appointment GROUP BY estimation_date, time_spent, descript, cond");
+            $temp1 = "ORDER BY estimation_date DESC";
         }
-        /*
+
         if ($_POST['tapp_filter2'] == "All conditions") {
-            $second_stmt = $db->query("");
-        } else if ($_POST['tapp_filter1'] == "In progress") {
-            $second_stmt = $db->query("WHERE cond = 'In progress'");
-        } else if ($_POST['tapp_filter1'] == "Done") {
-            $second_stmt = $db->query("appointment WHERE cond = 'Done'");
-        } else if ($_POST['tapp_filter1'] == "Suspended") {
-            $second_stmt = $db->query("WHERE cond = 'Suspended'");
+            $temp2 = "";
+        } else if ($_POST['tapp_filter2'] == "In progress") {
+            $temp2 = "AND cond = 'IN PROGRESS'";
+        } else if ($_POST['tapp_filter2'] == "Done") {
+            $temp2 = "AND cond = 'DONE'";
+        } else if ($_POST['tapp_filter2'] == "Suspended") {
+            $temp2 = "AND cond = 'SUSPENDED'";
         }
-        $stmt = $stmt . $second_stmt;
-        */
+        $stmt = $db->query($temp . $temp2 . $temp1);
 
         $html = file_get_contents($file);
         $doc = new DOMDocument();
         $doc->loadHTML($html);
+        #$doc->getElementById('tapp_filter1')->nodeValue = 'All my appoinments';
+
+
         $table = $doc->getElementById('appointment_search_results');
 
         $tableRow = $doc->createElement('tr');
@@ -1036,12 +1040,38 @@
             $tableRow = $doc->createElement('tr');
             $tableCol = $doc->createElement('td', $row['descript']);
             $tableRow->appendChild($tableCol);
-            $tableCol = $doc->createElement('td', $row['time_spent']);
+
+            $temp_b = $doc->createElement('input');
+            $temp_b->setAttribute('id', 'time_spent');
+            $temp_b->setAttribute('type', 'text');
+            $temp_b->setAttribute('value', $row['time_spent']);
+            $temp_a = $doc->createElement('form');
+            $tableCol = $doc->createElement('td');
+            $temp_a->appendChild($temp_b);
+            $tableCol->appendChild($temp_a);
             $tableRow->appendChild($tableCol);
-            $tableCol = $doc->createElement('td', $row['estimation_date']);
+
+            $temp_b = $doc->createElement('input');
+            $temp_b->setAttribute('id', 'est_date');
+            $temp_b->setAttribute('type', 'date');
+            $temp_b->setAttribute('value', $row['estimation_date']);
+            $temp_a = $doc->createElement('form');
+            $tableCol = $doc->createElement('td');
+            $temp_a->appendChild($temp_b);
+            $tableCol->appendChild($temp_a);
             $tableRow->appendChild($tableCol);
-            $tableCol = $doc->createElement('td', $row['cond']);
-            $tableRow->appendChild($tableCol);
+
+            $stmt = $db->query("SELECT id_appointment, cond FROM appointment where id_appointment = " . $row['id_appointment']);
+            foreach ($stmt as $each) {
+                $combox = $doc->createElement('select');
+                $combox->setAttribute('name', 'new_cond');
+
+                addOption($doc, $combox, $each['cond'], 'IN PROGRESS');
+                addOption($doc, $combox, $each['cond'], 'DONE');
+                addOption($doc, $combox, $each['cond'], 'SUSPENDED');
+
+                $tableCol->appendChild($combox);
+            }
 
             $tableCol = $doc->createElement('td');
             $form = $doc->createElement('form');
