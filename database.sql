@@ -12,9 +12,7 @@ CREATE TABLE user (
     residence varchar(255) NOT NULL,
     access_type varchar(12) NOT NULL, /* USER | ADMIN | MANAGER | TECHNICIAN */
     specialization varchar(255) NULL,
-    added_by varchar(255) NULL,
-    PRIMARY KEY (email),
-    FOREIGN KEY (added_by)  REFERENCES user(email)
+    PRIMARY KEY (email)
 );
 
 CREATE TABLE ticket (
@@ -61,29 +59,29 @@ CREATE TABLE comment (
 
 -- INSERT USERS --
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Fero', 'Mrkva', date('1979-08-11'), 'Main cemetery', 'ADMIN', NULL, NULL, 'admin', 'admin');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Fero', 'Mrkva', date('1979-08-11'), 'Main cemetery', 'ADMIN', NULL, 'admin', 'admin');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Igor', 'Celer', date('1969-04-20'), 'Old building next to main cemetery', 'MANAGER', NULL, 'admin', 'manager', 'manager');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Igor', 'Celer', date('1969-04-20'), 'Old building next to main cemetery', 'MANAGER', NULL, 'manager', 'manager');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('aaa', 'aaa', date('1969-04-20'), 'aaa', 'USER', NULL, 'aaa', 'aaa', 'aaa');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('aaa', 'aaa', date('1969-04-20'), 'aaa', 'USER', NULL, 'aaa', 'aaa');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Jozef', 'Mak', date('1989-11-17'), 'Parking lot near main cemetery', 'TECHNICIAN', 'Mandatory community service', 'manager', 'tech01', 'tech01');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Jozef', 'Mak', date('1989-11-17'), 'Parking lot near main cemetery', 'TECHNICIAN', 'Mandatory community service', 'tech01', 'tech01');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'TECHNICIAN', 'Gardener', 'manager', 'tech02', 'tech02');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'TECHNICIAN', 'Gardener', 'tech02', 'tech02');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Martin', 'Kapusta', date('1998-10-29'), 'PPV A01', 'USER', NULL, NULL, 'mkapusta@gmail.com', 'kapusta1');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Martin', 'Kapusta', date('1998-10-29'), 'PPV A01', 'USER', NULL, 'mkapusta@gmail.com', 'kapusta1');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Michal', 'Zemiak', date('2001-01-24'), 'PPV A03', 'USER', NULL, NULL, 'mzemiak@gmail.com', 'zemiak1');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Michal', 'Zemiak', date('2001-01-24'), 'PPV A03', 'USER', NULL, 'mzemiak@gmail.com', 'zemiak1');
 
-INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, added_by, email, pwd)
-VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'USER', NULL, NULL, 'pslivka@gmail.com', 'slivka1');
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('Peter', 'Slivka', date('1989-11-17'), 'Tent in the park', 'USER', NULL, 'pslivka@gmail.com', 'slivka1');
 
 -- INSERT TICKETS --
 
