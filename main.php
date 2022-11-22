@@ -430,13 +430,47 @@
             $text->nodeValue = $row['date_add'];
             $divInternal->appendChild($text);
 
-            $divInternal = $doc->createElement('div');
-            $divInternal->setAttribute('class', 'ticket_details_class');
-            $div->appendChild($divInternal);
+            $divInternal2 = $doc->createElement('div');
+            $divInternal2->setAttribute('class', 'ticket_details_class');
+            $div->appendChild($divInternal2);
 
             $text = $doc->createElement('a');
             $text->nodeValue = $row['content'];
-            $divInternal->appendChild($text);
+            $divInternal2->appendChild($text);
+
+
+            $form = $doc->createElement('form');
+            $form->setAttribute('id', 'form_ticket_detail_remove_comment');
+            $form->setAttribute('action', 'main.php');
+            $form->setAttribute('method', 'post');
+            $form->setAttribute('name', 'ticket_detail_remove_comment');
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'ticket_type_filter');
+            $input->setAttribute('value', $_POST['ticket_type_filter']);
+            $form->appendChild($input);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'ticket_cond_filter');
+            $input->setAttribute('value', $_POST['ticket_cond_filter']);
+            $form->appendChild($input);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'id_comment');
+            $input->setAttribute('value', $row['id_comment']);
+            $form->appendChild($input);
+
+            $button = $doc->createElement('button', 'Remove');
+            $button->setAttribute('id', 'remove_comment_ticket_btn');
+            $button->setAttribute('name', 'remove_comment_ticket');
+            $button->setAttribute('value', $_POST['open_ticket_mgr']);
+            $button->setAttribute('type', 'submit');
+            $form->appendChild($button);
+
+            $divInternal->appendChild($form);
         }
 
         $form = $doc->getElementById('add_comment_form');
@@ -1150,6 +1184,11 @@
         $stmt = $db->query($string);
         $_POST['open_appointment_mgr'] = $_POST['add_appointment_comment'];
         openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
+    }
+    else if(isset($_POST['remove_comment_ticket'])){
+        $stmt = $db->query("DELETE FROM comment WHERE id_comment = '" . $_POST['id_comment'] . "'");
+        $_POST['open_ticket_mgr'] = $_POST['remove_comment_ticket'];
+        openTicketDetailsMgr($db, 'ticket_detail.html');
     }
     else{
         var_dump($_POST);
