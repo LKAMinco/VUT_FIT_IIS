@@ -29,11 +29,11 @@
                     setcookie('username', $_POST['uemail_login'], time() + 3600);
                     $_SESSION['access_type'] = 'ADMIN';
                     header('Location: admin.html');
-                } elseif ($row['access_type'] == 'CITYMAN') {
-                    setcookie('access_type', 'CITYMAN', time() + 3600);
+                } elseif ($row['access_type'] == 'MANAGER') {
+                    setcookie('access_type', 'MANAGER', time() + 3600);
                     setcookie('username', $_POST['uemail_login'], time() + 3600);
-                    $_SESSION['access_type'] = 'CITYMAN';
-                    header("Location: cityman.html");
+                    $_SESSION['access_type'] = 'MANAGER';
+                    header("Location: manager.html");
                 } elseif ($row['access_type'] == 'TECHNICIAN') {
                     setcookie('access_type', 'TECHNICIAN', time() + 3600);
                     setcookie('username', $_POST['uemail_login'], time() + 3600);
@@ -1022,7 +1022,7 @@
             'category' => $_POST['type'],
             'descript' => $_POST['problem'],
             'cond' => 'UNDER REVIEW',
-            'author' => $_SESSION['username'], //TODO to som zvedavy čo mi toto vypíše
+            'author' => $_SESSION['username'],
             'date_add' => date("Y-m-d H:i:s"),
             'image' => $_SESSION['username'] . date("Ymd_His") . "."  . $ext,
         ];
@@ -1139,7 +1139,7 @@
         $element->appendChild($input);
 
         $element = $doc->getElementById('back_btn');
-        $element->setAttribute('onclick', "location.href='cityman.html'");
+        $element->setAttribute('onclick', "location.href='manager.html'");
 
         echo $doc->saveHTML();
     }
@@ -1154,7 +1154,7 @@
     }
     else if(isset($_POST['load_cityman'])) {
         $_POST['admin_filter'] = 'TECHNICIAN';
-        listUsers($db, 'cityman.html');
+        listUsers($db, 'manager.html');
     }
     else if(isset($_POST['set_cond'])){
         $stmt = $db->query("UPDATE ticket SET cond = '" . $_POST['new_cond'] . "' where id_ticket = " . $_POST['set_cond']);
