@@ -511,3 +511,25 @@ select:hover {
 #ticket_from_tapp_btn {
     width: 98%;
 }
+
+#set_tapp_btn_tech {
+    height: 80%;
+    margin-top: 5px;
+}
+
+#show_btn {
+    margin-top: 3px;
+}
+
+#tapp_filter1 {
+    width: 90%;
+    height: 65%;
+    margin-top: 20px;
+}
+
+#tapp_filter2 {
+    width: 90%;
+    height: 65%;
+    margin-top: 20px;
+    margin-left: 10px;
+}
