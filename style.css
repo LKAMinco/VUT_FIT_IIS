@@ -533,3 +533,10 @@ select:hover {
     margin-top: 20px;
     margin-left: 10px;
 }
+
+#remove_comment_app_btn {
+    grid-column: 3;
+    grid-row: 1;
+    width: 20%;
+    margin-right:30px;
+}

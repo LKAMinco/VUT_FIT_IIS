@@ -235,6 +235,16 @@ function openAppointmentDetailsMgr($db, $file)
         $text->nodeValue = $row['date_add'];
         $divInternal->appendChild($text);
 
+        #FIXME:
+        $button = $doc->createElement('button', 'Remove');
+        $button->setAttribute('id', 'remove_comment_app_btn');
+        $button->setAttribute('name', 'remove_comment_app');
+        $button->setAttribute('value', $_POST['open_appointment_mgr']);
+        $button->setAttribute('type', 'submit');
+        #$form->appendChild($button);
+        $divInternal->appendChild($button);
+        $div->appendChild($divInternal);
+
         $divInternal = $doc->createElement('div');
         $divInternal->setAttribute('class', 'ticket_details_class');
         $div->appendChild($divInternal);
@@ -1698,6 +1708,11 @@ if (isset($_POST['register_submit'])) {
     $stmt = $db->query("DELETE FROM comment WHERE id_comment = '" . $_POST['id_comment'] . "'");
     $_POST['open_ticket_mgr'] = $_POST['remove_comment_ticket'];
     openTicketDetailsMgr($db, 'ticket_detail.html');
+}   else if (isset($_POST['remove_comment_app'])) {
+    var_dump($_POST);
+    $stmt = $db->query("DELETE FROM comment WHERE id_comment = '" . $_POST['id_comment'] . "'");
+    $_POST['open_appointment_mgr'] = $_POST['remove_comment_app'];
+    openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
 } else if (isset($_POST['set_tapp'])) {
     $stmt = $db->query("UPDATE appointment SET time_spent = '" . $_POST['time_spent'] . "' where id_appointment = " . $_POST['set_tapp']);
     $stmt = $db->query("UPDATE appointment SET estimation_date = '" . $_POST['est_date'] . "' where id_appointment = " . $_POST['set_tapp']);
