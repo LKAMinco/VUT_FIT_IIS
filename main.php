@@ -1583,7 +1583,6 @@ if (isset($_POST['register_submit'])) {
     $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['Add_comment'] . "', '" . $_SESSION['username'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
     $stmt = $db->query($string);
     listOneAppoitment($db, 'technic.html');
-    //TODO:
 } else if (isset($_POST['submit_problem'])) {
     reportProblem($db);
     //TODO save problem into db
