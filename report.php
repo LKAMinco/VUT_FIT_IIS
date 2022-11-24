@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['username']) || $_SESSION['access_type'] != 'ADMIN' ){
+if (!isset($_SESSION['username']) || $_SESSION['access_type'] != 'USER' ){
     $html = file_get_contents('wrong_access.html');
     $doc = new DOMDocument();
     $doc->loadHTML($html);
@@ -64,7 +64,7 @@ if (!isset($_SESSION['username']) || $_SESSION['access_type'] != 'ADMIN' ){
                 <button id="submit_btn" type="submit" name="submit_problem">Submit</button>
                 <button id="clear_btn" type="reset">Clear</button>
                 <!--TODO remove connection to main page-->
-                <button id="back_btn" type="button" onclick="location.href='user.html'">Back</button>
+                <button id="back_btn" type="button" onclick="location.href='user.php'">Back</button>
             </div>
         </form>
     </div>

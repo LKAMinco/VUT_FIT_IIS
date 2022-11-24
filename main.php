@@ -43,7 +43,7 @@ if (isset($_POST['login'])) {
                 $_SESSION['access_type'] = 'TECHNICIAN';
                 header('Location: technic.php');
             } elseif ($row['access_type'] == 'USER') {
-                setcookie('access_type', 'USER', time() + 3600, '/', NULL, 0);
+                setcookie('access_type', 'USER', time() + 3600, '/', NULL, true, true);
                 setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
                 $_SESSION['access_type'] = 'USER';
                 header('Location: user.php');
@@ -1753,7 +1753,7 @@ function reportProblem($db)
 var_dump($_POST);
 if (isset($_POST['register_submit'])) {
     $stmt = $db->query("SELECT pwd, access_type FROM user WHERE email = '" . $_POST['uemail_register'] . "'");
-    $html = file_get_contents('register.html');
+    $html = file_get_contents('register.php');
     libxml_use_internal_errors(true);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
@@ -1831,7 +1831,7 @@ if (isset($_POST['register_submit'])) {
 } else if (isset($_POST['admin_search'])) {
     listUsers($db, 'admin.php');
 } else if (isset($_POST['add_manager'])) {
-    $html = file_get_contents('register.html');
+    $html = file_get_contents('register.php');
     $doc = new DOMDocument();
     $doc->loadHTML($html);
 
@@ -1868,7 +1868,7 @@ if (isset($_POST['register_submit'])) {
 
     echo $doc->saveHTML();
 } else if (isset($_POST['add_tech'])) {
-    $html = file_get_contents('register.html');
+    $html = file_get_contents('register.php');
     $doc = new DOMDocument();
     $doc->loadHTML($html);
 
@@ -1903,13 +1903,13 @@ if (isset($_POST['register_submit'])) {
     if (!isset($_POST['ticket_cond_filter'])) {
         $_POST['ticket_cond_filter'] = "All Conditions";
     }
-    listTicketsMgr($db, 'list_tickets.html');
+    listTicketsMgr($db, 'list_tickets.php');
 } else if (isset($_POST['load_cityman'])) {
     $_POST['admin_filter'] = 'TECHNICIAN';
     listUsers($db, 'manager.php');
 } else if (isset($_POST['set_cond'])) {
     $stmt = $db->query("UPDATE ticket SET cond = '" . $_POST['new_cond'] . "' where id_ticket = " . $_POST['set_cond']);
-    listTicketsMgr($db, 'list_tickets.html');
+    listTicketsMgr($db, 'list_tickets.php');
 } else if (isset($_POST['search_appointments_mgr'])) {
     if (!isset($_POST['appointments_assignee_filter'])) {
         $_POST['appointments_assignee_filter'] = "All Assignees";
@@ -1917,10 +1917,10 @@ if (isset($_POST['register_submit'])) {
     if (!isset($_POST['appointments_cond_filter'])) {
         $_POST['appointments_cond_filter'] = "All Conditions";
     }
-    listAppointmentsMgr($db, 'list_serviceapp.html');
+    listAppointmentsMgr($db, 'list_serviceapp.php');
 } else if (isset($_POST['set_assignee'])) {
     $stmt = $db->query("UPDATE appointment SET assignee = '" . $_POST['new_assignee'] . "' where id_appointment = " . $_POST['set_assignee']);
-    listAppointmentsMgr($db, 'list_serviceapp.html');
+    listAppointmentsMgr($db, 'list_serviceapp.php');
 } else if (isset($_POST['set_assignee_detail'])) {
     $_POST['open_appointment_mgr'] = $_POST['set_assignee_detail'];
     $stmt = $db->query("UPDATE appointment SET assignee = '" . $_POST['new_assignee'] . "' where id_appointment = " . $_POST['set_assignee_detail']);
@@ -1930,7 +1930,7 @@ if (isset($_POST['register_submit'])) {
     if (!isset($_POST['appointments_cond_filter']) || $_POST['appointments_cond_filter'] == "") {
         $_POST['appointments_cond_filter'] = "All Conditions";
     }
-    openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
+    openAppointmentDetailsMgr($db, 'serviceapp_detail.php');
 } else if (isset($_POST['set_cond_detail'])) {
     $_POST['open_ticket_mgr'] = $_POST['set_cond_detail'];
     $stmt = $db->query("UPDATE ticket SET cond = '" . $_POST['new_cond'] . "' where id_ticket = " . $_POST['set_cond_detail']);
@@ -1940,47 +1940,47 @@ if (isset($_POST['register_submit'])) {
     if (!isset($_POST['ticket_cond_filter']) || $_POST['ticket_cond_filter'] == "") {
         $_POST['ticket_cond_filter'] = "All Conditions";
     }
-    openTicketDetailsMgr($db, 'ticket_detail.html');
+    openTicketDetailsMgr($db, 'ticket_detail.php');
 } else if (isset($_POST['add_ticket_comment'])) {
     $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['ticket_comment_content'] . "', '" . $_POST['ticket_comment_author'] . "', " . $_POST['add_ticket_comment'] . ", NULL, '" . $_POST['ticket_comment_date'] . "')";
     $stmt = $db->query($string);
     $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
-    openTicketDetailsMgr($db, 'ticket_detail.html');
+    openTicketDetailsMgr($db, 'ticket_detail.php');
 } else if (isset($_POST['create_appointment'])) {
-    openCreationForm($db, 'create_serviceapp.html');
+    openCreationForm($db, 'create_serviceapp.php');
 } else if (isset($_POST['open_appointment_mgr'])) {
-    openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
+    openAppointmentDetailsMgr($db, 'serviceapp_detail.php');
 } else if (isset($_POST['remove_comment_ticket'])) {
     $stmt = $db->query("DELETE FROM comment WHERE id_comment = '" . $_POST['id_comment'] . "'");
     $_POST['open_ticket_mgr'] = $_POST['remove_comment_ticket'];
-    openTicketDetailsMgr($db, 'ticket_detail.html');
+    openTicketDetailsMgr($db, 'ticket_detail.php');
 } else if (isset($_POST['remove_appointment_comment'])) {
     $stmt = $db->query("DELETE FROM comment WHERE id_comment = '" . $_POST['id_comment'] . "'");
     $_POST['open_appointment_mgr'] = $_POST['remove_appointment_comment'];
-    openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
+    openAppointmentDetailsMgr($db, 'serviceapp_detail.php');
 } else if (isset($_POST['add_appointment_comment'])) {
     $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['appointment_comment_content'] . "', '" . $_POST['appointment_comment_author'] . "', NULL, '" . $_POST['add_appointment_comment'] . "', '" . $_POST['appointment_comment_date'] . "')";
     $stmt = $db->query($string);
     $_POST['open_appointment_mgr'] = $_POST['add_appointment_comment'];
-    openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
+    openAppointmentDetailsMgr($db, 'serviceapp_detail.php');
 } else if (isset($_POST['open_appointment_from_ticket_mgr'])) {
     $stmt = $db->query("SELECT id_appointment, parent_ticket FROM appointment WHERE id_appointment = " . $_POST['open_appointment_from_ticket_mgr']);
     foreach ($stmt as $row) {
         $_POST['open_ticket_mgr'] = $row['parent_ticket'];
     }
     $_POST['open_appointment_mgr'] = $_POST['open_appointment_from_ticket_mgr'];
-    openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
+    openAppointmentDetailsMgr($db, 'serviceapp_detail.php');
 } else if (isset($_POST['open_ticket_from_appointment_mgr'])) {
     $stmt = $db->query("SELECT id_appointment, parent_ticket FROM appointment WHERE id_appointment = " . $_POST['open_ticket_from_appointment_mgr']);
     foreach ($stmt as $row) {
         $_POST['open_ticket_mgr'] = $row['parent_ticket'];
     }
-    openTicketDetailsMgr($db, 'ticket_detail.html');
+    openTicketDetailsMgr($db, 'ticket_detail.php');
 } else if (isset($_POST['load_user'])) {
     header('Location: user.php');
 } else if (isset($_POST['get_back_to_ticket'])) {
     $_POST['open_ticket_mgr'] = $_POST['get_back_to_ticket'];
-    openTicketDetailsMgr($db, 'ticket_detail.html');
+    openTicketDetailsMgr($db, 'ticket_detail.php');
 } else if (isset($_POST['create_service_submit'])) {
     $string = "INSERT INTO appointment(author, assignee, title, descript, cond, time_spent, parent_ticket) VALUES ('" . $_SESSION['username'] . "', '" . $_POST['tech_id'] . "', '" . $_POST['title_create'] . "', '" . $_POST['descript_create'] . "', 'IN PROGRESS', 0, " . $_POST['create_service_submit'] . ")";
     $stmt = $db->query($string);
@@ -1991,9 +1991,9 @@ if (isset($_POST['register_submit'])) {
     foreach ($stmt as $row) {
         $_POST['open_appointment_mgr'] = $row['id_appointment'];
     }
-    openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
+    openAppointmentDetailsMgr($db, 'serviceapp_detail.php');
 } else if (isset($_POST['open_ticket_mgr'])) {
-    openTicketDetailsMgr($db, 'ticket_detail.html');
+    openTicketDetailsMgr($db, 'ticket_detail.php');
 } else if (isset($_POST['reg_get_back'])) {
     header('Location: index.html');
 } else if (isset($_POST['set_tapp'])) {
@@ -2002,23 +2002,23 @@ if (isset($_POST['register_submit'])) {
     $stmt = $db->query("UPDATE appointment SET cond = '" . $_POST['new_cond'] . "' where id_appointment = " . $_POST['set_tapp']);
     listAppTech($db, 'technic.php');
 } else if (isset($_POST['show_tapp'])) {
-    listAppDetails($db, 'serviceapp_detail.html');
+    listAppDetails($db, 'serviceapp_detail.php');
 } else if (isset($_POST['add_tap_comment'])) {
     $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['appointment_comment_content'] . "', '" . $_POST['appointment_comment_author'] . "', NULL, '" . $_POST['add_tap_comment'] . "', '" . $_POST['appointment_comment_date'] . "')";
     $stmt = $db->query($string);
     $_POST['show_tapp'] = $_POST['add_tap_comment'];
-    listAppDetails($db, 'serviceapp_detail.html');
+    listAppDetails($db, 'serviceapp_detail.php');
 } else if (isset($_POST['remove_tapp_comment'])) {
     $stmt = $db->query("DELETE FROM comment WHERE id_comment = " . $_POST['id_comment']);
     $_POST['show_tapp'] = $_POST['remove_tapp_comment'];
-    listAppDetails($db, 'serviceapp_detail.html');
+    listAppDetails($db, 'serviceapp_detail.php');
 } else if (isset($_POST['set_tapp_detail'])) {
     $stmt = $db->query("UPDATE appointment SET time_spent = '" . $_POST['time_spent'] . "' where id_appointment = " . $_POST['set_tapp_detail']);
     $stmt = $db->query("UPDATE appointment SET estimation_date = '" . $_POST['est_date'] . "' where id_appointment = " . $_POST['set_tapp_detail']);
     $stmt = $db->query("UPDATE appointment SET cond = '" . $_POST['new_cond'] . "' where id_appointment = " . $_POST['set_tapp_detail']);
     $_POST['show_tapp'] = $_POST['set_tapp_detail'];
-    listAppDetails($db, 'serviceapp_detail.html');
+    listAppDetails($db, 'serviceapp_detail.php');
 } else if (isset($_POST['open_ticket_tapp'])) {
-    listAppTicket($db, 'ticket_detail.html');
+    listAppTicket($db, 'ticket_detail.php');
 }
 ?>

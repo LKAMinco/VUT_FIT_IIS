@@ -47,8 +47,8 @@ if (!isset($_SESSION['username']) || $_SESSION['access_type'] != 'TECHNICIAN' ){
             </select>
             <button id="search_tapp_btn" name="search_tapp" value="." type="submit">Search</button>
         </div>
+        <button id="logout_btn" type="submit" name="logout">Logout</button>
     </form>
-    <button id="logout_btn" type="button" name="logout" onclick="location.href='index.html'">Logout</button>
     <table id="appointment_search_results"></table>
     <!--table id="appointment_info"></table>
     <table id="comment_section"></table-->

@@ -34,7 +34,7 @@ if (!isset($_SESSION['username']) || $_SESSION['access_type'] != 'USER' ){
 <header>
     <h1>User Page</h1>
     <form id="btns_reg" action="main.php" method="post">
-        <button id="report_btn" type="button" name="report" onclick="location.href='report.html'">Report problem
+        <button id="report_btn" type="button" name="report" onclick="location.href='report.php'">Report problem
         </button>
         <button id="search_btn" type="submit" name="search_tickets_mgr">Search problem</button>
         <button id="logout_btn" type=submit" name="logout">Logout</button>

@@ -1,0 +1,59 @@
+<?php
+session_start();
+if (!isset($_SESSION['username']) || $_SESSION['access_type'] != 'MANAGER' || $_SESSION['access_type'] != 'TECHNICIAN'){
+    $html = file_get_contents('wrong_access.html');
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+    $btn = $doc->getElementById('back_btn_access');
+    if ($_SESSION['access_type'] == 'ADMIN'){
+        $btn->setAttribute('onclick', 'location.href=\'admin.php\'');
+    } else if($_SESSION['access_type'] == 'MANAGER'){
+        $btn->setAttribute('onclick', 'location.href=\'manager.php\'');
+    }else if($_SESSION['access_type'] == 'TECHNICIAN'){
+        $btn->setAttribute('onclick', 'location.href=\'technic.php\'');
+    }
+    else if($_SESSION['access_type'] == 'USER'){
+        $btn->setAttribute('onclick', 'location.href=\'user.php\'');
+    } else {
+        $btn->setAttribute('onclick', 'location.href=\'index.html\'');
+    }
+    echo $doc->saveHTML();
+    die();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Service Appointments Page</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div class="body">
+    <h1>Service Appointments</h1>
+    <form id="get_back" action="main.php" method="post">
+        <button id="get_back_btn" type="submit" name="load_cityman" value=".">Back</button>
+    </form>
+    <form id="form_search_appointments" action="main.php" method="post">
+        <div id="search_appointments_field">
+            <select id="appointments_assignee_filter" name="appointments_assignee_filter" required>
+                <option id="All Assignees" name="All">All Assignees</option>
+            </select>
+            <select id="appointments_cond_filter" name="appointments_cond_filter" required>
+                <option id="All Conditions" name="All">All Conditions</option>
+                <option id="Under Review" name="UNDER_REVIEW">Under Review</option>
+                <option id="In Progress" name="IN_PROGRESS">In Progress</option>
+                <option id="Done" name="DONE">Done</option>
+                <option id="Suspended" name="SUSPENDED">Suspended</option>
+                <option id="Rejected" name="REJECTED">Rejected</option>
+            </select>
+            <button id="search_appointments_btn" type="submit" name="search_appointments_mgr" value=".">Search Service Appointments</button>
+        </div>
+    </form>
+    <table id="appointments_search_results">
+
+    </table>
+</div>
+</body>
+</html>
