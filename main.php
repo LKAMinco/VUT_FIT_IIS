@@ -26,25 +26,25 @@ if (isset($_POST['login'])) {
         if ($row['pwd'] == $_POST['pwd_login']) {
             $_SESSION['username'] = $_POST['uemail_login'];
             if ($row['access_type'] == 'ADMIN') {
-                setcookie('access_type', 'ADMIN', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                setcookie('access_type', 'ADMIN', time() + 3600, '/', NULL, 0);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, 0);
                 $_SESSION['access_type'] = 'ADMIN';
                 $_POST['admin_filter'] = 'All Users';
                 listUsers($db, 'admin.php');
             } elseif ($row['access_type'] == 'MANAGER') {
-                setcookie('access_type', 'MANAGER', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                setcookie('access_type', 'MANAGER', time() + 3600, '/', NULL, 0);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, 0);
                 $_SESSION['access_type'] = 'MANAGER';
                 $_POST['admin_filter'] = 'TECHNICIAN';
                 listUsers($db, 'manager.php');
             } elseif ($row['access_type'] == 'TECHNICIAN') {
-                setcookie('access_type', 'TECHNICIAN', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                setcookie('access_type', 'TECHNICIAN', time() + 3600, '/', NULL, 0);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, 0);
                 $_SESSION['access_type'] = 'TECHNICIAN';
                 header('Location: technic.php');
             } elseif ($row['access_type'] == 'USER') {
-                setcookie('access_type', 'USER', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 10);
+                setcookie('access_type', 'USER', time() + 3600, '/', NULL, 0);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, 0);
                 $_SESSION['access_type'] = 'USER';
                 header('Location: user.php');
             } else {
@@ -62,10 +62,10 @@ if (isset($_POST['login'])) {
 
 if (isset($_POST['logout'])) {
     if (isset($_COOKIE['access_type'])) {
-        setcookie('access_type', '', time() - 3600);
+        setcookie('access_type', '', time() - 3600, '/', NULL, 0);
     }
     if (isset($_COOKIE['username'])) {
-        setcookie('username', '', time() - 3600);
+        setcookie('username', '', time() - 3600, '/', NULL, 0);
     }
     session_destroy();
     header('Location: index.html');
