@@ -236,13 +236,59 @@ function openAppointmentDetailsMgr($db, $file)
         $divInternal->appendChild($text);
 
         #FIXME:
+        $form2 = $doc->createElement('form');
+        $form2->setAttribute('action', 'main.php');
+        $form2->setAttribute('method', 'post');
+        $form2->setAttribute('class','comment_print_div');
+
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'hidden');
+        $input->setAttribute('name', 'id_comment');
+        $input->setAttribute('value', $row['id_comment']);
+        $form2->appendChild($input);
+
+        if (isset($_POST['open_appointment_from_ticket_mgr'])) {
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'ticket_type_filter');
+            $input->setAttribute('value', $_POST['ticket_type_filter']);
+            $form2->appendChild($input);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'ticket_cond_filter');
+            $input->setAttribute('value', $_POST['ticket_cond_filter']);
+            $form2->appendChild($input);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'open_appointment_from_ticket_mgr');
+            $input->setAttribute('value', $_POST['open_appointment_from_ticket_mgr']);
+            $form->appendChild($input);
+            /*
+            $button->setAttribute('name', 'open_ticket_mgr');
+            $button->setAttribute('value', $_POST['open_appointment_from_ticket_mgr']);*/
+        } else {
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'appointments_assignee_filter');
+            $input->setAttribute('value', $_POST['appointments_assignee_filter']);
+            $form2->appendChild($input);
+
+            $input = $doc->createElement('input');
+            $input->setAttribute('type', 'hidden');
+            $input->setAttribute('name', 'appointments_cond_filter');
+            $input->setAttribute('value', $_POST['appointments_cond_filter']);
+            $form2->appendChild($input);
+        }
+
         $button = $doc->createElement('button', 'Remove');
         $button->setAttribute('id', 'remove_comment_app_btn');
         $button->setAttribute('name', 'remove_comment_app');
         $button->setAttribute('value', $_POST['open_appointment_mgr']);
         $button->setAttribute('type', 'submit');
-        #$form->appendChild($button);
-        $divInternal->appendChild($button);
+        $form2->appendChild($button);
+        $divInternal->appendChild($form2);
         $div->appendChild($divInternal);
 
         $divInternal = $doc->createElement('div');
@@ -268,22 +314,45 @@ function openAppointmentDetailsMgr($db, $file)
     $input->setAttribute('value', date('Y-m-d H:i:s', time()));
     $form->appendChild($input);
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'appointments_assignee_filter');
-    $input->setAttribute('value', $_POST['appointments_assignee_filter']);
-    $form->appendChild($input);
+    if (isset($_POST['open_appointment_from_ticket_mgr'])) {
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'hidden');
+        $input->setAttribute('name', 'ticket_type_filter');
+        $input->setAttribute('value', $_POST['ticket_type_filter']);
+        $form->appendChild($input);
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'appointments_cond_filter');
-    $input->setAttribute('value', $_POST['appointments_cond_filter']);
-    $form->appendChild($input);
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'hidden');
+        $input->setAttribute('name', 'ticket_cond_filter');
+        $input->setAttribute('value', $_POST['ticket_cond_filter']);
+        $form->appendChild($input);
 
-    //$date = date('Y-m-d H:i:s', time());
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'hidden');
+        $input->setAttribute('name', 'open_appointment_from_ticket_mgr');
+        $input->setAttribute('value', $_POST['open_appointment_from_ticket_mgr']);
+        $form->appendChild($input);
 
-    $button = $doc->getElementById('add_appointment_comment_btn');
-    $button->setAttribute('value', $_POST['open_appointment_mgr']);
+        $button = $doc->getElementById('add_appointment_comment_btn');
+        $button->setAttribute('value', $_POST['open_appointment_from_ticket_mgr']);
+    }
+    else {
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'hidden');
+        $input->setAttribute('name', 'appointments_assignee_filter');
+        $input->setAttribute('value', $_POST['appointments_assignee_filter']);
+        $form->appendChild($input);
+
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'hidden');
+        $input->setAttribute('name', 'appointments_cond_filter');
+        $input->setAttribute('value', $_POST['appointments_cond_filter']);
+        $form->appendChild($input);
+
+        $button = $doc->getElementById('add_appointment_comment_btn');
+        $button->setAttribute('value', $_POST['open_appointment_mgr']);
+    }
+
 
     echo $doc->saveHTML();
 
@@ -1543,7 +1612,7 @@ function reportProblem($db)
     echo $doc->saveHTML();
     return NULL;
 }
-
+var_dump($_POST);
 if (isset($_POST['register_submit'])) {
     $stmt = $db->query("SELECT pwd, access_type FROM user WHERE email = '" . $_POST['uemail_register'] . "'");
     $html = file_get_contents('register.html');
@@ -1693,23 +1762,22 @@ if (isset($_POST['register_submit'])) {
     var_dump($_POST);
 } else if (isset($_POST['open_appointment_mgr'])) {
     openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
+} else if (isset($_POST['add_appointment_comment'])) {
+    $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['appointment_comment_content'] . "', '" . $_POST['appointment_comment_author'] . "', NULL, '" . $_POST['add_appointment_comment'] . "', '" . $_POST['appointment_comment_date'] . "')";
+    $stmt = $db->query($string);
+    $_POST['open_appointment_mgr'] = $_POST['add_appointment_comment'];
+    openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
 } else if (isset($_POST['open_appointment_from_ticket_mgr'])) {
     $_POST['open_appointment_mgr'] = $_POST['open_appointment_from_ticket_mgr'];
     openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
 } else if (isset($_POST['open_ticket_from_appointment_mgr'])) {
     $_POST['open_ticket_mgr'] = $_POST['open_ticket_from_appointment_mgr'];
     openTicketDetailsMgr($db, 'ticket_detail.html');
-} else if (isset($_POST['add_appointment_comment'])) {
-    $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['appointment_comment_content'] . "', '" . $_POST['appointment_comment_author'] . "', NULL, '" . $_POST['add_appointment_comment'] . "', '" . $_POST['appointment_comment_date'] . "')";
-    $stmt = $db->query($string);
-    $_POST['open_appointment_mgr'] = $_POST['add_appointment_comment'];
-    openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
 } else if (isset($_POST['remove_comment_ticket'])) {
     $stmt = $db->query("DELETE FROM comment WHERE id_comment = '" . $_POST['id_comment'] . "'");
     $_POST['open_ticket_mgr'] = $_POST['remove_comment_ticket'];
     openTicketDetailsMgr($db, 'ticket_detail.html');
 }   else if (isset($_POST['remove_comment_app'])) {
-    var_dump($_POST);
     $stmt = $db->query("DELETE FROM comment WHERE id_comment = '" . $_POST['id_comment'] . "'");
     $_POST['open_appointment_mgr'] = $_POST['remove_comment_app'];
     openAppointmentDetailsMgr($db, 'serviceapp_detail.html');

@@ -535,8 +535,14 @@ select:hover {
 }
 
 #remove_comment_app_btn {
+    width: 400%;
+    height: 150%;
+    margin-top: -10%;
+}
+
+/*#remove_comment_app_btn {
     grid-column: 3;
     grid-row: 1;
     width: 20%;
     margin-right:30px;
-}
+}*/
