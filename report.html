@@ -1,32 +1,9 @@
-<?php
-session_start();
-if (!isset($_SESSION['username']) || $_SESSION['access_type'] != 'ADMIN' ){
-    $html = file_get_contents('wrong_access.html');
-    $doc = new DOMDocument();
-    $doc->loadHTML($html);
-    $btn = $doc->getElementById('back_btn_access');
-    if ($_SESSION['access_type'] == 'ADMIN'){
-        $btn->setAttribute('onclick', 'location.href=\'admin.php\'');
-    } else if($_SESSION['access_type'] == 'MANAGER'){
-        $btn->setAttribute('onclick', 'location.href=\'manager.php\'');
-    }else if($_SESSION['access_type'] == 'TECHNICIAN'){
-        $btn->setAttribute('onclick', 'location.href=\'technic.php\'');
-    }
-    else if($_SESSION['access_type'] == 'USER'){
-        $btn->setAttribute('onclick', 'location.href=\'user.php\'');
-    } else {
-        $btn->setAttribute('onclick', 'location.href=\'index.html\'');
-    }
-    echo $doc->saveHTML();
-    die();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Report problem</title>
+    <meta id="redirect" http-equiv="refresh" content="0;url=access_denied.html">
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
@@ -64,8 +41,10 @@ if (!isset($_SESSION['username']) || $_SESSION['access_type'] != 'ADMIN' ){
                 <button id="submit_btn" type="submit" name="submit_problem">Submit</button>
                 <button id="clear_btn" type="reset">Clear</button>
                 <!--TODO remove connection to main page-->
-                <button id="back_btn" type="button" onclick="location.href='user.html'">Back</button>
             </div>
+        </form>
+        <form action="main.php" method="post">
+            <button id="back_btn" type="submit" name="back_to_user">Back</button>
         </form>
     </div>
 </header>

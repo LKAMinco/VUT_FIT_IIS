@@ -10,65 +10,17 @@ try {
     die();
 }
 
-if (isset($_POST['login'])) {
-    $html = file_get_contents('login.html');
-    libxml_use_internal_errors(true);
+function openUser($db, $file){
+    $html = file_get_contents($file);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
-    $stmt = $db->query("SELECT pwd, access_type FROM user WHERE email = '" . $_POST['uemail_login'] . "'");
-    //TODO get users from db, check if user exists, if yes, check if password is correct
-    $descBox = $doc->getElementById('info_msg');
-    $fragment = $doc->createDocumentFragment();
-    //$fragment->appendXML('This is text');
-    $descBox->nodeValue = 'Incorrect username or password';
-    if ($stmt->rowCount() == 1) {
-        $row = $stmt->fetch();
-        if ($row['pwd'] == $_POST['pwd_login']) {
-            $_SESSION['username'] = $_POST['uemail_login'];
-            if ($row['access_type'] == 'ADMIN') {
-                setcookie('access_type', 'ADMIN', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
-                $_SESSION['access_type'] = 'ADMIN';
-                $_POST['admin_filter'] = 'All Users';
-                listUsers($db, 'admin.php');
-            } elseif ($row['access_type'] == 'MANAGER') {
-                setcookie('access_type', 'MANAGER', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
-                $_SESSION['access_type'] = 'MANAGER';
-                $_POST['admin_filter'] = 'TECHNICIAN';
-                listUsers($db, 'manager.php');
-            } elseif ($row['access_type'] == 'TECHNICIAN') {
-                setcookie('access_type', 'TECHNICIAN', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
-                $_SESSION['access_type'] = 'TECHNICIAN';
-                header('Location: technic.php');
-            } elseif ($row['access_type'] == 'USER') {
-                setcookie('access_type', 'USER', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 10);
-                $_SESSION['access_type'] = 'USER';
-                header('Location: user.php');
-            } else {
-                echo "This should never happened";
-            }
-        } else {
-            $descBox->appendChild($fragment);
-            echo $doc->saveHTML();
-        }
-    } else {
-        $descBox->appendChild($fragment);
-        echo $doc->saveHTML();
-    }
-}
 
-if (isset($_POST['logout'])) {
-    if (isset($_COOKIE['access_type'])) {
-        setcookie('access_type', '', time() - 3600);
+    if($_SESSION['access_type'] == 'USER'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '1800;url=main.php');
     }
-    if (isset($_COOKIE['username'])) {
-        setcookie('username', '', time() - 3600);
-    }
-    session_destroy();
-    header('Location: index.html');
+
+    echo $doc->saveHTML();
 }
 
 function addOption($doc, $parent, $value, $string)
@@ -85,6 +37,11 @@ function openCreationForm($db, $file){
     $html = file_get_contents($file);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
+
+    if($_SESSION['access_type'] == 'MANAGER'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '1800;url=main.php');
+    }
 
     $form = $doc->getElementById('form_create_back');
 
@@ -123,6 +80,11 @@ function openAppointmentDetailsMgr($db, $file){
     $html = file_get_contents($file);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
+
+    if($_SESSION['access_type'] == 'MANAGER'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '1800;url=main.php');
+    }
 
     $form = $doc->getElementById('get_back');
     $button = $doc->getElementById('get_back_btn');
@@ -424,6 +386,11 @@ function openTicketDetailsMgr($db, $file)
     $doc = new DOMDocument();
     $doc->loadHTML($html);
 
+    if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'USER'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '1800;url=main.php');
+    }
+
     $form = $doc->getElementById('get_back');
     $input = $doc->createElement('input');
     $input->setAttribute('type', 'hidden');
@@ -724,6 +691,12 @@ function listAppointmentsMgr($db, $file)
     $html = file_get_contents($file);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
+
+    if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'TECHNICIAN'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '1800;url=main.php');
+    }
+
     $combox = $doc->getElementById('appointments_assignee_filter');
 
     $assignees = $db->query("SELECT email FROM user where access_type = 'TECHNICIAN'");
@@ -898,6 +871,12 @@ function listTicketsMgr($db, $file)
     $html = file_get_contents($file);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
+
+    if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'USER'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '1800;url=main.php');
+    }
+
     $table = $doc->getElementById('tickets_search_results');
 
     $filterForm = $doc->getElementById($_POST['ticket_type_filter']);
@@ -1022,6 +1001,7 @@ function listTicketsMgr($db, $file)
 
 function listUsers($db, $file)
 {
+
     if ($_POST['admin_filter'] == "All Users") {
         $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user");
     } else {
@@ -1031,6 +1011,18 @@ function listUsers($db, $file)
     $html = file_get_contents($file);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
+
+    if($file == 'admin.html'){
+        if($_SESSION['access_type'] == 'ADMIN'){
+            $meta = $doc->getElementById('redirect');
+            $meta->setAttribute('content', '1800;url=main.php');
+        }
+    } else if($file == 'manager.html'){
+        if($_SESSION['access_type'] == 'MANAGER'){
+            $meta = $doc->getElementById('redirect');
+            $meta->setAttribute('content', '1800;url=main.php');
+        }
+    }
 
     if($_SESSION['access_type'] == 'ADMIN'){
         $form = $doc->getElementById('form_addmgr');
@@ -1228,6 +1220,11 @@ function listAppTech($db, $file)
     $doc = new DOMDocument();
     $doc->loadHTML($html);
 
+    if($_SESSION['access_type'] == 'TECHNICIAN'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '1800;url=main.php');
+    }
+
     $filterForm = $doc->getElementById($_POST['tapp_filter1']);
     $filterForm->setAttribute('selected', 'True');
     $filterForm = $doc->getElementById($_POST['tapp_filter2']);
@@ -1370,13 +1367,14 @@ function listAppDetails($db, $file)
     $doc = new DOMDocument();
     $doc->loadHTML($html);
 
-    echo "test <br>";
+    if($_SESSION['access_type'] == 'TECHNICIAN'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '1800;url=main.php');
+    }
 
     $doc->getElementById('th_ass')->nodeValue = 'Author';
     $form = $doc->getElementById('get_back_btn');
     $form->setAttribute('name', 'search_tapp');
-
-    echo "test <br>";
 
     $form = $doc->getElementById('get_back');
 
@@ -1385,8 +1383,6 @@ function listAppDetails($db, $file)
     $input->setAttribute('name', 'tapp_filter1');
     $input->setAttribute('value', $_POST['tapp_filter1']);
     $form->appendChild($input);
-
-    echo "test <br>";
 
     $input = $doc->createElement('input');
     $input->setAttribute('type', 'hidden');
@@ -1402,8 +1398,6 @@ function listAppDetails($db, $file)
     $input->setAttribute('value', $_POST['tapp_filter1']);
     $form->appendChild($input);
 
-    echo "test <br>";
-
     $input = $doc->createElement('input');
     $input->setAttribute('type', 'hidden');
     $input->setAttribute('name', 'tapp_filter2');
@@ -1417,8 +1411,6 @@ function listAppDetails($db, $file)
     $button->setAttribute('value', $_POST['show_tapp']);
     $button->nodeValue = 'Show Ticket';
     $form->appendChild($button);
-
-    echo "test <br>";
 
     $stmt = $db->query("SELECT id_appointment, title, author, assignee, descript, estimation_date, cond, time_spent, parent_ticket FROM appointment where id_appointment = " . $_POST['show_tapp']);
 
@@ -1618,6 +1610,11 @@ function listAppTicket($db, $file){
     $doc = new DOMDocument();
     $doc->loadHTML($html);
 
+    if($_SESSION['access_type'] == 'TECHNICIAN'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '1800;url=main.php');
+    }
+
     $button = $doc->getElementById('get_back_btn');
     $button->setAttribute('name', 'show_tapp');
     $button->setAttribute('value', $_POST['open_ticket_tapp']);
@@ -1725,6 +1722,16 @@ function returnData($doc, $values, $msg, $can_login)
 
 function reportProblem($db)
 {
+    $html = file_get_contents('report.html');
+    libxml_use_internal_errors(true);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+
+    if($_SESSION['access_type'] == 'USER'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '10;url=main.php');
+    }
+
     $tempname = $_FILES["uploadfile"]["tmp_name"];
     $ext = pathinfo($_FILES["uploadfile"]["name"], PATHINFO_EXTENSION);
     $folder = "./images/" . $_SESSION['username'] . date("Ymd_His") . "." . $ext;
@@ -1739,10 +1746,7 @@ function reportProblem($db)
         'date_add' => date("Y-m-d H:i:s"),
         'image' => $_SESSION['username'] . date("Ymd_His") . "." . $ext,
     ];
-    $html = file_get_contents('report.php');
-    libxml_use_internal_errors(true);
-    $doc = new DOMDocument();
-    $doc->loadHTML($html);
+
     $stmt = $db->prepare("INSERT INTO ticket (title, address, category, descript, cond, author, date_add, image) VALUES (:title, :address, :category, :descript, :cond, :author, :date_add, :image)");
     $stmt->execute($values);
     $msg = "Problem was reported";
@@ -1750,8 +1754,67 @@ function reportProblem($db)
     echo $doc->saveHTML();
     return NULL;
 }
-var_dump($_POST);
-if (isset($_POST['register_submit'])) {
+
+if (isset($_POST['login'])) {
+    $html = file_get_contents('login.html');
+    libxml_use_internal_errors(true);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+    $stmt = $db->query("SELECT pwd, access_type FROM user WHERE email = '" . $_POST['uemail_login'] . "'");
+    //TODO get users from db, check if user exists, if yes, check if password is correct
+    $descBox = $doc->getElementById('info_msg');
+    $fragment = $doc->createDocumentFragment();
+    //$fragment->appendXML('This is text');
+    $descBox->nodeValue = 'Incorrect username or password';
+    if ($stmt->rowCount() == 1) {
+        $row = $stmt->fetch();
+        if ($row['pwd'] == $_POST['pwd_login']) {
+            $_SESSION['username'] = $_POST['uemail_login'];
+            if ($row['access_type'] == 'ADMIN') {
+                setcookie('access_type', 'ADMIN', time() + 3600);
+                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                $_SESSION['access_type'] = 'ADMIN';
+                $_POST['admin_filter'] = 'All Users';
+                listUsers($db, 'admin.html');
+            } elseif ($row['access_type'] == 'MANAGER') {
+                setcookie('access_type', 'MANAGER', time() + 3600);
+                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                $_SESSION['access_type'] = 'MANAGER';
+                $_POST['admin_filter'] = 'TECHNICIAN';
+                listUsers($db, 'manager.html');
+            } elseif ($row['access_type'] == 'TECHNICIAN') {
+                setcookie('access_type', 'TECHNICIAN', time() + 3600);
+                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                $_SESSION['access_type'] = 'TECHNICIAN';
+                $_POST['tapp_filter1'] = 'All my appoinments';
+                $_POST['tapp_filter2'] = 'All condition';
+                listAppTech($db, 'technic.html');
+            } elseif ($row['access_type'] == 'USER') {
+                setcookie('access_type', 'USER', time() + 3600);
+                setcookie('username', $_POST['uemail_login'], time() + 10);
+                $_SESSION['access_type'] = 'USER';
+                openUser($db, 'user.html');
+            } else {
+                echo "This should never happened";
+            }
+        } else {
+            $descBox->appendChild($fragment);
+            echo $doc->saveHTML();
+        }
+    } else {
+        $descBox->appendChild($fragment);
+        echo $doc->saveHTML();
+    }
+} else if (isset($_POST['logout'])) {
+    if (isset($_COOKIE['access_type'])) {
+        setcookie('access_type', '', time() - 3600);
+    }
+    if (isset($_COOKIE['username'])) {
+        setcookie('username', '', time() - 3600);
+    }
+    session_destroy();
+    header('Location: index.html');
+} else if (isset($_POST['register_submit'])) {
     $stmt = $db->query("SELECT pwd, access_type FROM user WHERE email = '" . $_POST['uemail_register'] . "'");
     $html = file_get_contents('register.html');
     libxml_use_internal_errors(true);
@@ -1808,9 +1871,9 @@ if (isset($_POST['register_submit'])) {
     }
 
 } else if (isset($_POST['search_tapp'])) {
-    listAppTech($db, 'technic.php');/*
+    listAppTech($db, 'technic.html');/*
 } else if (isset($_POST['AAA'])) {
-    listAppTech($db, 'technic.php');*/
+    listAppTech($db, 'technic.html');*/
 } else if (isset($_POST['submit_problem'])) {
     reportProblem($db);
     //TODO save problem into db
@@ -1819,20 +1882,20 @@ if (isset($_POST['register_submit'])) {
     $stmt = $db->query("DELETE FROM user where email = '" . $_POST['remove'] . "'");
     $_POST['admin_filter'] = $_POST['filter_status'];
     if(isset($_POST['admin_remove'])){
-        listUsers($db, 'admin.php');
+        listUsers($db, 'admin.html');
     }
     else{
-        listUsers($db, 'manager.php');
+        listUsers($db, 'manager.html');
     }
     ;/*
 } else if (isset($_POST['add_comment'])) {
     $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['comment_content'] . "', '" . $_POST['comment_author'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
     $stmt = $db->query($string);
     $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
-    ticketComment($db, 'technic.php');
+    ticketComment($db, 'technic.html');
     //TODO:*/
 } else if (isset($_POST['admin_search'])) {
-    listUsers($db, 'admin.php');
+    listUsers($db, 'admin.html');
 } else if (isset($_POST['add_manager'])) {
     $html = file_get_contents('register.html');
     $doc = new DOMDocument();
@@ -1909,7 +1972,7 @@ if (isset($_POST['register_submit'])) {
     listTicketsMgr($db, 'list_tickets.html');
 } else if (isset($_POST['load_cityman'])) {
     $_POST['admin_filter'] = 'TECHNICIAN';
-    listUsers($db, 'manager.php');
+    listUsers($db, 'manager.html');
 } else if (isset($_POST['set_cond'])) {
     $stmt = $db->query("UPDATE ticket SET cond = '" . $_POST['new_cond'] . "' where id_ticket = " . $_POST['set_cond']);
     listTicketsMgr($db, 'list_tickets.html');
@@ -1980,7 +2043,9 @@ if (isset($_POST['register_submit'])) {
     }
     openTicketDetailsMgr($db, 'ticket_detail.html');
 } else if (isset($_POST['load_user'])) {
-    header('Location: user.php');
+    openUser($db, 'user.html');
+} else if (isset($_POST['back_to_user'])) {
+    openUser($db, 'user.html');
 } else if(isset($_POST['get_back_to_ticket'])){
     $_POST['open_ticket_mgr'] = $_POST['get_back_to_ticket'];
     openTicketDetailsMgr($db, 'ticket_detail.html');
@@ -2003,7 +2068,7 @@ if (isset($_POST['register_submit'])) {
     $stmt = $db->query("UPDATE appointment SET time_spent = '" . $_POST['time_spent'] . "' where id_appointment = " . $_POST['set_tapp']);
     $stmt = $db->query("UPDATE appointment SET estimation_date = '" . $_POST['est_date'] . "' where id_appointment = " . $_POST['set_tapp']);
     $stmt = $db->query("UPDATE appointment SET cond = '" . $_POST['new_cond'] . "' where id_appointment = " . $_POST['set_tapp']);
-    listAppTech($db, 'technic.php');
+    listAppTech($db, 'technic.html');
 } else if (isset($_POST['show_tapp'])) {
     listAppDetails($db, 'serviceapp_detail.html');
 } else if (isset($_POST['add_tap_comment'])) {
@@ -2023,5 +2088,25 @@ if (isset($_POST['register_submit'])) {
     listAppDetails($db, 'serviceapp_detail.html');
 } else if (isset($_POST['open_ticket_tapp'])) {
     listAppTicket($db, 'ticket_detail.html');
+} else if (isset($_POST['report_port'])){
+    $html = file_get_contents('report.html');
+    libxml_use_internal_errors(true);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+
+    if($_SESSION['access_type'] == 'USER'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '1800;url=main.php');
+    }
+    echo $doc->saveHTML();
+} else{
+    if (isset($_COOKIE['access_type'])) {
+        setcookie('access_type', '', time() - 3600);
+    }
+    if (isset($_COOKIE['username'])) {
+        setcookie('username', '', time() - 3600);
+    }
+    session_destroy();
+    header('Location: index.html');
 }
 ?>
