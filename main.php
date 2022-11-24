@@ -30,23 +30,23 @@ if (isset($_POST['login'])) {
                 setcookie('username', $_POST['uemail_login'], time() + 3600);
                 $_SESSION['access_type'] = 'ADMIN';
                 $_POST['admin_filter'] = 'All Users';
-                listUsers($db, 'admin.html');
+                listUsers($db, 'admin.php');
             } elseif ($row['access_type'] == 'MANAGER') {
                 setcookie('access_type', 'MANAGER', time() + 3600);
                 setcookie('username', $_POST['uemail_login'], time() + 3600);
                 $_SESSION['access_type'] = 'MANAGER';
                 $_POST['admin_filter'] = 'TECHNICIAN';
-                listUsers($db, 'manager.html');
+                listUsers($db, 'manager.php');
             } elseif ($row['access_type'] == 'TECHNICIAN') {
                 setcookie('access_type', 'TECHNICIAN', time() + 3600);
                 setcookie('username', $_POST['uemail_login'], time() + 3600);
                 $_SESSION['access_type'] = 'TECHNICIAN';
-                header('Location: technic.html');
+                header('Location: technic.php');
             } elseif ($row['access_type'] == 'USER') {
                 setcookie('access_type', 'USER', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                setcookie('username', $_POST['uemail_login'], time() + 10);
                 $_SESSION['access_type'] = 'USER';
-                header('Location: user.html');
+                header('Location: user.php');
             } else {
                 echo "This should never happened";
             }
@@ -1341,27 +1341,25 @@ function listAppTech($db, $file)
     return NULL;
 }
 
-function makeElement($doc,$element_text, $id, $name, $type, $value, $element_type, $element){
-    //TODO pozriet či element_type je nepovinny argument
-    //TODO pridat defaultne hodnoty
+function makeElement($doc,$element_type, $element_text, $id, $name, $type, $value, $element){
     if (!isset($element)){
         $ele = $doc->createElement($element_type, $element_text);
     } else {
         $ele = $element;
     }
-    if (isset($id)){
+    if ($id != ''){
         $ele->setAttribute('id', $id);
     }
-    if (isset($name)){
+    if ($name != ''){
         $ele->setAttribute('name', $name);
     }
-    if (isset($type)){
+    if ($type != ''){
         $ele->setAttribute('type', $type);
     }
-    if (isset($type)){
+    if ($type != ''){
         $ele->setAttribute('type', $type);
     }
-    if (isset($value)){
+    if ($value != ''){
         $ele->setAttribute('value', $value);
     }
 }
@@ -1741,7 +1739,7 @@ function reportProblem($db)
         'date_add' => date("Y-m-d H:i:s"),
         'image' => $_SESSION['username'] . date("Ymd_His") . "." . $ext,
     ];
-    $html = file_get_contents('report.html');
+    $html = file_get_contents('report.php');
     libxml_use_internal_errors(true);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
@@ -1810,9 +1808,9 @@ if (isset($_POST['register_submit'])) {
     }
 
 } else if (isset($_POST['search_tapp'])) {
-    listAppTech($db, 'technic.html');/*
+    listAppTech($db, 'technic.php');/*
 } else if (isset($_POST['AAA'])) {
-    listAppTech($db, 'technic.html');*/
+    listAppTech($db, 'technic.php');*/
 } else if (isset($_POST['submit_problem'])) {
     reportProblem($db);
     //TODO save problem into db
@@ -1821,20 +1819,20 @@ if (isset($_POST['register_submit'])) {
     $stmt = $db->query("DELETE FROM user where email = '" . $_POST['remove'] . "'");
     $_POST['admin_filter'] = $_POST['filter_status'];
     if(isset($_POST['admin_remove'])){
-        listUsers($db, 'admin.html');
+        listUsers($db, 'admin.php');
     }
     else{
-        listUsers($db, 'manager.html');
+        listUsers($db, 'manager.php');
     }
     ;/*
 } else if (isset($_POST['add_comment'])) {
     $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['comment_content'] . "', '" . $_POST['comment_author'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
     $stmt = $db->query($string);
     $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
-    ticketComment($db, 'technic.html');
+    ticketComment($db, 'technic.php');
     //TODO:*/
 } else if (isset($_POST['admin_search'])) {
-    listUsers($db, 'admin.html');
+    listUsers($db, 'admin.php');
 } else if (isset($_POST['add_manager'])) {
     $html = file_get_contents('register.html');
     $doc = new DOMDocument();
@@ -1911,7 +1909,7 @@ if (isset($_POST['register_submit'])) {
     listTicketsMgr($db, 'list_tickets.html');
 } else if (isset($_POST['load_cityman'])) {
     $_POST['admin_filter'] = 'TECHNICIAN';
-    listUsers($db, 'manager.html');
+    listUsers($db, 'manager.php');
 } else if (isset($_POST['set_cond'])) {
     $stmt = $db->query("UPDATE ticket SET cond = '" . $_POST['new_cond'] . "' where id_ticket = " . $_POST['set_cond']);
     listTicketsMgr($db, 'list_tickets.html');
@@ -1982,7 +1980,7 @@ if (isset($_POST['register_submit'])) {
     }
     openTicketDetailsMgr($db, 'ticket_detail.html');
 } else if (isset($_POST['load_user'])) {
-    header('Location: user.html');
+    header('Location: user.php');
 } else if(isset($_POST['get_back_to_ticket'])){
     $_POST['open_ticket_mgr'] = $_POST['get_back_to_ticket'];
     openTicketDetailsMgr($db, 'ticket_detail.html');
@@ -2005,7 +2003,7 @@ if (isset($_POST['register_submit'])) {
     $stmt = $db->query("UPDATE appointment SET time_spent = '" . $_POST['time_spent'] . "' where id_appointment = " . $_POST['set_tapp']);
     $stmt = $db->query("UPDATE appointment SET estimation_date = '" . $_POST['est_date'] . "' where id_appointment = " . $_POST['set_tapp']);
     $stmt = $db->query("UPDATE appointment SET cond = '" . $_POST['new_cond'] . "' where id_appointment = " . $_POST['set_tapp']);
-    listAppTech($db, 'technic.html');
+    listAppTech($db, 'technic.php');
 } else if (isset($_POST['show_tapp'])) {
     listAppDetails($db, 'serviceapp_detail.html');
 } else if (isset($_POST['add_tap_comment'])) {

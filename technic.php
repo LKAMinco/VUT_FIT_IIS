@@ -1,3 +1,27 @@
+<?php
+session_start();
+if (!isset($_SESSION['username']) || $_SESSION['access_type'] != 'TECHNICIAN' ){
+    $html = file_get_contents('wrong_access.html');
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+    $btn = $doc->getElementById('back_btn_access');
+    if ($_SESSION['access_type'] == 'ADMIN'){
+        $btn->setAttribute('onclick', 'location.href=\'admin.php\'');
+    } else if($_SESSION['access_type'] == 'MANAGER'){
+        $btn->setAttribute('onclick', 'location.href=\'manager.php\'');
+    }else if($_SESSION['access_type'] == 'TECHNICIAN'){
+        $btn->setAttribute('onclick', 'location.href=\'technic.php\'');
+    }
+    else if($_SESSION['access_type'] == 'USER'){
+        $btn->setAttribute('onclick', 'location.href=\'user.php\'');
+    } else {
+        $btn->setAttribute('onclick', 'location.href=\'index.html\'');
+    }
+    echo $doc->saveHTML();
+    die();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
