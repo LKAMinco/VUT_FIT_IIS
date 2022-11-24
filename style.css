@@ -442,6 +442,136 @@ select:hover {
     color: whitesmoke;
 }
 
+#est_date {
+    width: 80%;
+}
+
+#time_spent {
+    width: 30%;
+    text-align: center;
+}
+
+#cond_app {
+    width: 40%;
+}
+
+#table_inside_div {
+    margin-top: 12%;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+}
+
+#time_spent {
+    grid-column: 1;
+}
+
+#est_date {
+    margin-left: -40%;
+    width: 110%;
+    grid-column: 2;
+}
+
+#cond_app {
+    width: 100%;
+    margin-left: -10%;
+    grid-column: 3;
+}
+
+#set_tapp_btn {
+    width: 100%;
+    margin-top: 5%;
+    grid-column: 4;
+}
+
+#show_btn {
+    margin-top: 5%;
+    grid-column: 5;
+}
+
+#appointment_search_results tr th:nth-child(2){
+    width: 13%;
+}
+
+#appointment_search_results tr th:nth-child(3){
+    width: 25%;
+}
+
+#appointment_search_results tr th:nth-child(4){
+    width: 13%;
+}
+
+#appointment_search_results tr th:last-child, #appointment_search_results tr th:nth-last-child(2){
+    background: none;
+}
+
+#remove_comment_tapp_btn{
+    grid-column: 3;
+    grid-row: 1;
+}
+
+#cond_app_tech {
+    grid-column: 1;
+}
+
+#est_date_tech {
+    grid-column: 2;
+    margin-left: 10%;
+}
+
+#time_spent_tech {
+    grid-column: 3;
+    width: 40%;
+    margin-left: 30%;
+}
+
+#set_tapp_btn_tech {
+    grid-column: 4;
+    margin-top: -5%;
+}
+
+#auth_nonvis {
+    visibility: hidden;
+}
+
+#ticket_from_tapp_btn {
+    width: 98%;
+}
+
+#set_tapp_btn_tech {
+    height: 80%;
+    margin-top: 5px;
+}
+
+#show_btn {
+    margin-top: 3px;
+}
+
+#tapp_filter1 {
+    width: 90%;
+    height: 65%;
+    margin-top: 20px;
+}
+
+#tapp_filter2 {
+    width: 90%;
+    height: 65%;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+
+#remove_comment_app_btn {
+    width: 400%;
+    height: 150%;
+    margin-top: -10%;
+}
+
+/*#remove_comment_app_btn {
+    grid-column: 3;
+    grid-row: 1;
+    width: 20%;
+    margin-right:30px;
+}*/
+
 #ticket_id img {
     margin-left: 50px;
     margin-top: 50px;

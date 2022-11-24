@@ -381,11 +381,8 @@ function openAppointmentDetailsMgr($db, $file){
         $input->setAttribute('value', $_POST['appointments_assignee_filter']);
         $form->appendChild($input);
 
-        $input = $doc->createElement('input');
-        $input->setAttribute('type', 'hidden');
-        $input->setAttribute('name', 'appointments_cond_filter');
-        $input->setAttribute('value', $_POST['appointments_cond_filter']);
-        $form->appendChild($input);
+        $combox = $doc->createElement('select');
+        $combox->setAttribute('name', 'new_cond');
 
     }
 
@@ -553,20 +550,25 @@ function openTicketDetailsMgr($db, $file)
             $combox = $doc->createElement('select');
             $combox->setAttribute('name', 'new_cond');
 
+        $tableCol = $doc->createElement('td');
+        $form = $doc->createElement('form');
 
-            addOption($doc, $combox, $row['cond'], 'UNDER REVIEW');
-            addOption($doc, $combox, $row['cond'], 'IN PROGRESS');
-            addOption($doc, $combox, $row['cond'], 'DONE');
-            addOption($doc, $combox, $row['cond'], 'SUSPENDED');
-            addOption($doc, $combox, $row['cond'], 'REJECTED');
+        $form->setAttribute('id', 'form_appointments_assignee');
+        $form->setAttribute('action', 'main.php');
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('name', 'change_cond');
 
-            $div->appendChild($combox);
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'hidden');
+        $input->setAttribute('name', 'appointments_assignee_filter');
+        $input->setAttribute('value', $_POST['appointments_assignee_filter']);
+        $form->appendChild($input);
 
-            $button = $doc->createElement('button', 'Set');
-            $button->setAttribute('id', 'set_cond_detail_btn');
-            $button->setAttribute('name', 'set_cond_detail');
-            $button->setAttribute('value', $row['id_ticket']);
-            $button->setAttribute('type', 'submit');
+        $input = $doc->createElement('input');
+        $input->setAttribute('type', 'hidden');
+        $input->setAttribute('name', 'appointments_cond_filter');
+        $input->setAttribute('value', $_POST['appointments_cond_filter']);
+        $form->appendChild($input);
 
             $div->appendChild($button);
         }
@@ -578,6 +580,8 @@ function openTicketDetailsMgr($db, $file)
         $tableCol = $doc->createElement('td', $row['date_add']);
         $tableRow->appendChild($tableCol);
 
+        //Needs to be done in every cycle, otherwise it ends up empty
+        $assignees = $db->query("SELECT email FROM user where access_type = 'TECHNICIAN'");
 
         $table->appendChild($tableRow);
 
@@ -678,6 +682,31 @@ function openTicketDetailsMgr($db, $file)
         $input->setAttribute('name', 'appointments_assignee_filter');
         $input->setAttribute('value', $_POST['appointments_assignee_filter']);
         $form->appendChild($input);
+
+        $button = $doc->createElement('button', $row['title']);
+        $button->setAttribute('id', 'open_ticket_mgr_btn');
+        $button->setAttribute('name', 'open_ticket_mgr');
+        $button->setAttribute('value', $row['id_ticket']);
+        $button->setAttribute('type', 'submit');
+
+        $form->appendChild($button);
+        $tableCol->appendChild($form);
+        $tableRow->appendChild($tableCol);
+
+        $tableCol = $doc->createElement('td', $row['category']);
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('td', $row['date_add']);
+        $tableRow->appendChild($tableCol);
+
+        /* FORM FOR CHANGING CONDITION IN TICKET*/
+
+        $tableCol = $doc->createElement('td');
+        $form = $doc->createElement('form');
+
+        $form->setAttribute('id', 'form_ticket_cond');
+        $form->setAttribute('action', 'main.php');
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('name', 'change_cond');
 
         $input = $doc->createElement('input');
         $input->setAttribute('type', 'hidden');
@@ -1005,6 +1034,7 @@ function listTicketsMgr($db, $file)
             $button->setAttribute('name', 'set_cond');
             $button->setAttribute('value', $row['id_ticket']);
             $button->setAttribute('type', 'submit');
+            $form->appendChild($button);
 
             $div->appendChild($button);
             //--------------------------------------------------
