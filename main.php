@@ -1768,7 +1768,7 @@ if (isset($_POST['login'])) {
     $descBox->nodeValue = 'Incorrect username or password';
     if ($stmt->rowCount() == 1) {
         $row = $stmt->fetch();
-        if ($row['pwd'] == $_POST['pwd_login']) {
+        if(password_verify($_POST['pwd_login'], $row['pwd'])) {
             $_SESSION['username'] = $_POST['uemail_login'];
             if ($row['access_type'] == 'ADMIN') {
                 setcookie('access_type', 'ADMIN', time() + 3600);
@@ -1820,16 +1820,17 @@ if (isset($_POST['login'])) {
     libxml_use_internal_errors(true);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
+    $hash_pwd = password_hash($_POST['upwd_register'], PASSWORD_DEFAULT);
     $values = [
         'email' => $_POST['uemail_register'],
-        'pwd' => $_POST['upwd_register'],
+        'pwd' => $hash_pwd,
         'first_name' => $_POST['ufirstname_register'],
         'last_name' => $_POST['ulastname_register'],
         'date_of_birth' => $_POST['udate_register'],
         'residence' => $_POST['uaddress_register'],
         'access_type' => $_POST['utype_register'],
     ];
-    if ($_POST['upwd_register'] != $_POST['upwdconf_register']) {
+    if(!password_verify($_POST['upwd_register'], $_POST['upwdconf_register'])) {
         $msg = 'Password does not match';
         returnData($doc, $values, $msg, false);
         echo $doc->saveHTML();

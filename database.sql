@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS user;
 
 CREATE TABLE user (
     email varchar(255) NOT NULL,
-    pwd varchar(24) NOT NULL,
+    pwd varchar(70) NOT NULL,
     first_name varchar(255) NOT NULL,
     last_name varchar(255) NOT NULL,
     date_of_birth date NOT NULL,
