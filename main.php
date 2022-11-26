@@ -1240,17 +1240,9 @@ function listAppTicket($db, $file){
 
     $form = $doc->getElementById('get_back');
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'tapp_filter1');
-    $input->setAttribute('value', $_POST['tapp_filter1']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'tapp_filter2');
-    $input->setAttribute('value', $_POST['tapp_filter2']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
 
     $temp = $db->query("SELECT id_appointment, parent_ticket FROM appointment where id_appointment = " . $_POST['open_ticket_tapp']);
     foreach ($temp as $line){
@@ -1268,6 +1260,7 @@ function listAppTicket($db, $file){
 
         $img = $doc->createElement('img');//TODO uprav si to julo
         $img->setAttribute('src', './images/' . $row['image']);
+        $img->setAttribute('width', '700');
         $doc->getElementById('ticket_id')->appendChild($img);
 
         $table = $doc->getElementById('ticket_info_table');
