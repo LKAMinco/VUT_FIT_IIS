@@ -126,24 +126,24 @@
 <h4>Hlavní funkce main.php:</h4>
 <ul>
     <li>openAppointmentDetailsMgr() - otevøe jeden konkrétní appointment, který je mo¾né upravit, zobrazí v¹echny jeho
-        vlastnosti a comentáøe - role manager
+        vlastnosti a komentáøe - role manager
     </li>
     <li>openTicketDetailsMgr()- otevøe jeden konkrétní ticket, který je mo¾né upravit, zobrazí v¹echny jeho vlastnosti a
-        comentáøe - role manager
+        komentáøe - role manager a user jako obyvatel mìsta (nemá pøístup k zmìnì stavu)
     </li>
     <li>listAppointmentsMgr() - vypí¹e v¹echny dostupné appointmenty podle zvoleného filtru a dovolí jejich úpravu -
         role manager
     </li>
     <li>listTicketsMgr() - vypí¹e v¹echny dostupné tickety podle zvoleného filtru a dovolí jejich úpravu - role
-        manager
+        manager a user jako obyvatel mìsta (nemá pøístup k zmìnì stavu)
     </li>
     <li>listUsers() - zobrazí výpis v¹ech u¾ivatekù a dovoluje mazání úètù - role admin</li>
     <li>listAppTech() - zobrazí výpis v¹ech appointmentù na hlavní stranì po pøihlá¹ení na technika a umo¾òuje zmìnu
         hodnot appointù
     </li>
-    <!-- FIXME:  -->
-    <li>listAppDetails() - zobrazení detailu appointmentu - role technik </li>
-    <!-- FIXME:  -->
+    <li>listAppDetails() - zobrazení detailu appointmentu a dovolí úpravu jeho stavu a pøidání komentáøù - role
+        technik
+    </li>
     <li>listAppTicket() - pomocí ní technik uvidí pùvodní ticket s jeho detailem, podle kterého byl vytvoøen pøíslu¹ný
         appointment, pøes který se na nìj dostal - role technik
     </li>
@@ -159,18 +159,33 @@
 <h2>Instalace</h2>
 Struènì popi¹te:
 <ul>
-    <li>postup instalace na server,</li>
-    <li>softwarové po¾adavky (verze PHP apod.),</li>
-    <!-- FIXME: MYSQL verze -->
-    <!-- FIXME: HTML vezre -->
-    <p>PHP 8.1 a MYSQL</p>
-    <li>jak rozbalit, konfigurovat, inicializovat databázi, ...</li>
+    <li>Postup instalace na server:</li>
+    <ul>
+        <li>Nahrát soubory na server</li>
+        <li>Vytvoøit slo¾ku "images" v koøenovém adresáøi, ve kterém se nachází soubor main.php</li>
+        <li></li>
+        <li></li>
+        <li>V pøípadì, ¾e se soubor main.php neodkazuje na správnou databází, je nutné pøepsat pøipojení k databázi</li>
+    </ul>
+
+    <li>Softwarové po¾adavky:</li>
+    <ul>
+        <li>PHP 8.1, MYSQL a HTML5</li>
+    </ul>
+    <li>Jak rozbalit, konfigurovat, inicializovat databázi:</li>
+    <ol>
+        <li>Pøipojit se na databázový server</li>
+        <li>Spustit na serveru .sql soubor s databází</li>
+        <li>V pøípadì, ¾e se soubor hash_help.php neodkazuje na správnou databází, je nutné pøepsat pøipojení k databázi</li>
+        <li>Pustit hesh_help.php - tento script vymìní v¹echna hesla v databázi za zahashované (pou¾ívá se pouze jednou
+            pøi inicializaci databáze)
+        </li>
+        <li>U¾ívat si funkènost na¹eho produktu</li>
+    </ol>
 </ul>
 
 <h2>Známé problémy</h2>
-<p>Zde popi¹te, které body zadání nejsou implementovány a z jakého dùvodu. Napø. &#8222;Z èasových dùvodù nebyla
-    implementována správa u¾ivatelù.&#8221; Pomù¾ete tím zrychlit hodnocení, kdy¾ neimplementované funkce nebudeme muset
-    dlouze hledat.</p>
+<p>Nelze pøidat víc ne¾ jeden obrázek pøi registraci tiketu a jeho velikost není omezená.</p>
 
 
 <style type="text/css">
