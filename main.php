@@ -10,6 +10,13 @@ try {
     die();
 }
 
+if (!isset($_COOKIE['username']) && !isset($_POST['login'])) {
+    session_destroy();
+    header("Location: wrong_access.html");
+} else {
+    setcookie('username', $_SESSION['username'], time() + 3600, '/', NULL, true, true);
+}
+
 function setElement( $doc, $element_type, $element_text, $id, $name, $type, $value, $parent, $element){
     if($element != NULL){
         $ele = $doc->getElementById($element);
@@ -44,13 +51,99 @@ function addOption($doc, $parent, $value, $string)
     $parent->appendChild($option);
 }
 
+function listTicketsAdmin($db, $file){
+    $html = file_get_contents($file);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+
+    if($_SESSION['access_type'] == 'ADMIN'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '3800;url=main.php');
+    }
+
+    $form = $doc->getElementById('get_back');
+    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+
+    $button = $doc->getElementById('get_back_btn');
+    $button->setAttribute('name', 'admin_search');
+
+    $button = $doc->getElementById('search_tickets_btn');
+    $button->setAttribute('name', 'admin_tickets');
+
+    $query_cond = "";
+
+    if ($_POST['ticket_type_filter'] != "All Types") {
+        $query_cond = " where category = '" . $_POST['ticket_type_filter'] . "'";
+    }
+
+    if ($_POST['ticket_cond_filter'] != "All Conditions") {
+        if ($query_cond == "") {
+            $query_cond = " where cond = '" . $_POST['ticket_cond_filter'] . "'";
+        } else {
+            $query_cond = $query_cond . " and cond = '" . $_POST['ticket_cond_filter'] . "'";
+        }
+    }
+
+    if ($query_cond == "") {
+        $stmt = $db->query("SELECT id_ticket, title, date_add FROM ticket");
+    } else {
+        $stmt = $db->query("SELECT id_ticket, title, date_add FROM ticket" . $query_cond);
+    }
+
+    $filterForm = $doc->getElementById($_POST['ticket_type_filter']);
+    $filterForm->setAttribute('selected', 'True');
+
+    $filterForm = $doc->getElementById($_POST['ticket_cond_filter']);
+    $filterForm->setAttribute('selected', 'True');
+
+    $form = $doc->getElementById('form_search_tickets');
+
+    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+
+    $table = $doc->getElementById('tickets_search_results');
+
+    $tableRow = $doc->createElement('tr');
+    $tableCol = $doc->createElement('th', 'Title');
+    $tableRow->appendChild($tableCol);
+    $tableCol = $doc->createElement('th', 'Date');
+    $tableRow->appendChild($tableCol);
+    $table->appendChild($tableRow);
+
+    foreach ($stmt as $row) {
+        $tableRow = $doc->createElement('tr');
+        $tableCol = $doc->createElement('td', $row['title']);
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('td', $row['date_add']);
+        $tableRow->appendChild($tableCol);
+
+        $tableCol = $doc->createElement('td');
+        $form = $doc->createElement('form');
+        $form->setAttribute('id', 'form_ticket_remove');
+        $form->setAttribute('action', 'main.php');
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('name', 'remove_ticket');
+        $tableCol->appendChild($form);
+
+        setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+        setElement( $doc, 'input', '', NULL, 'ticket_type_filter', 'hidden', $_POST['ticket_type_filter'], $form, NULL);
+        setElement( $doc, 'input', '', NULL, 'ticket_cond_filter', 'hidden', $_POST['ticket_cond_filter'], $form, NULL);
+        setElement( $doc, 'button', 'Delete', 'ticket_delete_btn', 'ticket_delete', 'submit', $row['id_ticket'], $form, NULL);
+
+        $tableRow->appendChild($tableCol);
+
+        $table->appendChild($tableRow);
+    }
+
+    echo $doc->saveHTML();
+}
+
 function editUser($db, $file){
     $html = file_get_contents($file);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
 
     $meta = $doc->getElementById('redirect');
-    $meta->setAttribute('content', '1800;url=main.php');
+    $meta->setAttribute('content', '3800;url=main.php');
 
     $form = $doc->getElementById('form_edit_back');
     setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
@@ -112,7 +205,7 @@ function openUser($db, $file){
 
     if($_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $text = $doc->getElementById('edit_btn');
@@ -128,7 +221,7 @@ function openCreationForm($db, $file){
 
     if($_SESSION['access_type'] == 'MANAGER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $form = $doc->getElementById('form_create_back');
@@ -163,7 +256,7 @@ function openAppointmentDetailsMgr($db, $file){
 
     if($_SESSION['access_type'] == 'MANAGER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $form = $doc->getElementById('get_back');
@@ -364,7 +457,7 @@ function openTicketDetailsMgr($db, $file)
 
     if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $form = $doc->getElementById('get_back');
@@ -584,7 +677,7 @@ function listAppointmentsMgr($db, $file)
 
     if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $combox = $doc->getElementById('appointments_assignee_filter');
@@ -741,7 +834,7 @@ function listTicketsMgr($db, $file)
 
     if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $table = $doc->getElementById('tickets_search_results');
@@ -844,9 +937,9 @@ function listUsers($db, $file)
 {
 
     if ($_POST['admin_filter'] == "All Users") {
-        $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user");
+        $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user WHERE NOT access_type = 'NONE'");
     } else {
-        $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user where access_type = '" . $_POST['admin_filter'] . "'");
+        $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user WHERE access_type = '" . $_POST['admin_filter'] . "'");
     }
 
     $html = file_get_contents($file);
@@ -856,12 +949,12 @@ function listUsers($db, $file)
     if($file == 'admin.html'){
         if($_SESSION['access_type'] == 'ADMIN'){
             $meta = $doc->getElementById('redirect');
-            $meta->setAttribute('content', '1800;url=main.php');
+            $meta->setAttribute('content', '3800;url=main.php');
         }
     } else if($file == 'manager.html'){
         if($_SESSION['access_type'] == 'MANAGER'){
             $meta = $doc->getElementById('redirect');
-            $meta->setAttribute('content', '1800;url=main.php');
+            $meta->setAttribute('content', '3800;url=main.php');
         }
     }
 
@@ -871,6 +964,8 @@ function listUsers($db, $file)
 
         $button = $doc->getElementById('edit_btn');
         $button->setAttribute('value', $_SESSION['username']);
+
+        setElement( $doc, 'button', 'Examine Tickets', 'admin_tickets_btn', 'admin_tickets', 'submit', NULL, $form, NULL);
     } else if($_SESSION['access_type'] == 'MANAGER'){
         $button = $doc->getElementById('edit_btn');
         $button->setAttribute('value', $_SESSION['username']);
@@ -1052,7 +1147,7 @@ function listAppTech($db, $file)
 
     if($_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $filterForm = $doc->getElementById($_POST['tapp_filter1']);
@@ -1142,7 +1237,7 @@ function listAppDetails($db, $file)
 
     if($_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $doc->getElementById('th_ass')->nodeValue = 'Author';
@@ -1302,7 +1397,7 @@ function listAppTicket($db, $file){
 
     if($_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $button = $doc->getElementById('get_back_btn');
@@ -1415,7 +1510,7 @@ function reportProblem($db)
 
     if($_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $tempname = $_FILES["uploadfile"]["tmp_name"];
@@ -1461,31 +1556,33 @@ if (isset($_POST['login'])) {
         if(password_verify($_POST['pwd_login'], $row['pwd'])) {
             $_SESSION['username'] = $_POST['uemail_login'];
             if ($row['access_type'] == 'ADMIN') {
-                setcookie('access_type', 'ADMIN', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                setcookie('access_type', 'ADMIN', time() + 3600, '/', NULL, true, true);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
                 $_SESSION['access_type'] = 'ADMIN';
                 $_POST['admin_filter'] = 'All Users';
                 listUsers($db, 'admin.html');
             } elseif ($row['access_type'] == 'MANAGER') {
-                setcookie('access_type', 'MANAGER', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                setcookie('access_type', 'MANAGER', time() + 3600, '/', NULL, true, true);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
                 $_SESSION['access_type'] = 'MANAGER';
                 $_POST['admin_filter'] = 'TECHNICIAN';
                 listUsers($db, 'manager.html');
             } elseif ($row['access_type'] == 'TECHNICIAN') {
-                setcookie('access_type', 'TECHNICIAN', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                setcookie('access_type', 'TECHNICIAN', time() + 3600, '/', NULL, true, true);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
                 $_SESSION['access_type'] = 'TECHNICIAN';
                 $_POST['tapp_filter1'] = 'All my appoinments';
                 $_POST['tapp_filter2'] = 'All condition';
                 listAppTech($db, 'technic.html');
             } elseif ($row['access_type'] == 'USER') {
-                setcookie('access_type', 'USER', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 10);
+                setcookie('access_type', 'USER', time() + 3600, '/', NULL, true, true);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
                 $_SESSION['access_type'] = 'USER';
                 openUser($db, 'user.html');
             } else {
-                echo "This should never happened";
+                $descBox->nodeValue = 'Incorrect username or password';
+                $descBox->appendChild($fragment);
+                echo $doc->saveHTML();
             }
         } else {
             $descBox->appendChild($fragment);
@@ -1774,7 +1871,7 @@ if (isset($_POST['login'])) {
 
     if($_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
     echo $doc->saveHTML();
 } else if (isset($_POST['edit_profile'])){
@@ -1793,10 +1890,24 @@ if (isset($_POST['login'])) {
         editUser($db, 'edit_profile.html');
     }
 } else if (isset($_POST['delete_profile'])){
+    $stmt = $db->query("SET FOREIGN_KEY_CHECKS=0;");
     $stmt = $db->query("DELETE FROM user where email = '" . $_SESSION['username'] . "'");
+    $stmt = $db->query("SET FOREIGN_KEY_CHECKS=1;");
     session_destroy();
     header('Location: index.html');
+} else if (isset($_POST['admin_tickets'])) {
+    if (!isset($_POST['ticket_type_filter'])) {
+        $_POST['ticket_type_filter'] = "All Types";
+    }
+    if (!isset($_POST['ticket_cond_filter'])) {
+        $_POST['ticket_cond_filter'] = "All Conditions";
+    }
+    listTicketsAdmin($db, 'list_tickets.html');
+} else if (isset($_POST['ticket_delete'])){
+    $stmt = $db->query("DELETE FROM ticket where id_ticket = '" . $_POST['ticket_delete'] . "'");
+    listTicketsAdmin($db, 'list_tickets.html');
 } else{
+    var_dump($_POST);
     if (isset($_COOKIE['access_type'])) {
         setcookie('access_type', '', time() - 3600);
     }

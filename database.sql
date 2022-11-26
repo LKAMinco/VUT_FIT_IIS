@@ -23,7 +23,7 @@ CREATE TABLE ticket
     category  varchar(20)   NOT NULL, /* DIRTY STREETS | ROADS | PLAYGROUNDS | BENCHES | ABANDONED VEHICLES | ILLEGAL DUMPS | VEGETATION | VANDALISM | OTHERS */
     descript  varchar(1024) NOT NULL,
     cond      varchar(12)   NOT NULL, /* UNDER REVIEW | IN PROGRESS | DONE | SUSPENDED | REJECTED */
-    author    varchar(255)  NOT NULL,
+    author    varchar(255)  NULL,
     date_add  datetime      NOT NULL,
     image     varchar(255)  NULL ,
     PRIMARY KEY (id_ticket),
@@ -43,7 +43,7 @@ CREATE TABLE appointment (
     PRIMARY KEY(id_appointment),
     FOREIGN KEY(author) REFERENCES user(email),
     FOREIGN KEY(assignee) REFERENCES user(email),
-    FOREIGN KEY(parent_ticket) REFERENCES ticket(id_ticket)
+    FOREIGN KEY(parent_ticket) REFERENCES ticket(id_ticket) ON DELETE CASCADE
 );
 
 CREATE TABLE comment
@@ -56,11 +56,20 @@ CREATE TABLE comment
     date_add           datetime      NOT NULL,
     PRIMARY KEY (id_comment),
     FOREIGN KEY (author) REFERENCES user (email),
-    FOREIGN KEY (parent_ticket) REFERENCES ticket (id_ticket),
+    FOREIGN KEY (parent_ticket) REFERENCES ticket (id_ticket) ON DELETE CASCADE,
     FOREIGN KEY (parent_appointment) REFERENCES appointment (id_appointment)
 );
 
+CREATE TRIGGER acc_deleted BEFORE DELETE ON user
+    FOR EACH ROW
+    BEGIN
+        UPDATE ticket SET author = '[DELETED ACCOUNT]' WHERE author = OLD.email;
+    END;
+
 -- INSERT USERS --
+
+INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
+VALUES ('None', 'None', date('0001-01-01'), 'None', 'NONE', NULL, '[DELETED ACCOUNT]', 'None');
 
 INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)
 VALUES ('Fero', 'Mrkva', date('1979-08-11'), 'Main cemetery', 'ADMIN', NULL, 'admin', 'admin');
