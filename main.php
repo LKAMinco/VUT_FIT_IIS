@@ -709,25 +709,12 @@ function listTicketsMgr($db, $file)
         $form->setAttribute('method', 'post');
         $form->setAttribute('name', 'open_ticket_mgr');
 
-        $input = $doc->createElement('input');
-        $input->setAttribute('type', 'hidden');
-        $input->setAttribute('name', 'ticket_type_filter');
-        $input->setAttribute('value', $_POST['ticket_type_filter']);
-        $form->appendChild($input);
+        setElement( $doc, 'input', '', NULL, 'ticket_type_filter', 'hidden', $_POST['ticket_type_filter'], $form, NULL);
 
-        $input = $doc->createElement('input');
-        $input->setAttribute('type', 'hidden');
-        $input->setAttribute('name', 'ticket_cond_filter');
-        $input->setAttribute('value', $_POST['ticket_cond_filter']);
-        $form->appendChild($input);
+        setElement( $doc, 'input', '', NULL, 'ticket_cond_filter', 'hidden', $_POST['ticket_cond_filter'], $form, NULL);
 
-        $button = $doc->createElement('button', $row['title']);
-        $button->setAttribute('id', 'open_ticket_mgr_btn');
-        $button->setAttribute('name', 'open_ticket_mgr');
-        $button->setAttribute('value', $row['id_ticket']);
-        $button->setAttribute('type', 'submit');
+        setElement( $doc, 'button', $row['title'], 'open_ticket_mgr_btn', 'open_ticket_mgr', 'submit', $row['id_ticket'], $form, NULL);
 
-        $form->appendChild($button);
         $tableCol->appendChild($form);
         $tableRow->appendChild($tableCol);
 
@@ -750,17 +737,9 @@ function listTicketsMgr($db, $file)
         $form->setAttribute('method', 'post');
         $form->setAttribute('name', 'change_cond');
 
-        $input = $doc->createElement('input');
-        $input->setAttribute('type', 'hidden');
-        $input->setAttribute('name', 'ticket_type_filter');
-        $input->setAttribute('value', $_POST['ticket_type_filter']);
-        $form->appendChild($input);
+        setElement( $doc, 'input', '', NULL, 'ticket_type_filter', 'hidden', $_POST['ticket_type_filter'], $form, NULL);
 
-        $input = $doc->createElement('input');
-        $input->setAttribute('type', 'hidden');
-        $input->setAttribute('name', 'ticket_cond_filter');
-        $input->setAttribute('value', $_POST['ticket_cond_filter']);
-        $form->appendChild($input);
+        setElement( $doc, 'input', '', NULL, 'ticket_cond_filter', 'hidden', $_POST['ticket_cond_filter'], $form, NULL);
 
         if (isset($_SESSION['username']) && $_SESSION['access_type'] != 'USER') {
 
@@ -780,13 +759,8 @@ function listTicketsMgr($db, $file)
 
             $div->appendChild($combox);
 
-            $button = $doc->createElement('button', 'Set');
-            $button->setAttribute('id', 'set_cond_btn');
-            $button->setAttribute('name', 'set_cond');
-            $button->setAttribute('value', $row['id_ticket']);
-            $button->setAttribute('type', 'submit');
+            setElement( $doc, 'button', 'Set', 'set_cond_btn', 'set_cond', 'submit', $row['id_ticket'], $div, NULL);
 
-            $div->appendChild($button);
             //--------------------------------------------------
         }
         $tableCol->appendChild($form);
