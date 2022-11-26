@@ -1064,7 +1064,7 @@ function listAppTech($db, $file)
     $tableRow = $doc->createElement('tr');
     $tableCol = $doc->createElement('th', 'Title');
     $tableRow->appendChild($tableCol);
-    $tableCol = $doc->createElement('th', 'Time spent');
+    $tableCol = $doc->createElement('th', 'Time spent [h]');
     $tableRow->appendChild($tableCol);
     $tableCol = $doc->createElement('th', 'Estimation Date');
     $tableRow->appendChild($tableCol);
@@ -1100,7 +1100,7 @@ function listAppTech($db, $file)
         $div->setAttribute('id', 'table_inside_div');
         $tableInsideRow->appendChild($div);
 
-        setElement( $doc, 'input', '', 'time_spent', 'time_spent', 'text', $row['time_spent'], $div, NULL);
+        setElement( $doc, 'input', '', 'time_spent', 'time_spent', 'number', $row['time_spent'], $div, NULL);
 
         setElement( $doc, 'input', '', 'est_date', 'est_date', 'date', $row['estimation_date'], $div, NULL);
 
@@ -1215,7 +1215,7 @@ function listAppDetails($db, $file)
 
         setElement( $doc, 'input', '', 'est_date_tech', 'est_date', 'date', $row['estimation_date'], $div, NULL);
 
-        setElement( $doc, 'input', '', 'time_spent_tech', 'time_spent', 'text', $row['time_spent'], $div, NULL);
+        setElement( $doc, 'input', '', 'time_spent_tech', 'time_spent', 'number', $row['time_spent'], $div, NULL);
 
         setElement( $doc, 'button', 'Set', 'set_tapp_btn_tech', 'set_tapp_detail', 'submit', $tmp['id_appointment'], $div, NULL);
 
