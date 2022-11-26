@@ -1080,39 +1080,17 @@ function listAppDetails($db, $file)
 
     $form = $doc->getElementById('get_back');
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'tapp_filter1');
-    $input->setAttribute('value', $_POST['tapp_filter1']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'tapp_filter2');
-    $input->setAttribute('value', $_POST['tapp_filter2']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
 
     $form = $doc->getElementById('show_appointment_from_ticket');
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'tapp_filter1');
-    $input->setAttribute('value', $_POST['tapp_filter1']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'tapp_filter2');
-    $input->setAttribute('value', $_POST['tapp_filter2']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
 
-    $button = $doc->createElement('button');
-    $button->setAttribute('id', 'ticket_from_tapp_btn');
-    $button->setAttribute('type', 'submit');
-    $button->setAttribute('name', 'open_ticket_tapp');
-    $button->setAttribute('value', $_POST['show_tapp']);
-    $button->nodeValue = 'Show Ticket';
-    $form->appendChild($button);
+    setElement( $doc, 'button', 'Show Ticket', 'ticket_from_tapp_btn', 'open_ticket_tapp', 'submit', $_POST['show_tapp'], $form, NULL);
 
     $stmt = $db->query("SELECT id_appointment, title, author, assignee, descript, estimation_date, cond, time_spent, parent_ticket FROM appointment where id_appointment = " . $_POST['show_tapp']);
 
@@ -1159,46 +1137,18 @@ function listAppDetails($db, $file)
             addOption($doc, $combox, $tmp['cond'], 'SUSPENDED');
             $div->appendChild($combox);
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'parent_ticket');
-            $input->setAttribute('value', $tmp['parent_ticket']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'parent_ticket', 'hidden', $tmp['parent_ticket'], $form, NULL);
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'tapp_filter1');
-            $input->setAttribute('value', $_POST['tapp_filter1']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'tapp_filter2');
-            $input->setAttribute('value', $_POST['tapp_filter2']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
         }
 
-        $input = $doc->createElement('input');
-        $input->setAttribute('id', 'est_date_tech');
-        $input->setAttribute('type', 'date');
-        $input->setAttribute('name', 'est_date');
-        $input->setAttribute('value', $row['estimation_date']);
-        $div->appendChild($input);
+        setElement( $doc, 'input', '', 'est_date_tech', 'est_date', 'date', $row['estimation_date'], $div, NULL);
 
-        $input = $doc->createElement('input');
-        $input->setAttribute('id', 'time_spent_tech');
-        $input->setAttribute('type', 'text');
-        $input->setAttribute('name', 'time_spent');
-        $input->setAttribute('value', $row['time_spent']);
-        $div->appendChild($input);
+        setElement( $doc, 'input', '', 'time_spent_tech', 'time_spent', 'text', $row['time_spent'], $div, NULL);
 
-        $button = $doc->createElement('button', 'Set');
-        $button->setAttribute('id', 'set_tapp_btn_tech');
-        $button->setAttribute('name', 'set_tapp_detail');
-        $button->setAttribute('value', $tmp['id_appointment']);
-        $button->setAttribute('type', 'submit');
-        $div->appendChild($button);
-
+        setElement( $doc, 'button', 'Set', 'set_tapp_btn_tech', 'set_tapp_detail', 'submit', $tmp['id_appointment'], $div, NULL);
 
         $tableRow->appendChild($tableCol);
         $table->appendChild($tableRow);
@@ -1233,30 +1183,13 @@ function listAppDetails($db, $file)
             $form->setAttribute('method', 'post');
             $form->setAttribute('name', 'tapp_remove_comment');
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'tapp_filter1');
-            $input->setAttribute('value', $_POST['tapp_filter1']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'tapp_filter2');
-            $input->setAttribute('value', $_POST['tapp_filter2']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'id_comment');
-            $input->setAttribute('value', $row['id_comment']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'id_comment', 'hidden', $row['id_comment'], $form, NULL);
 
-            $button = $doc->createElement('button', 'Remove');
-            $button->setAttribute('id', 'remove_comment_tapp_btn');
-            $button->setAttribute('name', 'remove_tapp_comment');
-            $button->setAttribute('value', $_POST['show_tapp']);
-            $button->setAttribute('type', 'submit');
-            $form->appendChild($button);
+            setElement( $doc, 'button', 'Remove', 'remove_comment_tapp_btn', 'remove_tapp_comment', 'submit', $_POST['show_tapp'], $form, NULL);
 
             $divInternal->appendChild($form);
 
@@ -1273,29 +1206,13 @@ function listAppDetails($db, $file)
 
     $form = $doc->getElementById('add_comment_form');
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'appointment_comment_author');
-    $input->setAttribute('value', $_SESSION['username']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'appointment_comment_author', 'hidden', $_SESSION['username'], $form, NULL);
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'appointment_comment_date');
-    $input->setAttribute('value', date('Y-m-d H:i:s', time()));
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'appointment_comment_date', 'hidden', date('Y-m-d H:i:s', time()), $form, NULL);
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'tapp_filter1');
-    $input->setAttribute('value', $_POST['tapp_filter1']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
 
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'tapp_filter2');
-    $input->setAttribute('value', $_POST['tapp_filter2']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
 
     $button = $doc->getElementById('add_appointment_comment_btn');
     $button->setAttribute('name', 'add_tap_comment');
