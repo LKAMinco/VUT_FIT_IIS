@@ -172,7 +172,7 @@ INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add
            '2022-08-11 11:12:09');
 
 INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
-    VALUE ('If butter was not so expensive, we could eat real bread and not just drink it.', 'mkapusta@gmail.com', 6,
+    VALUE ('If butter would not be so expensive, we could eat real bread and not just drink it.', 'mkapusta@gmail.com', 6,
            NULL, '2023-02-02 4:20:54');
 
 INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add)
