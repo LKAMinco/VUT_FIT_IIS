@@ -1461,24 +1461,14 @@ if (isset($_POST['login'])) {
             $element->setAttribute('name', "admin_search");
 
             $form = $doc->getElementById('form_register_back');
-
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'admin_filter');
-            $input->setAttribute('value', $_POST['admin_filter']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
         }
         else if($_POST['utype_register'] == 'TECHNICIAN'){
             $element = $doc->getElementById('reg_back_btn');
             $element->setAttribute('name', "load_cityman");
 
             $form = $doc->getElementById('form_register_back');
-
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'admin_filter');
-            $input->setAttribute('value', $_POST['admin_filter']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
         }
         echo $doc->saveHTML();
     }
@@ -1527,20 +1517,10 @@ if (isset($_POST['login'])) {
     $element->setAttribute('value', 'MANAGER');
 
     $form = $doc->getElementById('form_register');
-
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'admin_filter');
-    $input->setAttribute('value', $_POST['admin_filter']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
 
     $form = $doc->getElementById('form_register_back');
-
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'hidden');
-    $input->setAttribute('name', 'admin_filter');
-    $input->setAttribute('value', $_POST['admin_filter']);
-    $form->appendChild($input);
+    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
 
     $element = $doc->getElementById('reg_back_btn');
     $element->setAttribute('name', "admin_search");
