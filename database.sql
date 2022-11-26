@@ -26,7 +26,6 @@ CREATE TABLE ticket
     author    varchar(255)  NOT NULL,
     date_add  datetime      NOT NULL,
     image     varchar(255)  NOT NULL ,
-    /* TODO - PICTURES MISSING */
     PRIMARY KEY (id_ticket),
     FOREIGN KEY (author) REFERENCES user (email)
 );
