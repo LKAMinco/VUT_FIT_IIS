@@ -802,11 +802,7 @@ function listUsers($db, $file)
     if($_SESSION['access_type'] == 'ADMIN'){
         $form = $doc->getElementById('form_addmgr');
 
-        $input = $doc->createElement('input');
-        $input->setAttribute('type', 'hidden');
-        $input->setAttribute('name', 'admin_filter');
-        $input->setAttribute('value', $_POST['admin_filter']);
-        $form->appendChild($input);
+        setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
     }
 
     $table = $doc->getElementById('users_search_results');
@@ -849,26 +845,14 @@ function listUsers($db, $file)
             $form->setAttribute('name', 'filter_status');
             $form->setAttribute('value', $_POST['admin_filter']);
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'filter_status');
-            $input->setAttribute('value', $_POST['admin_filter']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'filter_status', 'hidden', $_POST['admin_filter'], $form, NULL);
 
             if($_SESSION['access_type'] == 'ADMIN'){
-                $input = $doc->createElement('input');
-                $input->setAttribute('type', 'hidden');
-                $input->setAttribute('name', 'admin_remove');
-                $input->setAttribute('value', 'admin_remove');
-                $form->appendChild($input);
+                setElement( $doc, 'input', '', NULL, 'admin_remove', 'hidden', 'admin_remove', $form, NULL);
             }
 
-            $button = $doc->createElement('button', 'Remove');
-            $button->setAttribute('id', 'remove_btn');
-            $button->setAttribute('name', 'remove');
-            $button->setAttribute('value', $row['email']);
-            $button->setAttribute('type', 'submit');
-            $form->appendChild($button);
+            setElement( $doc, 'button', 'Remove', 'remove_btn', 'remove', 'submit', $row['email'], $form, NULL);
+
             $tableCol->appendChild($form);
             $tableRow->appendChild($tableCol);
         }
