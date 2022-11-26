@@ -1830,7 +1830,7 @@ if (isset($_POST['login'])) {
         'residence' => $_POST['uaddress_register'],
         'access_type' => $_POST['utype_register'],
     ];
-    if(!password_verify($_POST['upwd_register'], $_POST['upwdconf_register'])) {
+    if($_POST['upwd_register'] != $_POST['upwdconf_register']) {
         $msg = 'Password does not match';
         returnData($doc, $values, $msg, false);
         echo $doc->saveHTML();
