@@ -25,7 +25,7 @@ CREATE TABLE ticket
     cond      varchar(12)   NOT NULL, /* UNDER REVIEW | IN PROGRESS | DONE | SUSPENDED | REJECTED */
     author    varchar(255)  NOT NULL,
     date_add  datetime      NOT NULL,
-    image     varchar(255)  NOT NULL ,
+    image     varchar(255)  NULL ,
     PRIMARY KEY (id_ticket),
     FOREIGN KEY (author) REFERENCES user (email)
 );

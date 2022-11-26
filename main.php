@@ -426,11 +426,13 @@ function openTicketDetailsMgr($db, $file)
         $text = $doc->getElementById('ticket_desc_a');
         $text->nodeValue = $row['descript'];
 
-        $img = $doc->createElement('img');//TODO uprav si to julo
-        $img->setAttribute('src', './images/' . $row['image']);
-        $img->setAttribute('alt', 'Ticket image');
-        $img->setAttribute('width', '700');
-        $doc->getElementById('ticket_id')->appendChild($img);
+        if($row['image'] != NULL){
+            $img = $doc->createElement('img');
+            $img->setAttribute('src', './images/' . $row['image']);
+            $img->setAttribute('alt', 'Ticket image');
+            $img->setAttribute('width', '700');
+            $doc->getElementById('ticket_id')->appendChild($img);
+        }
 
         $table = $doc->getElementById('ticket_info_table');
 
@@ -1327,10 +1329,13 @@ function listAppTicket($db, $file){
         $text = $doc->getElementById('ticket_desc_a');
         $text->nodeValue = $row['descript'];
 
-        $img = $doc->createElement('img');//TODO uprav si to julo
-        $img->setAttribute('src', './images/' . $row['image']);
-        $img->setAttribute('width', '700');
-        $doc->getElementById('ticket_id')->appendChild($img);
+        if($row['image'] != NULL){
+            $img = $doc->createElement('img');
+            $img->setAttribute('src', './images/' . $row['image']);
+            $img->setAttribute('alt', 'Ticket image');
+            $img->setAttribute('width', '700');
+            $doc->getElementById('ticket_id')->appendChild($img);
+        }
 
         $table = $doc->getElementById('ticket_info_table');
 
@@ -1410,7 +1415,7 @@ function reportProblem($db)
 
     if($_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '10;url=main.php');
+        $meta->setAttribute('content', '1800;url=main.php');
     }
 
     $tempname = $_FILES["uploadfile"]["tmp_name"];
@@ -1428,6 +1433,10 @@ function reportProblem($db)
         'image' => $_SESSION['username'] . date("Ymd_His") . "." . $ext,
     ];
 
+    if ($_FILES['uploadfile']['type'] == ''){
+        $values['image'] = NULL;
+    }
+
     $stmt = $db->prepare("INSERT INTO ticket (title, address, category, descript, cond, author, date_add, image) VALUES (:title, :address, :category, :descript, :cond, :author, :date_add, :image)");
     $stmt->execute($values);
     $msg = "Problem was reported";
@@ -1442,7 +1451,7 @@ if (isset($_POST['login'])) {
     $doc = new DOMDocument();
     $doc->loadHTML($html);
     $stmt = $db->query("SELECT pwd, access_type FROM user WHERE email = '" . $_POST['uemail_login'] . "'");
-    //TODO get users from db, check if user exists, if yes, check if password is correct
+
     $descBox = $doc->getElementById('info_msg');
     $fragment = $doc->createDocumentFragment();
     //$fragment->appendXML('This is text');
@@ -1520,7 +1529,6 @@ if (isset($_POST['login'])) {
             $msg = 'User already exists, please choose another email';
             returnData($doc, $values, $msg, true);
         } else {
-            //TODO prerobit stranku uspesnej registracie podla typu registrovaneho uzivatela, aby sa to vedelo spravne vratit cez tlacidlo back
             $stmt = $db->prepare("INSERT INTO user (email, pwd, first_name, last_name, date_of_birth, residence, access_type) VALUES (:email, :pwd, :first_name, :last_name, :date_of_birth, :residence, :access_type)");
             $stmt->execute($values);
             $descBox = $doc->getElementById('info_msg')->nodeValue = 'Nice, you are registered';
@@ -1562,13 +1570,9 @@ if (isset($_POST['login'])) {
     }
 
 } else if (isset($_POST['search_tapp'])) {
-    listAppTech($db, 'technic.html');/*
-} else if (isset($_POST['AAA'])) {
-    listAppTech($db, 'technic.html');*/
+    listAppTech($db, 'technic.html');
 } else if (isset($_POST['submit_problem'])) {
     reportProblem($db);
-    //TODO save problem into db
-    //TODO add image into db
 } else if (isset($_POST['remove'])) {
     $stmt = $db->query("DELETE FROM user where email = '" . $_POST['remove'] . "'");
     $_POST['admin_filter'] = $_POST['filter_status'];
@@ -1578,13 +1582,6 @@ if (isset($_POST['login'])) {
     else{
         listUsers($db, 'manager.html');
     }
-    ;/*
-} else if (isset($_POST['add_comment'])) {
-    $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['comment_content'] . "', '" . $_POST['comment_author'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
-    $stmt = $db->query($string);
-    $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
-    ticketComment($db, 'technic.html');
-    //TODO:*/
 } else if (isset($_POST['admin_search'])) {
     listUsers($db, 'admin.html');
 } else if (isset($_POST['add_manager'])) {
