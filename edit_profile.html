@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit profile page</title>
+    <meta id="redirect" http-equiv="refresh" content="0;url=access_denied.html">
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
@@ -12,15 +13,17 @@
         <h3 id="info_msg">Edit your informations.</h3>
         <form id="form_edit" action="main.php" method="post">
             <div id="names_id">
-                <input id="name_id" type="text" name="ufirstname_register" placeholder="First name" required value="" maxlength="250">
-                <input id="surename_id" type="text" name="ulastname_register" placeholder="Last name" required value="" maxlength="250"><br>
+                <label for="name_id">First Name</label>
+                <input id="name_id" type="text" name="ufirstname_edit" placeholder="First name" required value="" maxlength="250">
+                <label for="surename_id">Last Name</label>
+                <input id="surename_id" type="text" name="ulastname_edit" placeholder="Last name" required value="" maxlength="250"><br>
             </div>
             <label for="date_id">Date of birth</label>
             <input id="date_id" type="date" name="udate_edit" required value=""><br>
+            <label for="surename_id">Address</label>
             <input id="uaddress_id" type="text" name="uaddress_edit" placeholder="Addresss" required value="" maxlength="250"><br>
-            <input id="upwd_id" type="password" name="upwd_edit" placeholder="Password" required><br maxlength="250">
-            <input id="ipwdconf_id" type="password" name="upwdconf_edit" placeholder="Confirm password" required maxlength="250"><br>
-            <input id="type_id" type="hidden" name="utype_edit" value="USER">
+            <input id="upwd_id" type="password" name="upwd_edit" placeholder="New Password" maxlength="250"><br>
+            <input id="ipwdconf_id" type="password" name="upwdconf_edit" placeholder="Confirm New Password" maxlength="250"><br>
             <div id="tech_form">
             </div>
             <div id="btns_edit_back">

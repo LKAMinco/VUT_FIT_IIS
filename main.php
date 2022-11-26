@@ -44,6 +44,67 @@ function addOption($doc, $parent, $value, $string)
     $parent->appendChild($option);
 }
 
+function editUser($db, $file){
+    $html = file_get_contents($file);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+
+    $meta = $doc->getElementById('redirect');
+    $meta->setAttribute('content', '1800;url=main.php');
+
+    $form = $doc->getElementById('form_edit_back');
+    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
+
+    $form = $doc->getElementById('form_edit');
+    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
+
+    $button = $doc->getElementById('edit_btn');
+    $button->setAttribute('value', $_SESSION['username']);
+
+    if($_SESSION['access_type'] == 'ADMIN'){
+        $button = $doc->getElementById('edit_back_btn');
+        $button->setAttribute('name', 'admin_search');
+    }
+    else if ($_SESSION['access_type'] == 'MANAGER'){
+        $button = $doc->getElementById('edit_back_btn');
+        $button->setAttribute('name', 'load_cityman');
+    }
+    else if ($_SESSION['access_type'] == 'TECHNICIAN'){
+        $button = $doc->getElementById('edit_back_btn');
+        $button->setAttribute('name', 'search_tapp');
+    }
+    else if ($_SESSION['access_type'] == 'USER'){
+        $button = $doc->getElementById('edit_back_btn');
+        $button->setAttribute('name', 'back_to_user');
+    }
+
+    if ($_POST['edit_submit'] == 'None'){
+        $text = $doc->getElementById('info_msg');
+        $text->nodeValue = 'Passwords do not match';
+    }
+
+    $user = $db->query("SELECT email, first_name, last_name, date_of_birth, residence, specialization FROM user where email = '" . $_SESSION['username'] . "'");
+    $user = $user->fetch();
+
+    $text = $doc->getElementById('name_id');
+    $text->setAttribute('value', $user['first_name']);
+
+    $text = $doc->getElementById('surename_id');
+    $text->setAttribute('value', $user['last_name']);
+
+    $text = $doc->getElementById('date_id');
+    $text->setAttribute('value', $user['date_of_birth']);
+
+    $text = $doc->getElementById('uaddress_id');
+    $text->setAttribute('value', $user['residence']);
+
+    echo $doc->saveHTML();
+}
+
 function openUser($db, $file){
     $html = file_get_contents($file);
     $doc = new DOMDocument();
@@ -53,6 +114,9 @@ function openUser($db, $file){
         $meta = $doc->getElementById('redirect');
         $meta->setAttribute('content', '1800;url=main.php');
     }
+
+    $text = $doc->getElementById('edit_btn');
+    $text->setAttribute('value', $_SESSION['username']);
 
     echo $doc->saveHTML();
 }
@@ -801,8 +865,13 @@ function listUsers($db, $file)
 
     if($_SESSION['access_type'] == 'ADMIN'){
         $form = $doc->getElementById('form_addmgr');
-
         setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+
+        $button = $doc->getElementById('edit_btn');
+        $button->setAttribute('value', $_SESSION['username']);
+    } else if($_SESSION['access_type'] == 'MANAGER'){
+        $button = $doc->getElementById('edit_btn');
+        $button->setAttribute('value', $_SESSION['username']);
     }
 
     $table = $doc->getElementById('users_search_results');
@@ -1581,7 +1650,6 @@ if (isset($_POST['login'])) {
     $stmt = $db->query("UPDATE appointment SET assignee = '" . $_POST['new_assignee'] . "' where id_appointment = " . $_POST['set_assignee']);
     listAppointmentsMgr($db, 'list_serviceapp.html');
 } else if (isset($_POST['set_assignee_detail'])) {
-    var_dump($_POST);
     $_POST['open_appointment_mgr'] = $_POST['set_assignee_detail'];
     $stmt = $db->query("UPDATE appointment SET assignee = '" . $_POST['new_assignee'] . "' where id_appointment = " . $_POST['set_assignee_detail']);
     if (!isset($_POST['appointments_assignee_filter']) || $_POST['appointments_assignee_filter'] == "") {
@@ -1693,6 +1761,25 @@ if (isset($_POST['login'])) {
         $meta->setAttribute('content', '1800;url=main.php');
     }
     echo $doc->saveHTML();
+} else if (isset($_POST['edit_profile'])){
+    editUser($db, 'edit_profile.html');
+} else if (isset($_POST['edit_submit'])){
+    if($_POST['upwd_edit'] != $_POST['upwdconf_edit']){
+        $_POST['edit_submit'] = 'None';
+        editUser($db, 'edit_profile.html');
+    }
+    else{
+        $stmt = $db->query("UPDATE user SET first_name = '" . $_POST['ufirstname_edit'] . "', last_name = '" . $_POST['ulastname_edit'] . "', date_of_birth = '" . $_POST['udate_edit'] .  "', residence = '" . $_POST['uaddress_edit'] . "' WHERE email = '" . $_POST['edit_submit'] . "'");
+        if($_POST['upwd_edit'] != ''){
+            $hash_pwd = password_hash($_POST['upwd_edit'], PASSWORD_DEFAULT);
+            $stmt = $db->query("UPDATE user SET pwd = '" . $hash_pwd . "' WHERE email = '" . $_POST['edit_submit'] . "'");
+        }
+        editUser($db, 'edit_profile.html');
+    }
+} else if (isset($_POST['delete_profile'])){
+    $stmt = $db->query("DELETE FROM user where email = '" . $_SESSION['username'] . "'");
+    session_destroy();
+    header('Location: index.html');
 } else{
     if (isset($_COOKIE['access_type'])) {
         setcookie('access_type', '', time() - 3600);
