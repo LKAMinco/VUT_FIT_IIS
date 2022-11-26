@@ -586,3 +586,7 @@ select:hover {
 #edit_btn{
     width: 98%;
 }
+
+#tickets_search_results_admin tr:not(:first-child) td:last-child{
+    background: none;
+}

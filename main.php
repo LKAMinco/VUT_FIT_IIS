@@ -101,6 +101,7 @@ function listTicketsAdmin($db, $file){
     setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
 
     $table = $doc->getElementById('tickets_search_results');
+    $table->setAttribute('id', 'tickets_search_results_admin');
 
     $tableRow = $doc->createElement('tr');
     $tableCol = $doc->createElement('th', 'Title');
