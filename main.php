@@ -1031,21 +1031,9 @@ function listAppTech($db, $file)
         $div->setAttribute('id', 'table_inside_div');
         $tableInsideRow->appendChild($div);
 
+        setElement( $doc, 'input', '', 'time_spent', 'time_spent', 'text', $row['time_spent'], $div, NULL);
 
-        $input = $doc->createElement('input');
-        $input->setAttribute('id', 'time_spent');
-        $input->setAttribute('type', 'text');
-        $input->setAttribute('name', 'time_spent');
-        $input->setAttribute('value', $row['time_spent']);
-        $div->appendChild($input);
-
-        $input = $doc->createElement('input');
-        $input->setAttribute('id', 'est_date');
-        $input->setAttribute('type', 'date');
-        $input->setAttribute('name', 'est_date');
-        $input->setAttribute('value', $row['estimation_date']);
-        $div->appendChild($input);
-
+        setElement( $doc, 'input', '', 'est_date', 'est_date', 'date', $row['estimation_date'], $div, NULL);
 
         $stmt_tmp = $db->query("SELECT id_appointment, parent_ticket, cond FROM appointment where id_appointment = " . $row['id_appointment']);
         foreach ($stmt_tmp as $tmp) {
@@ -1057,37 +1045,15 @@ function listAppTech($db, $file)
             addOption($doc, $combox, $tmp['cond'], 'SUSPENDED');
             $div->appendChild($combox);
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'parent_ticket');
-            $input->setAttribute('value', $tmp['parent_ticket']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'parent_ticket', 'hidden', $tmp['parent_ticket'], $form, NULL);
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'tapp_filter1');
-            $input->setAttribute('value', $_POST['tapp_filter1']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
 
-            $input = $doc->createElement('input');
-            $input->setAttribute('type', 'hidden');
-            $input->setAttribute('name', 'tapp_filter2');
-            $input->setAttribute('value', $_POST['tapp_filter2']);
-            $form->appendChild($input);
+            setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
 
-            $button = $doc->createElement('button', 'Set');
-            $button->setAttribute('id', 'set_tapp_btn');
-            $button->setAttribute('name', 'set_tapp');
-            $button->setAttribute('value', $tmp['id_appointment']);
-            $button->setAttribute('type', 'submit');
-            $div->appendChild($button);
+            setElement( $doc, 'button', 'Set', 'set_tapp_btn', 'set_tapp', 'submit', $tmp['id_appointment'], $div, NULL);
 
-            $button = $doc->createElement('button', 'Show more');
-            $button->setAttribute('id', 'show_btn');
-            $button->setAttribute('name', 'show_tapp');
-            $button->setAttribute('value', $tmp['id_appointment']);
-            $button->setAttribute('type', 'submit');
-            $div->appendChild($button);
+            setElement( $doc, 'button', 'Show more', 'show_btn', 'show_tapp', 'submit', $tmp['id_appointment'], $div, NULL);
 
         }
         $tableRow->appendChild($tableCol);
