@@ -10,6 +10,13 @@ try {
     die();
 }
 
+if (!isset($_COOKIE['username']) && !isset($_POST['login'])) {
+    session_destroy();
+    header("Location: wrong_access.html");
+} else {
+    setcookie('username', $_SESSION['username'], time() + 3600, '/', NULL, true, true);
+}
+
 function setElement( $doc, $element_type, $element_text, $id, $name, $type, $value, $parent, $element){
     if($element != NULL){
         $ele = $doc->getElementById($element);
@@ -44,6 +51,153 @@ function addOption($doc, $parent, $value, $string)
     $parent->appendChild($option);
 }
 
+function listTicketsAdmin($db, $file){
+    $html = file_get_contents($file);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+
+    if($_SESSION['access_type'] == 'ADMIN'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '3800;url=main.php');
+    }
+
+    $form = $doc->getElementById('get_back');
+    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+
+    $button = $doc->getElementById('get_back_btn');
+    $button->setAttribute('name', 'admin_search');
+
+    $button = $doc->getElementById('search_tickets_btn');
+    $button->setAttribute('name', 'admin_tickets');
+
+    $query_cond = "";
+
+    if ($_POST['ticket_type_filter'] != "All Types") {
+        $query_cond = " where category = '" . $_POST['ticket_type_filter'] . "'";
+    }
+
+    if ($_POST['ticket_cond_filter'] != "All Conditions") {
+        if ($query_cond == "") {
+            $query_cond = " where cond = '" . $_POST['ticket_cond_filter'] . "'";
+        } else {
+            $query_cond = $query_cond . " and cond = '" . $_POST['ticket_cond_filter'] . "'";
+        }
+    }
+
+    $stmt = $db->query("SELECT id_ticket, title, date_add FROM ticket" . $query_cond);
+
+    $filterForm = $doc->getElementById($_POST['ticket_type_filter']);
+    $filterForm->setAttribute('selected', 'True');
+
+    $filterForm = $doc->getElementById($_POST['ticket_cond_filter']);
+    $filterForm->setAttribute('selected', 'True');
+
+    $form = $doc->getElementById('form_search_tickets');
+
+    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+
+    $table = $doc->getElementById('tickets_search_results');
+    $table->setAttribute('id', 'tickets_search_results_admin');
+
+    $tableRow = $doc->createElement('tr');
+    $tableCol = $doc->createElement('th', 'Title');
+    $tableRow->appendChild($tableCol);
+    $tableCol = $doc->createElement('th', 'Date');
+    $tableRow->appendChild($tableCol);
+    $table->appendChild($tableRow);
+
+    foreach ($stmt as $row) {
+        $tableRow = $doc->createElement('tr');
+        $tableCol = $doc->createElement('td', $row['title']);
+        $tableRow->appendChild($tableCol);
+        $tableCol = $doc->createElement('td', $row['date_add']);
+        $tableRow->appendChild($tableCol);
+
+        $tableCol = $doc->createElement('td');
+        $form = $doc->createElement('form');
+        $form->setAttribute('id', 'form_ticket_remove');
+        $form->setAttribute('action', 'main.php');
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('name', 'remove_ticket');
+        $tableCol->appendChild($form);
+
+        setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+        setElement( $doc, 'input', '', NULL, 'ticket_type_filter', 'hidden', $_POST['ticket_type_filter'], $form, NULL);
+        setElement( $doc, 'input', '', NULL, 'ticket_cond_filter', 'hidden', $_POST['ticket_cond_filter'], $form, NULL);
+        setElement( $doc, 'button', 'Delete', 'ticket_delete_btn', 'ticket_delete', 'submit', $row['id_ticket'], $form, NULL);
+
+        $tableRow->appendChild($tableCol);
+
+        $table->appendChild($tableRow);
+    }
+
+    echo $doc->saveHTML();
+}
+
+function editUser($db, $file){
+    $html = file_get_contents($file);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+
+    $meta = $doc->getElementById('redirect');
+    $meta->setAttribute('content', '3800;url=main.php');
+
+    $form = $doc->getElementById('form_edit_back');
+    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
+
+    $form = $doc->getElementById('form_edit');
+    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
+    setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
+
+    $button = $doc->getElementById('edit_btn');
+    $button->setAttribute('value', $_SESSION['username']);
+
+    if($_SESSION['access_type'] == 'ADMIN'){
+        $button = $doc->getElementById('edit_back_btn');
+        $button->setAttribute('name', 'admin_search');
+    }
+    else if ($_SESSION['access_type'] == 'MANAGER'){
+        $button = $doc->getElementById('edit_back_btn');
+        $button->setAttribute('name', 'load_cityman');
+    }
+    else if ($_SESSION['access_type'] == 'TECHNICIAN'){
+        $button = $doc->getElementById('edit_back_btn');
+        $button->setAttribute('name', 'search_tapp');
+    }
+    else if ($_SESSION['access_type'] == 'USER'){
+        $button = $doc->getElementById('edit_back_btn');
+        $button->setAttribute('name', 'back_to_user');
+    }
+
+    if ($_POST['edit_submit'] == 'None'){
+        $text = $doc->getElementById('info_msg');
+        $text->nodeValue = 'Passwords do not match';
+    }
+    $values = [
+        'email' => $_SESSION['username'],
+    ];
+    $user = $db->prepare("SELECT email, first_name, last_name, date_of_birth, residence, specialization FROM user where email = :email");
+    $user->execute($values);
+    $user = $user->fetch();
+
+    $text = $doc->getElementById('name_id');
+    $text->setAttribute('value', $user['first_name']);
+
+    $text = $doc->getElementById('surename_id');
+    $text->setAttribute('value', $user['last_name']);
+
+    $text = $doc->getElementById('date_id');
+    $text->setAttribute('value', $user['date_of_birth']);
+
+    $text = $doc->getElementById('uaddress_id');
+    $text->setAttribute('value', $user['residence']);
+
+    echo $doc->saveHTML();
+}
+
 function openUser($db, $file){
     $html = file_get_contents($file);
     $doc = new DOMDocument();
@@ -51,8 +205,11 @@ function openUser($db, $file){
 
     if($_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
+
+    $text = $doc->getElementById('edit_btn');
+    $text->setAttribute('value', $_SESSION['username']);
 
     echo $doc->saveHTML();
 }
@@ -64,7 +221,7 @@ function openCreationForm($db, $file){
 
     if($_SESSION['access_type'] == 'MANAGER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $form = $doc->getElementById('form_create_back');
@@ -99,7 +256,7 @@ function openAppointmentDetailsMgr($db, $file){
 
     if($_SESSION['access_type'] == 'MANAGER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $form = $doc->getElementById('get_back');
@@ -133,7 +290,11 @@ function openAppointmentDetailsMgr($db, $file){
 
     }
 
-    $stmt = $db->query("SELECT id_appointment, title, author, assignee, descript, estimation_date, cond, time_spent, parent_ticket FROM appointment where id_appointment = '" . $_POST['open_appointment_mgr'] . "'");
+    $values = [
+        'id' => $_POST['open_appointment_mgr'],
+    ];
+    $stmt = $db->prepare("SELECT id_appointment, title, author, assignee, descript, estimation_date, cond, time_spent, parent_ticket FROM appointment where id_appointment = :id");
+    $stmt->execute($values);
 
     foreach ($stmt as $row) {
         $text = $doc->getElementById('appointment_title_a');
@@ -199,7 +360,11 @@ function openAppointmentDetailsMgr($db, $file){
         $table->appendChild($tableRow);
     }
 
-    $stmt = $db->query("SELECT id_comment, content, author, parent_appointment, date_add FROM comment where parent_appointment = '" . $_POST['open_appointment_mgr'] . "'");
+    $values = [
+        'parent' => $_POST['open_appointment_mgr'],
+    ];
+    $stmt = $db->prepare("SELECT id_comment, content, author, parent_appointment, date_add FROM comment where parent_appointment = :parent");
+    $stmt->execute($values);
     $div = $doc->getElementById('appointment_comments_div');
 
     foreach ($stmt as $row) {
@@ -300,7 +465,7 @@ function openTicketDetailsMgr($db, $file)
 
     if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $form = $doc->getElementById('get_back');
@@ -324,7 +489,11 @@ function openTicketDetailsMgr($db, $file)
         setElement( $doc, NULL, NULL, NULL, 'search_tickets_mgr', NULL, NULL, NULL, 'get_back_btn');
 
         $div = $doc->getElementById('ticket_create_appointment_div');
-        $stmt = $db->query("SELECT IFNULL((SELECT id_appointment FROM appointment where parent_ticket = '" . $_POST['open_ticket_mgr'] . "'), 'not_found')");
+        $values = [
+            'parent' => $_POST['open_ticket_mgr'],
+        ];
+        $stmt = $db->prepare("SELECT IFNULL((SELECT id_appointment FROM appointment where parent_ticket = :parent), 'not_found')");
+        $stmt->execute($values);
         foreach ($stmt as $row) {
 
             $form = $doc->createElement('form');
@@ -353,7 +522,11 @@ function openTicketDetailsMgr($db, $file)
         }
     }
 
-    $stmt = $db->query("SELECT id_ticket,author, title, category, descript, cond, author, date_add, image FROM ticket where id_ticket = '" . $_POST['open_ticket_mgr'] . "'");
+    $values = [
+        'id' => $_POST['open_ticket_mgr'],
+    ];
+    $stmt = $db->prepare("SELECT id_ticket,author, title, category, descript, cond, author, date_add, image FROM ticket WHERE id_ticket = :id");
+    $stmt->execute($values);
 
     foreach ($stmt as $row) {
         $text = $doc->getElementById('ticket_title_a');
@@ -362,11 +535,13 @@ function openTicketDetailsMgr($db, $file)
         $text = $doc->getElementById('ticket_desc_a');
         $text->nodeValue = $row['descript'];
 
-        $img = $doc->createElement('img');//TODO uprav si to julo
-        $img->setAttribute('src', './images/' . $row['image']);
-        $img->setAttribute('alt', 'Ticket image');
-        $img->setAttribute('width', '700');
-        $doc->getElementById('ticket_id')->appendChild($img);
+        if($row['image'] != NULL){
+            $img = $doc->createElement('img');
+            $img->setAttribute('src', './images/' . $row['image']);
+            $img->setAttribute('alt', 'Ticket image');
+            $img->setAttribute('width', '700');
+            $doc->getElementById('ticket_id')->appendChild($img);
+        }
 
         $table = $doc->getElementById('ticket_info_table');
 
@@ -422,7 +597,11 @@ function openTicketDetailsMgr($db, $file)
 
     }
 
-    $stmt = $db->query("SELECT id_comment, content, author, parent_ticket, date_add FROM comment where parent_ticket = '" . $_POST['open_ticket_mgr'] . "'");
+    $values = [
+        'parent' => $_POST['open_ticket_mgr'],
+    ];
+    $stmt = $db->prepare("SELECT id_comment, content, author, parent_ticket, date_add FROM comment where parent_ticket = :parent");
+    $stmt->execute($values);
     $div = $doc->getElementById('ticket_comments_div');
 
     foreach ($stmt as $row) {
@@ -518,7 +697,7 @@ function listAppointmentsMgr($db, $file)
 
     if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $combox = $doc->getElementById('appointments_assignee_filter');
@@ -549,11 +728,7 @@ function listAppointmentsMgr($db, $file)
         }
     }
 
-    if ($query_cond == "") {
-        $stmt = $db->query("SELECT id_appointment, title, assignee, estimation_date, cond FROM appointment");
-    } else {
-        $stmt = $db->query("SELECT id_appointment, title, assignee, estimation_date, cond FROM appointment" . $query_cond);
-    }
+    $stmt = $db->query("SELECT id_appointment, title, assignee, estimation_date, cond FROM appointment" . $query_cond);
 
     $table = $doc->getElementById('appointments_search_results');
 
@@ -663,11 +838,7 @@ function listTicketsMgr($db, $file)
         }
     }
 
-    if ($query_cond == "") {
-        $stmt = $db->query("SELECT id_ticket, title, category, date_add, cond FROM ticket");
-    } else {
-        $stmt = $db->query("SELECT id_ticket, title, category, date_add, cond FROM ticket" . $query_cond);
-    }
+    $stmt = $db->query("SELECT id_ticket, title, category, date_add, cond FROM ticket" . $query_cond);
 
     $html = file_get_contents($file);
     $doc = new DOMDocument();
@@ -675,7 +846,7 @@ function listTicketsMgr($db, $file)
 
     if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $table = $doc->getElementById('tickets_search_results');
@@ -778,9 +949,13 @@ function listUsers($db, $file)
 {
 
     if ($_POST['admin_filter'] == "All Users") {
-        $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user");
+        $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user WHERE NOT access_type = 'NONE'");
     } else {
-        $stmt = $db->query("SELECT first_name, last_name, email, access_type FROM user where access_type = '" . $_POST['admin_filter'] . "'");
+        $values = [
+            'access_type' => $_POST['admin_filter'],
+        ];
+        $stmt = $db->prepare("SELECT first_name, last_name, email, access_type FROM user WHERE access_type = :access_type");
+        $stmt->execute($values);
     }
 
     $html = file_get_contents($file);
@@ -790,19 +965,26 @@ function listUsers($db, $file)
     if($file == 'admin.html'){
         if($_SESSION['access_type'] == 'ADMIN'){
             $meta = $doc->getElementById('redirect');
-            $meta->setAttribute('content', '1800;url=main.php');
+            $meta->setAttribute('content', '3800;url=main.php');
         }
     } else if($file == 'manager.html'){
         if($_SESSION['access_type'] == 'MANAGER'){
             $meta = $doc->getElementById('redirect');
-            $meta->setAttribute('content', '1800;url=main.php');
+            $meta->setAttribute('content', '3800;url=main.php');
         }
     }
 
     if($_SESSION['access_type'] == 'ADMIN'){
         $form = $doc->getElementById('form_addmgr');
-
         setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+
+        $button = $doc->getElementById('edit_btn');
+        $button->setAttribute('value', $_SESSION['username']);
+
+        setElement( $doc, 'button', 'Examine Tickets', 'admin_tickets_btn', 'admin_tickets', 'submit', NULL, $form, NULL);
+    } else if($_SESSION['access_type'] == 'MANAGER'){
+        $button = $doc->getElementById('edit_btn');
+        $button->setAttribute('value', $_SESSION['username']);
     }
 
     $table = $doc->getElementById('users_search_results');
@@ -861,127 +1043,40 @@ function listUsers($db, $file)
     echo $doc->saveHTML();
     return NULL;
 }
-/*
-function listOneAppoitment($db, $file)
-{
-    $stmt = $db->query("SELECT id_ticket, title, category, descript, author, date_add FROM ticket where id_ticket = " . $_POST['Show_tapp']);
-    #$stmt = $db->query("SELECT title, category, descript, author, date_add FROM ticket");
-    $html = file_get_contents($file);
-    $doc = new DOMDocument();
-    $doc->loadHTML($html);
-    $table = $doc->getElementById('appointment_info');
 
-    $tableRow = $doc->createElement('tr');
-    $tableCol = $doc->createElement('th', 'Title');
-    $tableRow->appendChild($tableCol);
-    $tableCol = $doc->createElement('th', 'Category');
-    $tableRow->appendChild($tableCol);
-    $tableCol = $doc->createElement('th', 'Description');
-    $tableRow->appendChild($tableCol);
-    $tableCol = $doc->createElement('th', 'Author');
-    $tableRow->appendChild($tableCol);
-    $tableCol = $doc->createElement('th', 'Added on');
-    $tableRow->appendChild($tableCol);
-    $table->appendChild($tableRow);
-
-    foreach ($stmt as $row) {
-        $tableRow = $doc->createElement('tr');
-        $tableCol = $doc->createElement('td', $row['title']);
-        $tableRow->appendChild($tableCol);
-        $tableCol = $doc->createElement('td', $row['category']);
-        $tableRow->appendChild($tableCol);
-        $tableCol = $doc->createElement('td', $row['descript']);
-        $tableRow->appendChild($tableCol);
-        $tableCol = $doc->createElement('td', $row['author']);
-        $tableRow->appendChild($tableCol);
-        $tableCol = $doc->createElement('td', $row['date_add']);
-        $tableRow->appendChild($tableCol);
-        $table->appendChild($tableRow);
-
-        $temp = $db->query("SELECT content, author, date_add, parent_appointment FROM comment  WHERE parent_ticket = " . $row['id_ticket']);
-        #$stmt = $db->query("SELECT title, category, descript, author, date_add FROM ticket");
-        $table = $doc->getElementById('comment_section');
-
-        $tableRow = $doc->createElement('tr');
-        $tableCol = $doc->createElement('th', 'Comment');
-        $tableRow->appendChild($tableCol);
-        $tableCol = $doc->createElement('th', 'Author');
-        $tableRow->appendChild($tableCol);
-        $tableCol = $doc->createElement('th', 'Added on');
-        $tableRow->appendChild($tableCol);
-        $table->appendChild($tableRow);
-
-        foreach ($temp as $line) {
-            $tableRow = $doc->createElement('tr');
-            $tableCol = $doc->createElement('td', $line['content']);
-            $tableRow->appendChild($tableCol);
-            $tableCol = $doc->createElement('td', $line['author']);
-            $tableRow->appendChild($tableCol);
-            $tableCol = $doc->createElement('td', $line['date_add']);
-            $tableRow->appendChild($tableCol);
-            $table->appendChild($tableRow);
-        }
-        $tableRow = $doc->createElement('tr');
-        $tableCol = $doc->createElement('td');
-        $form = $doc->createElement('form');
-        $form->setAttribute('id', 'form_set');
-        $form->setAttribute('action', 'main.php');
-        $form->setAttribute('method', 'post');
-
-        $button = $doc->createElement('button', 'Add_comment');
-        $button->setAttribute('id', 'Add_comment_btn');
-        $button->setAttribute('name', 'Add_comment');
-        $button->setAttribute('value', $row['Add_comment']);
-        $button->setAttribute('type', 'submit');
-        $form->appendChild($button);
-        $tableCol->appendChild($form);
-        $tableRow->appendChild($tableCol);
-
-        $button = $doc->createElement('button', 'Back');
-        $button->setAttribute('id', 'Back_btn');
-        $button->setAttribute('name', 'Back');
-        $button->setAttribute('value', $row['Back']);
-        $button->setAttribute('type', 'submit');
-        $form->appendChild($button);
-        $tableCol->appendChild($form);
-        $tableRow->appendChild($tableCol);
-        $table->appendChild($tableRow);
-    }
-    echo $doc->saveHTML();
-    return NULL;
-}
-*/
 function listAppTech($db, $file)
 {
-
-    $temp = "SELECT id_appointment, descript, time_spent, estimation_date, cond, assignee FROM appointment WHERE assignee ='" . $_SESSION['username'] . "'";
+    $values = [
+        'assignee' => $_SESSION['username']
+    ];
+    $temp = "SELECT id_appointment, descript, time_spent, estimation_date, cond, assignee FROM appointment WHERE assignee = :assignee";
     if ($_POST['tapp_filter1'] == "All my appoinments") {
         $temp1 = "";
     } else if ($_POST['tapp_filter1'] == "Latest to oldest") {
-        $temp1 = "ORDER BY estimation_date";
-        #$stmt = $db->query("SELECT COUNT(id_appointment), descript, time_spent, estimation_date, cond FROM appointment GROUP BY estimation_date, time_spent, descript, cond");
+        $temp1 = " ORDER BY estimation_date";
     } else if ($_POST['tapp_filter1'] == "Oldest to latest") {
-        $temp1 = "ORDER BY estimation_date DESC";
+        $temp1 = " ORDER BY estimation_date DESC";
     }
 
     if ($_POST['tapp_filter2'] == "All conditions") {
         $temp2 = "";
     } else if ($_POST['tapp_filter2'] == "In progress") {
-        $temp2 = "AND cond = 'IN PROGRESS'";
+        $temp2 = " AND cond = 'IN PROGRESS'";
     } else if ($_POST['tapp_filter2'] == "Done") {
-        $temp2 = "AND cond = 'DONE'";
+        $temp2 = " AND cond = 'DONE'";
     } else if ($_POST['tapp_filter2'] == "Suspended") {
-        $temp2 = "AND cond = 'SUSPENDED'";
+        $temp2 = " AND cond = 'SUSPENDED'";
     }
 
-    $stmt = $db->query($temp . $temp2 . $temp1);
+    $stmt = $db->prepare($temp . $temp2 . $temp1);
+    $stmt->execute($values);
     $html = file_get_contents($file);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
 
     if($_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $filterForm = $doc->getElementById($_POST['tapp_filter1']);
@@ -995,7 +1090,7 @@ function listAppTech($db, $file)
     $tableRow = $doc->createElement('tr');
     $tableCol = $doc->createElement('th', 'Title');
     $tableRow->appendChild($tableCol);
-    $tableCol = $doc->createElement('th', 'Time spent');
+    $tableCol = $doc->createElement('th', 'Time spent [h]');
     $tableRow->appendChild($tableCol);
     $tableCol = $doc->createElement('th', 'Estimation Date');
     $tableRow->appendChild($tableCol);
@@ -1031,11 +1126,16 @@ function listAppTech($db, $file)
         $div->setAttribute('id', 'table_inside_div');
         $tableInsideRow->appendChild($div);
 
-        setElement( $doc, 'input', '', 'time_spent', 'time_spent', 'text', $row['time_spent'], $div, NULL);
+        setElement( $doc, 'input', '', 'time_spent', 'time_spent', 'number', $row['time_spent'], $div, NULL);
 
         setElement( $doc, 'input', '', 'est_date', 'est_date', 'date', $row['estimation_date'], $div, NULL);
 
-        $stmt_tmp = $db->query("SELECT id_appointment, parent_ticket, cond FROM appointment where id_appointment = " . $row['id_appointment']);
+        $values = [
+            'id' => $row['id_appointment'],
+        ];
+        $stmt_tmp = $db->prepare("SELECT id_appointment, parent_ticket, cond FROM appointment where id_appointment = :id");
+        $stmt_tmp->execute($values);
+
         foreach ($stmt_tmp as $tmp) {
             $combox = $doc->createElement('select');
             $combox->setAttribute('name', 'new_cond');
@@ -1071,7 +1171,7 @@ function listAppDetails($db, $file)
 
     if($_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $doc->getElementById('th_ass')->nodeValue = 'Author';
@@ -1092,7 +1192,11 @@ function listAppDetails($db, $file)
 
     setElement( $doc, 'button', 'Show Ticket', 'ticket_from_tapp_btn', 'open_ticket_tapp', 'submit', $_POST['show_tapp'], $form, NULL);
 
-    $stmt = $db->query("SELECT id_appointment, title, author, assignee, descript, estimation_date, cond, time_spent, parent_ticket FROM appointment where id_appointment = " . $_POST['show_tapp']);
+    $values = [
+        'id' => $_POST['show_tapp'],
+    ];
+    $stmt = $db->prepare("SELECT id_appointment, title, author, assignee, descript, estimation_date, cond, time_spent, parent_ticket FROM appointment where id_appointment = :id");
+    $stmt->execute($values);
 
     foreach ($stmt as $row) {
         $text = $doc->getElementById('appointment_title_a');
@@ -1127,7 +1231,12 @@ function listAppDetails($db, $file)
         $div->setAttribute('id', 'table_inside_div');
         $tableInsideRow->appendChild($div);
 
-        $stmt_tmp = $db->query("SELECT id_appointment, parent_ticket, cond FROM appointment where id_appointment = " . $row['id_appointment']);
+        $values = [
+            'id' => $row['id_appointment'],
+        ];
+        $stmt_tmp = $db->prepare("SELECT id_appointment, parent_ticket, cond FROM appointment where id_appointment = :id");
+        $stmt_tmp->execute($values);
+
         foreach ($stmt_tmp as $tmp) {
             $combox = $doc->createElement('select');
             $combox->setAttribute('name', 'new_cond');
@@ -1146,7 +1255,7 @@ function listAppDetails($db, $file)
 
         setElement( $doc, 'input', '', 'est_date_tech', 'est_date', 'date', $row['estimation_date'], $div, NULL);
 
-        setElement( $doc, 'input', '', 'time_spent_tech', 'time_spent', 'text', $row['time_spent'], $div, NULL);
+        setElement( $doc, 'input', '', 'time_spent_tech', 'time_spent', 'number', $row['time_spent'], $div, NULL);
 
         setElement( $doc, 'button', 'Set', 'set_tapp_btn_tech', 'set_tapp_detail', 'submit', $tmp['id_appointment'], $div, NULL);
 
@@ -1158,8 +1267,12 @@ function listAppDetails($db, $file)
         $text->nodeValue = $row['descript'];
     }
 
+    $values = [
+        'parent' => $_POST['show_tapp'],
+    ];
+    $stmt = $db->prepare("SELECT id_comment, content, author, parent_appointment, date_add FROM comment where parent_appointment = :parent");
+    $stmt->execute($values);
 
-    $stmt = $db->query("SELECT id_comment, content, author, parent_appointment, date_add FROM comment where parent_appointment = '" . $_POST['show_tapp'] . "'");
     $div = $doc->getElementById('appointment_comments_div');
 
     foreach ($stmt as $row) {
@@ -1231,7 +1344,7 @@ function listAppTicket($db, $file){
 
     if($_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $button = $doc->getElementById('get_back_btn');
@@ -1244,7 +1357,12 @@ function listAppTicket($db, $file){
 
     setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
 
-    $temp = $db->query("SELECT id_appointment, parent_ticket FROM appointment where id_appointment = " . $_POST['open_ticket_tapp']);
+    $values = [
+        'id' => $_POST['open_ticket_tapp'],
+    ];
+    $temp = $db->prepare("SELECT id_appointment, parent_ticket FROM appointment where id_appointment = :id");
+    $temp->execute($values);
+
     foreach ($temp as $line){
         $ticket_id = $line['parent_ticket'];
     }
@@ -1258,10 +1376,13 @@ function listAppTicket($db, $file){
         $text = $doc->getElementById('ticket_desc_a');
         $text->nodeValue = $row['descript'];
 
-        $img = $doc->createElement('img');//TODO uprav si to julo
-        $img->setAttribute('src', './images/' . $row['image']);
-        $img->setAttribute('width', '700');
-        $doc->getElementById('ticket_id')->appendChild($img);
+        if($row['image'] != NULL){
+            $img = $doc->createElement('img');
+            $img->setAttribute('src', './images/' . $row['image']);
+            $img->setAttribute('alt', 'Ticket image');
+            $img->setAttribute('width', '700');
+            $doc->getElementById('ticket_id')->appendChild($img);
+        }
 
         $table = $doc->getElementById('ticket_info_table');
 
@@ -1341,7 +1462,7 @@ function reportProblem($db)
 
     if($_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '10;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
 
     $tempname = $_FILES["uploadfile"]["tmp_name"];
@@ -1359,6 +1480,10 @@ function reportProblem($db)
         'image' => $_SESSION['username'] . date("Ymd_His") . "." . $ext,
     ];
 
+    if ($_FILES['uploadfile']['type'] == ''){
+        $values['image'] = NULL;
+    }
+
     $stmt = $db->prepare("INSERT INTO ticket (title, address, category, descript, cond, author, date_add, image) VALUES (:title, :address, :category, :descript, :cond, :author, :date_add, :image)");
     $stmt->execute($values);
     $msg = "Problem was reported";
@@ -1372,8 +1497,13 @@ if (isset($_POST['login'])) {
     libxml_use_internal_errors(true);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
-    $stmt = $db->query("SELECT pwd, access_type FROM user WHERE email = '" . $_POST['uemail_login'] . "'");
-    //TODO get users from db, check if user exists, if yes, check if password is correct
+
+    $values = [
+        'email' => $_POST['uemail_login'],
+    ];
+    $stmt = $db->prepare("SELECT pwd, access_type FROM user WHERE email = :email");
+    $stmt->execute($values);
+
     $descBox = $doc->getElementById('info_msg');
     $fragment = $doc->createDocumentFragment();
     //$fragment->appendXML('This is text');
@@ -1383,31 +1513,33 @@ if (isset($_POST['login'])) {
         if(password_verify($_POST['pwd_login'], $row['pwd'])) {
             $_SESSION['username'] = $_POST['uemail_login'];
             if ($row['access_type'] == 'ADMIN') {
-                setcookie('access_type', 'ADMIN', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                setcookie('access_type', 'ADMIN', time() + 3600, '/', NULL, true, true);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
                 $_SESSION['access_type'] = 'ADMIN';
                 $_POST['admin_filter'] = 'All Users';
                 listUsers($db, 'admin.html');
             } elseif ($row['access_type'] == 'MANAGER') {
-                setcookie('access_type', 'MANAGER', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                setcookie('access_type', 'MANAGER', time() + 3600, '/', NULL, true, true);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
                 $_SESSION['access_type'] = 'MANAGER';
                 $_POST['admin_filter'] = 'TECHNICIAN';
                 listUsers($db, 'manager.html');
             } elseif ($row['access_type'] == 'TECHNICIAN') {
-                setcookie('access_type', 'TECHNICIAN', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 3600);
+                setcookie('access_type', 'TECHNICIAN', time() + 3600, '/', NULL, true, true);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
                 $_SESSION['access_type'] = 'TECHNICIAN';
                 $_POST['tapp_filter1'] = 'All my appoinments';
                 $_POST['tapp_filter2'] = 'All condition';
                 listAppTech($db, 'technic.html');
             } elseif ($row['access_type'] == 'USER') {
-                setcookie('access_type', 'USER', time() + 3600);
-                setcookie('username', $_POST['uemail_login'], time() + 10);
+                setcookie('access_type', 'USER', time() + 3600, '/', NULL, true, true);
+                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
                 $_SESSION['access_type'] = 'USER';
                 openUser($db, 'user.html');
             } else {
-                echo "This should never happened";
+                $descBox->nodeValue = 'Incorrect username or password';
+                $descBox->appendChild($fragment);
+                echo $doc->saveHTML();
             }
         } else {
             $descBox->appendChild($fragment);
@@ -1427,7 +1559,12 @@ if (isset($_POST['login'])) {
     session_destroy();
     header('Location: index.html');
 } else if (isset($_POST['register_submit'])) {
-    $stmt = $db->query("SELECT pwd, access_type FROM user WHERE email = '" . $_POST['uemail_register'] . "'");
+    $values = [
+        'email' => $_POST['uemail_register'],
+    ];
+    $stmt = $db->prepare("SELECT pwd, access_type FROM user WHERE email = :email");
+    $stmt->execute($values);
+
     $html = file_get_contents('register.html');
     libxml_use_internal_errors(true);
     $doc = new DOMDocument();
@@ -1451,7 +1588,6 @@ if (isset($_POST['login'])) {
             $msg = 'User already exists, please choose another email';
             returnData($doc, $values, $msg, true);
         } else {
-            //TODO prerobit stranku uspesnej registracie podla typu registrovaneho uzivatela, aby sa to vedelo spravne vratit cez tlacidlo back
             $stmt = $db->prepare("INSERT INTO user (email, pwd, first_name, last_name, date_of_birth, residence, access_type) VALUES (:email, :pwd, :first_name, :last_name, :date_of_birth, :residence, :access_type)");
             $stmt->execute($values);
             $descBox = $doc->getElementById('info_msg')->nodeValue = 'Nice, you are registered';
@@ -1460,29 +1596,49 @@ if (isset($_POST['login'])) {
             $element = $doc->getElementById('reg_back_btn');
             $element->setAttribute('name', "admin_search");
 
+            $descBox = $doc->getElementById('register_header')->nodeValue = 'Register City Manager';
+            $descBox = $doc->getElementById('info_msg')->nodeValue = 'Manager has been registered!';
+
+
             $form = $doc->getElementById('form_register_back');
             setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+            echo $doc->saveHTML();
         }
         else if($_POST['utype_register'] == 'TECHNICIAN'){
             $element = $doc->getElementById('reg_back_btn');
             $element->setAttribute('name', "load_cityman");
 
+            $descBox = $doc->getElementById('register_header')->nodeValue = 'Register Service Technician';
+            $descBox = $doc->getElementById('info_msg')->nodeValue = 'Technician has been registered!';
+
             $form = $doc->getElementById('form_register_back');
             setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+            echo $doc->saveHTML();
         }
-        echo $doc->saveHTML();
+        else{
+            $html = file_get_contents('login.html');
+            libxml_use_internal_errors(true);
+            $doc = new DOMDocument();
+            $doc->loadHTML($html);
+
+            $text = $doc->getElementById('info_msg');
+            $text->nodeValue = 'Congratulation, you are registered';
+
+            echo $doc->saveHTML();
+        }
     }
 
 } else if (isset($_POST['search_tapp'])) {
-    listAppTech($db, 'technic.html');/*
-} else if (isset($_POST['AAA'])) {
-    listAppTech($db, 'technic.html');*/
+    listAppTech($db, 'technic.html');
 } else if (isset($_POST['submit_problem'])) {
     reportProblem($db);
-    //TODO save problem into db
-    //TODO add image into db
 } else if (isset($_POST['remove'])) {
-    $stmt = $db->query("DELETE FROM user where email = '" . $_POST['remove'] . "'");
+    $values = [
+        'email' => $_POST['remove'],
+    ];
+    $stmt = $db->prepare("DELETE FROM user where email = :email");
+    $stmt->execute($values);
+
     $_POST['admin_filter'] = $_POST['filter_status'];
     if(isset($_POST['admin_remove'])){
         listUsers($db, 'admin.html');
@@ -1490,13 +1646,6 @@ if (isset($_POST['login'])) {
     else{
         listUsers($db, 'manager.html');
     }
-    ;/*
-} else if (isset($_POST['add_comment'])) {
-    $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['comment_content'] . "', '" . $_POST['comment_author'] . "', " . $_POST['add_comment'] . ", NULL, '" . $_POST['comment_date'] . "')";
-    $stmt = $db->query($string);
-    $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
-    ticketComment($db, 'technic.html');
-    //TODO:*/
 } else if (isset($_POST['admin_search'])) {
     listUsers($db, 'admin.html');
 } else if (isset($_POST['add_manager'])) {
@@ -1567,7 +1716,12 @@ if (isset($_POST['login'])) {
     $_POST['admin_filter'] = 'TECHNICIAN';
     listUsers($db, 'manager.html');
 } else if (isset($_POST['set_cond'])) {
-    $stmt = $db->query("UPDATE ticket SET cond = '" . $_POST['new_cond'] . "' where id_ticket = " . $_POST['set_cond']);
+    $values = [
+        'cond' => $_POST['new_cond'],
+        'id' => $_POST['set_cond'],
+    ];
+    $stmt = $db->prepare("UPDATE ticket SET cond = :cond where id_ticket = :id");
+    $stmt->execute($values);
     listTicketsMgr($db, 'list_tickets.html');
 } else if (isset($_POST['search_appointments_mgr'])) {
     if (!isset($_POST['appointments_assignee_filter'])) {
@@ -1578,12 +1732,22 @@ if (isset($_POST['login'])) {
     }
     listAppointmentsMgr($db, 'list_serviceapp.html');
 } else if (isset($_POST['set_assignee'])) {
-    $stmt = $db->query("UPDATE appointment SET assignee = '" . $_POST['new_assignee'] . "' where id_appointment = " . $_POST['set_assignee']);
+    $values = [
+        'assignee' => $_POST['new_assignee'],
+        'id' => $_POST['set_assignee'],
+    ];
+    $stmt = $db->prepare("UPDATE appointment SET assignee = :assignee where id_appointment = :id");
+    $stmt->execute($values);
+
     listAppointmentsMgr($db, 'list_serviceapp.html');
 } else if (isset($_POST['set_assignee_detail'])) {
-    var_dump($_POST);
     $_POST['open_appointment_mgr'] = $_POST['set_assignee_detail'];
-    $stmt = $db->query("UPDATE appointment SET assignee = '" . $_POST['new_assignee'] . "' where id_appointment = " . $_POST['set_assignee_detail']);
+    $values = [
+        'assignee' => $_POST['new_assignee'],
+        'id' => $_POST['set_assignee_detail'],
+    ];
+    $stmt = $db->prepare("UPDATE appointment SET assignee = :assignee where id_appointment = :id");
+    $stmt->execute($values);
     if (!isset($_POST['appointments_assignee_filter']) || $_POST['appointments_assignee_filter'] == "") {
         $_POST['appointments_assignee_filter'] = "All Assignees";
     }
@@ -1593,7 +1757,12 @@ if (isset($_POST['login'])) {
     openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
 } else if (isset($_POST['set_cond_detail'])) {
     $_POST['open_ticket_mgr'] = $_POST['set_cond_detail'];
-    $stmt = $db->query("UPDATE ticket SET cond = '" . $_POST['new_cond'] . "' where id_ticket = " . $_POST['set_cond_detail']);
+    $values = [
+        'cond' => $_POST['new_cond'],
+        'id' => $_POST['set_cond_detail']
+    ];
+    $stmt = $db->prepare("UPDATE ticket SET cond = :cond where id_ticket = :id");
+    $stmt->execute($values);
     if (!isset($_POST['ticket_type_filter']) || $_POST['ticket_type_filter'] == "") {
         $_POST['ticket_type_filter'] = "All Types";
     }
@@ -1602,8 +1771,15 @@ if (isset($_POST['login'])) {
     }
     openTicketDetailsMgr($db, 'ticket_detail.html');
 } else if (isset($_POST['add_ticket_comment'])) {
-    $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['ticket_comment_content'] . "', '" . $_POST['ticket_comment_author'] . "', " . $_POST['add_ticket_comment'] . ", NULL, '" . $_POST['ticket_comment_date'] . "')";
-    $stmt = $db->query($string);
+    $values = [
+        'content' => $_POST['ticket_comment_content'],
+        'author' => $_POST['ticket_comment_author'],
+        'parent_t' => $_POST['add_ticket_comment'],
+        'parent_app' => NULL,
+        'date' => $_POST['ticket_comment_date'],
+    ];
+    $stmt = $db->prepare("INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES (:content, :author, :parent_t, :parent_app, :date)");
+    $stmt->execute($values);
     $_POST['open_ticket_mgr'] = $_POST['add_ticket_comment'];
     openTicketDetailsMgr($db, 'ticket_detail.html');
 } else if (isset($_POST['create_appointment'])) {
@@ -1611,27 +1787,50 @@ if (isset($_POST['login'])) {
 } else if (isset($_POST['open_appointment_mgr'])) {
     openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
 } else if (isset($_POST['remove_comment_ticket'])) {
-    $stmt = $db->query("DELETE FROM comment WHERE id_comment = '" . $_POST['id_comment'] . "'");
+    $values = [
+        'id' => $_POST['id_comment'],
+    ];
+    $stmt = $db->prepare("DELETE FROM comment WHERE id_comment = :id");
+    $stmt->execute($values);
     $_POST['open_ticket_mgr'] = $_POST['remove_comment_ticket'];
     openTicketDetailsMgr($db, 'ticket_detail.html');
 } else if (isset($_POST['remove_appointment_comment'])) {
-    $stmt = $db->query("DELETE FROM comment WHERE id_comment = '" . $_POST['id_comment'] . "'");
+    $values = [
+        'id' => $_POST['id_comment'],
+    ];
+    $stmt = $db->prepare("DELETE FROM comment WHERE id_comment = :id");
+    $stmt->execute($values);
     $_POST['open_appointment_mgr'] = $_POST['remove_appointment_comment'];
     openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
 } else if (isset($_POST['add_appointment_comment'])) {
-    $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['appointment_comment_content'] . "', '" . $_POST['appointment_comment_author'] . "', NULL, '" . $_POST['add_appointment_comment'] . "', '" . $_POST['appointment_comment_date'] . "')";
-    $stmt = $db->query($string);
+    $values = [
+        'content' => $_POST['appointment_comment_content'],
+        'author' => $_POST['appointment_comment_author'],
+        'parent_t' => NULL,
+        'parent_app' => $_POST['add_appointment_comment'],
+        'date' => $_POST['appointment_comment_date'],
+    ];
+    $stmt = $db->prepare("INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES (:content, :author, :parent_t, :parent_app, :date)");
+    $stmt->execute($values);
     $_POST['open_appointment_mgr'] = $_POST['add_appointment_comment'];
     openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
 } else if (isset($_POST['open_appointment_from_ticket_mgr'])) {
-    $stmt = $db->query("SELECT id_appointment, parent_ticket FROM appointment WHERE id_appointment = " . $_POST['open_appointment_from_ticket_mgr']);
+    $values = [
+        'id' => $_POST['open_appointment_from_ticket_mgr'],
+    ];
+    $stmt = $db->prepare("SELECT id_appointment, parent_ticket FROM appointment WHERE id_appointment = :id");
+    $stmt->execute($values);
     foreach ($stmt as $row){
         $_POST['open_ticket_mgr'] = $row['parent_ticket'];
     }
     $_POST['open_appointment_mgr'] = $_POST['open_appointment_from_ticket_mgr'];
     openAppointmentDetailsMgr($db, 'serviceapp_detail.html');
 } else if (isset($_POST['open_ticket_from_appointment_mgr'])) {
-    $stmt = $db->query("SELECT id_appointment, parent_ticket FROM appointment WHERE id_appointment = " . $_POST['open_ticket_from_appointment_mgr']);
+    $values = [
+        'id' => $_POST['open_ticket_from_appointment_mgr'],
+    ];
+    $stmt = $db->prepare("SELECT id_appointment, parent_ticket FROM appointment WHERE id_appointment = :id");
+    $stmt->execute($values);
     foreach ($stmt as $row){
         $_POST['open_ticket_mgr'] = $row['parent_ticket'];
     }
@@ -1644,12 +1843,29 @@ if (isset($_POST['login'])) {
     $_POST['open_ticket_mgr'] = $_POST['get_back_to_ticket'];
     openTicketDetailsMgr($db, 'ticket_detail.html');
 } else if(isset($_POST['create_service_submit'])){
-    $string = "INSERT INTO appointment(author, assignee, title, descript, cond, time_spent, parent_ticket) VALUES ('" . $_SESSION['username'] . "', '" . $_POST['tech_id'] . "', '" . $_POST['title_create'] . "', '" . $_POST['descript_create'] . "', 'IN PROGRESS', 0, " . $_POST['create_service_submit'] . ")";
-    $stmt = $db->query($string);
-    $stmt = $db->query("UPDATE ticket SET cond = 'IN PROGRESS' where id_ticket = " . $_POST['create_service_submit']);
+    $values = [
+        'author' => $_SESSION['username'],
+        'assignee' => $_POST['tech_id'],
+        'title' => $_POST['title_create'],
+        'descript' => $_POST['descript_create'],
+        'cond' => 'IN PROGRESS',
+        'time_spent' => '0',
+        'parent_ticket' => $_POST['create_service_submit'],
+    ];
+    $stmt = $db->prepare("INSERT INTO appointment(author, assignee, title, descript, cond, time_spent, parent_ticket) VALUES (:author, :assignee, :title, :descript, :cond, :time_spent, :parent_ticket)");
+    $stmt->execute($values);
+    $values = [
+        'parent_ticket' => $_POST['create_service_submit'],
+    ];
+    $stmt = $db->prepare("UPDATE ticket SET cond = 'IN PROGRESS' where id_ticket = :parent_ticket");
+    $stmt->execute($values);
     $_POST['appointments_assignee_filter'] = "All Assignees";
     $_POST['appointments_cond_filter'] = "All Conditions";
-    $stmt = $db->query("SELECT id_appointment FROM appointment WHERE parent_ticket=" . $_POST['create_service_submit']);
+    $values = [
+        'parent_ticket' => $_POST['create_service_submit'],
+    ];
+    $stmt = $db->prepare("SELECT id_appointment FROM appointment WHERE parent_ticket = :parent_ticket");
+    $stmt->execute($values);
     foreach ($stmt as $row){
         $_POST['open_appointment_mgr'] = $row['id_appointment'];
     }
@@ -1659,25 +1875,66 @@ if (isset($_POST['login'])) {
 } else if(isset($_POST['reg_get_back'])){
     header('Location: index.html');
 } else if (isset($_POST['set_tapp'])) {
-    $stmt = $db->query("UPDATE appointment SET time_spent = '" . $_POST['time_spent'] . "' where id_appointment = " . $_POST['set_tapp']);
-    $stmt = $db->query("UPDATE appointment SET estimation_date = '" . $_POST['est_date'] . "' where id_appointment = " . $_POST['set_tapp']);
-    $stmt = $db->query("UPDATE appointment SET cond = '" . $_POST['new_cond'] . "' where id_appointment = " . $_POST['set_tapp']);
+    $values = [
+        'time_spent' => $_POST['time_spent'],
+        'id' => $_POST['set_tapp'],
+    ];
+    $stmt = $db->prepare("UPDATE appointment SET time_spent = :time_spent where id_appointment =  :id");
+    $stmt->execute($values);
+    $values = [
+        'estimation_date' => $_POST['est_date'],
+        'id' => $_POST['set_tapp'],
+    ];
+    $stmt = $db->prepare("UPDATE appointment SET estimation_date = :estimation_date where id_appointment = :id");
+    $stmt->execute($values);
+    $values = [
+        'cond' => $_POST['new_cond'],
+        'id' => $_POST['set_tapp'],
+    ];
+    $stmt = $db->prepare("UPDATE appointment SET cond = :cond where id_appointment = :id");
+    $stmt->execute($values);
     listAppTech($db, 'technic.html');
 } else if (isset($_POST['show_tapp'])) {
     listAppDetails($db, 'serviceapp_detail.html');
 } else if (isset($_POST['add_tap_comment'])) {
-    $string = "INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES ('" . $_POST['appointment_comment_content'] . "', '" . $_POST['appointment_comment_author'] . "', NULL, '" . $_POST['add_tap_comment'] . "', '" . $_POST['appointment_comment_date'] . "')";
-    $stmt = $db->query($string);
+    $values = [
+        'content' => $_POST['appointment_comment_content'],
+        'author' => $_POST['appointment_comment_author'],
+        'parent_t' => NULL,
+        'parent_app' => $_POST['add_tap_comment'],
+        'date' => $_POST['appointment_comment_date'],
+    ];
+    $stmt = $db->prepare("INSERT INTO comment(content, author, parent_ticket, parent_appointment, date_add) VALUES (:content, :author, :parent_t, :parent_app, :date)");
+    $stmt->execute($values);
     $_POST['show_tapp'] = $_POST['add_tap_comment'];
     listAppDetails($db, 'serviceapp_detail.html');
 } else if (isset($_POST['remove_tapp_comment'])) {
-    $stmt = $db->query("DELETE FROM comment WHERE id_comment = " . $_POST['id_comment']);
+    $values = [
+        'id' => $_POST['id_comment'],
+    ];
+    $stmt = $db->prepare("DELETE FROM comment WHERE id_comment = :id");
+    $stmt->execute($values);
     $_POST['show_tapp'] = $_POST['remove_tapp_comment'];
     listAppDetails($db, 'serviceapp_detail.html');
 } else if(isset($_POST['set_tapp_detail'])){
-    $stmt = $db->query("UPDATE appointment SET time_spent = '" . $_POST['time_spent'] . "' where id_appointment = " . $_POST['set_tapp_detail']);
-    $stmt = $db->query("UPDATE appointment SET estimation_date = '" . $_POST['est_date'] . "' where id_appointment = " . $_POST['set_tapp_detail']);
-    $stmt = $db->query("UPDATE appointment SET cond = '" . $_POST['new_cond'] . "' where id_appointment = " . $_POST['set_tapp_detail']);
+    $values = [
+        'time_spent' => $_POST['time_spent'],
+        'id' => $_POST['set_tapp_detail'],
+    ];
+    $stmt = $db->prepare("UPDATE appointment SET time_spent = :time_spent where id_appointment =  :id");
+    $stmt->execute($values);
+    $values = [
+        'estimation_date' => $_POST['est_date'],
+        'id' => $_POST['set_tapp_detail'],
+    ];
+    $stmt = $db->prepare("UPDATE appointment SET estimation_date = :estimation_date where id_appointment = :id");
+    $stmt->execute($values);
+    $values = [
+        'cond' => $_POST['new_cond'],
+        'id' => $_POST['set_tapp_detail'],
+    ];
+    $stmt = $db->prepare("UPDATE appointment SET cond = :cond where id_appointment = :id");
+    $stmt->execute($values);
     $_POST['show_tapp'] = $_POST['set_tapp_detail'];
     listAppDetails($db, 'serviceapp_detail.html');
 } else if (isset($_POST['open_ticket_tapp'])) {
@@ -1690,10 +1947,63 @@ if (isset($_POST['login'])) {
 
     if($_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '1800;url=main.php');
+        $meta->setAttribute('content', '3800;url=main.php');
     }
     echo $doc->saveHTML();
+} else if (isset($_POST['edit_profile'])){
+    editUser($db, 'edit_profile.html');
+} else if (isset($_POST['edit_submit'])){
+    if($_POST['upwd_edit'] != $_POST['upwdconf_edit']){
+        $_POST['edit_submit'] = 'None';
+        editUser($db, 'edit_profile.html');
+    }
+    else{
+        $values = [
+            'first_name' => $_POST['ufirstname_edit'],
+            'last_name' => $_POST['ulastname_edit'],
+            'date' => $_POST['udate_edit'],
+            'residence' => $_POST['uaddress_edit'],
+            'email' => $_POST['edit_submit'],
+        ];
+        $stmt = $db->prepare("UPDATE user SET first_name = :first_name, last_name = :last_name, date_of_birth = :date, residence = :residence WHERE email = :email");
+        $stmt->execute($values);
+        if($_POST['upwd_edit'] != ''){
+            $hash_pwd = password_hash($_POST['upwd_edit'], PASSWORD_DEFAULT);
+            $values = [
+                'email' => $_POST['edit_submit'],
+            ];
+            $stmt = $db->prepare("UPDATE user SET pwd = '" . $hash_pwd . "' WHERE email = :email");
+            $stmt->execute($values);
+        }
+        editUser($db, 'edit_profile.html');
+    }
+} else if (isset($_POST['delete_profile'])){
+    $stmt = $db->query("SET FOREIGN_KEY_CHECKS=0;");
+    $values = [
+        'email' => $_SESSION['username'],
+    ];
+    $stmt = $db->prepare("DELETE FROM user where email = :email");
+    $stmt->execute($values);
+    $stmt = $db->query("SET FOREIGN_KEY_CHECKS=1;");
+    session_destroy();
+    header('Location: index.html');
+} else if (isset($_POST['admin_tickets'])) {
+    if (!isset($_POST['ticket_type_filter'])) {
+        $_POST['ticket_type_filter'] = "All Types";
+    }
+    if (!isset($_POST['ticket_cond_filter'])) {
+        $_POST['ticket_cond_filter'] = "All Conditions";
+    }
+    listTicketsAdmin($db, 'list_tickets.html');
+} else if (isset($_POST['ticket_delete'])){
+    $values = [
+        'id' => $_POST['ticket_delete'],
+    ];
+    $stmt = $db->prepare("DELETE FROM ticket where id_ticket = :id");
+    $stmt->execute($values);
+    listTicketsAdmin($db, 'list_tickets.html');
 } else{
+    var_dump($_POST);
     if (isset($_COOKIE['access_type'])) {
         setcookie('access_type', '', time() - 3600);
     }

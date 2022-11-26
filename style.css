@@ -177,7 +177,16 @@ form {
 #btns_reg {
     margin: auto;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: auto;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+}
+
+#delete_btn{
+    width: 98%;
+}
+
+#admin_tickets_btn{
+    width: 98%;
 }
 
 #btns_reg_back {
@@ -572,4 +581,12 @@ select:hover {
 
 #access_id {
     margin-top: 30%;
+}
+
+#edit_btn{
+    width: 98%;
+}
+
+#tickets_search_results_admin tr:not(:first-child) td:last-child{
+    background: none;
 }
