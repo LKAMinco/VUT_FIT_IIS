@@ -84,7 +84,8 @@ function listTicketsAdmin($db, $file){
         }
     }
 
-    $stmt = $db->query("SELECT id_ticket, title, date_add FROM ticket" . $query_cond);
+    $stmt = $db->prepare("SELECT id_ticket, title, date_add FROM ticket" . $query_cond);
+    $stmt->execute();
 
     $filterForm = $doc->getElementById($_POST['ticket_type_filter']);
     $filterForm->setAttribute('selected', 'True');
@@ -728,7 +729,8 @@ function listAppointmentsMgr($db, $file)
         }
     }
 
-    $stmt = $db->query("SELECT id_appointment, title, assignee, estimation_date, cond FROM appointment" . $query_cond);
+    $stmt = $db->prepare("SELECT id_appointment, title, assignee, estimation_date, cond FROM appointment" . $query_cond);
+    $stmt->execute();
 
     $table = $doc->getElementById('appointments_search_results');
 
@@ -838,7 +840,8 @@ function listTicketsMgr($db, $file)
         }
     }
 
-    $stmt = $db->query("SELECT id_ticket, title, category, date_add, cond FROM ticket" . $query_cond);
+    $stmt = $db->prepare("SELECT id_ticket, title, category, date_add, cond FROM ticket" . $query_cond);
+    $stmt->execute();
 
     $html = file_get_contents($file);
     $doc = new DOMDocument();
