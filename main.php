@@ -1554,10 +1554,10 @@ if (isset($_POST['login'])) {
     }
 } else if (isset($_POST['logout'])) {
     if (isset($_COOKIE['access_type'])) {
-        setcookie('access_type', '', time() - 3600);
+        setcookie('access_type', '', time() - 3600, '/', NULL, true, true);
     }
     if (isset($_COOKIE['username'])) {
-        setcookie('username', '', time() - 3600);
+        setcookie('username', '', time() - 3600, '/', NULL, true, true);
     }
     session_destroy();
     header('Location: index.html');
@@ -2008,10 +2008,10 @@ if (isset($_POST['login'])) {
 } else{
     var_dump($_POST);
     if (isset($_COOKIE['access_type'])) {
-        setcookie('access_type', '', time() - 3600);
+        setcookie('access_type', '', time() - 3600, '/', NULL, true, true);
     }
     if (isset($_COOKIE['username'])) {
-        setcookie('username', '', time() - 3600);
+        setcookie('username', '', time() - 3600, '/', NULL, true, true);
     }
     session_destroy();
     header('Location: index.html');
