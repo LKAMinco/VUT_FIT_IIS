@@ -1529,17 +1529,36 @@ if (isset($_POST['login'])) {
             $element = $doc->getElementById('reg_back_btn');
             $element->setAttribute('name', "admin_search");
 
+            $descBox = $doc->getElementById('register_header')->nodeValue = 'Register City Manager';
+            $descBox = $doc->getElementById('info_msg')->nodeValue = 'Manager has been registered!';
+
+
             $form = $doc->getElementById('form_register_back');
             setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+            echo $doc->saveHTML();
         }
         else if($_POST['utype_register'] == 'TECHNICIAN'){
             $element = $doc->getElementById('reg_back_btn');
             $element->setAttribute('name', "load_cityman");
 
+            $descBox = $doc->getElementById('register_header')->nodeValue = 'Register Service Technician';
+            $descBox = $doc->getElementById('info_msg')->nodeValue = 'Technician has been registered!';
+
             $form = $doc->getElementById('form_register_back');
             setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+            echo $doc->saveHTML();
         }
-        echo $doc->saveHTML();
+        else{
+            $html = file_get_contents('login.html');
+            libxml_use_internal_errors(true);
+            $doc = new DOMDocument();
+            $doc->loadHTML($html);
+
+            $text = $doc->getElementById('info_msg');
+            $text->nodeValue = 'Congratulation, you are registered';
+
+            echo $doc->saveHTML();
+        }
     }
 
 } else if (isset($_POST['search_tapp'])) {
