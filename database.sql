@@ -64,6 +64,8 @@ CREATE TRIGGER acc_deleted BEFORE DELETE ON user
     FOR EACH ROW
     BEGIN
         UPDATE ticket SET author = '[DELETED ACCOUNT]' WHERE author = OLD.email;
+        UPDATE appointment SET author = '[DELETED ACCOUNT]' WHERE author = OLD.email;
+        UPDATE comment SET author = '[DELETED ACCOUNT]' WHERE author = OLD.email;
     END;
 
 -- INSERT USERS --
