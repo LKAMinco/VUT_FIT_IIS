@@ -1598,7 +1598,7 @@ if (isset($_POST['login'])) {
             echo $doc->saveHTML();
         }
     } else {
-        $descBox->appendChild($fragment);
+        //$descBox->appendChild($fragment);
         echo $doc->saveHTML();
     }
 } else if (isset($_POST['logout'])) {

@@ -34,7 +34,7 @@ CREATE TABLE appointment (
     id_appointment int NOT NULL AUTO_INCREMENT,
     title varchar(255) NOT NULL,
     author varchar(255) NOT NULL,
-    assignee varchar(255) NOT NULL,
+    assignee varchar(255) NULL,
     descript varchar(1024) NOT NULL,
     estimation_date date NULL,
     cond varchar(12) NOT NULL,  /* IN PROGRESS | DONE | SUSPENDED */
@@ -57,7 +57,7 @@ CREATE TABLE comment
     PRIMARY KEY (id_comment),
     FOREIGN KEY (author) REFERENCES user (email),
     FOREIGN KEY (parent_ticket) REFERENCES ticket (id_ticket) ON DELETE CASCADE,
-    FOREIGN KEY (parent_appointment) REFERENCES appointment (id_appointment)
+    FOREIGN KEY (parent_appointment) REFERENCES appointment (id_appointment) ON DELETE CASCADE
 );
 
 -- INSERT USERS --
