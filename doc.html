@@ -2,7 +2,7 @@
 <!-- saved from url=(0067)https://www.fit.vutbr.cz/study/courses/IIS/private/projekt/doc.html -->
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-2">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <title>Projekt IIS</title>
     <style type="text/css">
@@ -27,32 +27,26 @@
 </head>
 <body>
 
-<!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu 
-     podle použitého editoru -->
-
-<h1>Název zadání (editujte)</h1> <!-- Nahradte názvem svého zadání -->
+<h1>NĂĄzev zadĂĄnĂ­ (editujte)</h1> <!-- Nahradte nĂĄzvem svĂŠho zadĂĄnĂ­ -->
 
 <dl>
-    <dt>Autoři</dt>
-    <dd>Jakub Julius Šmýkal <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
-        <a href="mailto:xsmyka01@stud.fit.vutbr.cz">xsmyka01@stud.fit.vutbr.cz</a> -
-        popis činnosti v týmu
+    <dt>AutoĹi</dt>
+    <dd>Jakub Julius Ĺ mĂ˝kal
+        <a href="mailto:xsmyka01@stud.fit.vutbr.cz">xsmyka01@stud.fit.vutbr.cz</a> - strĂĄnky pro admina a managera
     </dd>
-    <dd>Milan Hrabovský <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
-        <a href="mailto:xhrabo15@stud.fit.vutbr.cz">xhrabo152@stud.fit.vutbr.cz</a> -
-        popis činnosti v týmu
+    <dd>Milan HrabovskĂ˝
+        <a href="mailto:xhrabo15@stud.fit.vutbr.cz">xhrabo152@stud.fit.vutbr.cz</a> - strĂĄnky pro obyvatele
     </dd>
-    <dd>Simona Češková <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
-        <a href="mailto:xcesko00@stud.fit.vutbr.cz">xcesko00@stud.fit.vutbr.cz</a> -
-        popis činnosti v týmu
+    <dd>Simona ÄeĹĄkovĂĄ
+        <a href="mailto:xcesko00@stud.fit.vutbr.cz">xcesko00@stud.fit.vutbr.cz</a> - strĂĄnky pro technika
     </dd>
     <dt>URL aplikace</dt>
-    <dd><a href="http://www.stud.fit.vutbr.cz/~xautor01/IIS">http://www.stud.fit.vutbr.cz/~xautor01/IIS</a></dd>
-    <dd>(pokud má aplikace více vstupních stránek, napište obdobně další URL)</dd>
+    <dd><a href="http://www.stud.fit.vutbr.cz/~xsmyka01/IIS/index.html">http://www.stud.fit.vutbr.cz/~xsmyka01/IIS/index.html</a>
+    </dd>
 </dl>
 
-<h2>Uživatelé systému pro testování</h2>
-<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
+<h2>UĹživatelĂŠ systĂŠmu pro testovĂĄnĂ­</h2>
+<p>UveÄte prosĂ­m existujĂ­cĂ­ zĂĄstupce <strong>vĹĄech rolĂ­ uĹživatelĹŻ</strong>.</p>
 <table>
     <tbody>
     <tr>
@@ -98,94 +92,106 @@
     </tbody>
 </table>
 
+<h2>RozĹĄĂ­ĹenĂ­ role administrĂĄtora</h2>
+<p>Rozhodli jsme se pĹidat administrĂĄtorovi prĂĄva pro mazĂĄnĂ­ tiketĹŻ, aby mÄl mÄl vÄtĹĄĂ­ pravomoc nad tĂ­mto serverem. PĹi
+    vymazĂĄnĂ­ tiketu se zĂĄroveĹ s nĂ­m smaĹže i vytvoĹenĂ˝ servisnĂ­ poĹžadavek a vĹĄechny komentĂĄĹe k tiketu napsanĂŠ. Shodli
+    jsme se, Ĺže tuto pravomoc nebudeme dĂĄvat managerovi, protoĹže jsme chtÄli dlouhodobÄ zachovat data v databĂĄzi.
+    Manager mĂĄ moĹžnost dĂĄt tiketu stav "odmĂ­tnutĂ˝", nebo "pozastavenĂ˝" (REJECTED, SUSPENDED), pokud se mu danĂ˝ tiket
+    nelĂ­bĂ­. </p>
+<h2>Specifikace ĂşÄtu obyvatele</h2>
+<p>V souboru main.php pojmenovĂĄvĂĄme ĂşÄet "User resident" pouze jako USER, kdyĹž s nĂ­m pracujeme. User resident je
+    obyvatel mÄsta, kterĂ˝ mĂĄ vytvooĹenĂ˝ ĂşÄet na tvorbu tiketĹŻ atd... </p>
+
 
 <p>ER diagram:</p>
 <img class="imgB" src="images/ERD.png" alt="ER diagram">
-<p>Diagram případů užití:</p>
-<img class="img" src="images/UCD.png" alt="Diagram případů užití">
+<p>Diagram pĹĂ­padĹŻ uĹžitĂ­:</p>
+<img class="img" src="images/UCD.png" alt="Diagram pĹĂ­padĹŻ uĹžitĂ­">
 
 <h3>Video</h3>
 
-<p>Přiložte odkaz na komentované video demostrující použití informačního systému. Zaměřte se na případy užití definované
-    zadáním (např. registrace uživatele, správa uživatelů a činnosti jednotlivých rolí). Video nahrajte například na VUT
-    Google Drive, kde ho bude možné přímo spustit z odkazu.</p>
+<p>PĹiloĹžte odkaz na komentovanĂŠ video demostrujĂ­cĂ­ pouĹžitĂ­ informaÄnĂ­ho systĂŠmu. ZamÄĹte se na pĹĂ­pady uĹžitĂ­ definovanĂŠ
+    zadĂĄnĂ­m (napĹ. registrace uĹživatele, sprĂĄva uĹživatelĹŻ a Äinnosti jednotlivĂ˝ch rolĂ­). Video nahrajte napĹĂ­klad na VUT
+    Google Drive, kde ho bude moĹžnĂŠ pĹĂ­mo spustit z odkazu.</p>
 
 <h2>Implementace</h2>
-<p>V našem projektu jsme postupovali podle modelu MVC. Základ každé stránky je napsán v HTML s funkcí "view", který
+<p>V naĹĄem projektu jsme postupovali podle modelu MVC. ZĂĄklad kaĹždĂŠ strĂĄnky je napsĂĄn v HTML s funkcĂ­ "view", kterĂ˝
     podle
-    upravujeme pomocí PHP kódu, který plní úlohu "controler". Obě tyto složky doplňuje databáze psaná v MYSQL, která
-    přestavuje "model". Databázi jsme implementovali pomocí schéma relační databáze. S databází komunikujeme pomocí PDO.
-    PDO v PHP nabízí vrstvu abstrakce pro přístup k datům, což znamená, že můžeme zadávat dotazy a načítat data pomocí
-    stejných funkcí bez ohledu na to, jakou databázi používáme.</p>
-<p>Náš PHP kód je obsažen v souboru main.php a v něm spracováváme každý jednotlivý požadavek, který přijde od uživatele
-    v superglobálu $_POST. Tento požadavek vzniká po kliknutí na tlačítko uživatelem. Podle toho se volání jednolitvé
-    funkce a konstrukce. Každá zavolaná funkce provede akci, která např. modifikuje HTML - přidává tlačítka, mění
-    formuláře, pracuje s hodnotama z databáze a vypisuje je na stránku a zpracovává získané hodnoty od uživatele. </p>
-<p>Soubor main.php je rozdělený na 3 části. V první části se inicializuje session a připojí se k databází na server.
-    Druhá část obsahuje 9 funkcí, které složí pro správu uživateků a jejich požadavků a 5 pomocných funkcí. </p>
-<h4>Hlavní funkce main.php:</h4>
+    upravujeme pomocĂ­ PHP kĂłdu, kterĂ˝ plnĂ­ Ăşlohu "controler". ObÄ tyto sloĹžky doplĹuje databĂĄze psanĂĄ v MYSQL, kterĂĄ
+    pĹestavuje "model". DatabĂĄzi jsme implementovali pomocĂ­ schĂŠma relaÄnĂ­ databĂĄze. S databĂĄzĂ­ komunikujeme pomocĂ­ PDO.
+    PDO v PHP nabĂ­zĂ­ vrstvu abstrakce pro pĹĂ­stup k datĹŻm, coĹž znamenĂĄ, Ĺže mĹŻĹžeme zadĂĄvat dotazy a naÄĂ­tat data pomocĂ­
+    stejnĂ˝ch funkcĂ­ bez ohledu na to, jakou databĂĄzi pouĹžĂ­vĂĄme.</p>
+<p>NĂĄĹĄ PHP kĂłd je obsaĹžen v souboru main.php a v nÄm spracovĂĄvĂĄme kaĹždĂ˝ jednotlivĂ˝ poĹžadavek, kterĂ˝ pĹijde od uĹživatele
+    v superglobĂĄlu $_POST. Tento poĹžadavek vznikĂĄ po kliknutĂ­ na tlaÄĂ­tko uĹživatelem. Podle toho se volĂĄnĂ­ jednolitvĂŠ
+    funkce a konstrukce. KaĹždĂĄ zavolanĂĄ funkce provede akci, kterĂĄ napĹ. modifikuje HTML - pĹidĂĄvĂĄ tlaÄĂ­tka, mÄnĂ­
+    formulĂĄĹe, pracuje s hodnotama z databĂĄze a vypisuje je na strĂĄnku a zpracovĂĄvĂĄ zĂ­skanĂŠ hodnoty od uĹživatele. </p>
+<p>Soubor main.php je rozdÄlenĂ˝ na 3 ÄĂĄsti. V prvnĂ­ ÄĂĄsti se inicializuje session a pĹipojĂ­ se k databĂĄzĂ­ na server.
+    DruhĂĄ ÄĂĄst obsahuje 9 funkcĂ­, kterĂŠ sloĹžĂ­ pro sprĂĄvu uĹživatekĹŻ a jejich poĹžadavkĹŻ a 5 pomocnĂ˝ch funkcĂ­. </p>
+<h4>HlavnĂ­ funkce main.php:</h4>
 <ul>
-    <li>openAppointmentDetailsMgr() - otevře jeden konkrétní appointment, který je možné upravit, zobrazí všechny jeho
-        vlastnosti a komentáře - role manager
+    <li>openAppointmentDetailsMgr() - otevĹe jeden konkrĂŠtnĂ­ appointment, kterĂ˝ je moĹžnĂŠ upravit, zobrazĂ­ vĹĄechny jeho
+        vlastnosti a komentĂĄĹe - role manager
     </li>
-    <li>openTicketDetailsMgr()- otevře jeden konkrétní ticket, který je možné upravit, zobrazí všechny jeho vlastnosti a
-        komentáře - role manager a user jako obyvatel města (nemá přístup k změně stavu)
+    <li>openTicketDetailsMgr()- otevĹe jeden konkrĂŠtnĂ­ tiket, kterĂ˝ je moĹžnĂŠ upravit, zobrazĂ­ vĹĄechny jeho vlastnosti a
+        komentĂĄĹe - role manager a user jako obyvatel mÄsta (nemĂĄ pĹĂ­stup k zmÄnÄ stavu)
     </li>
-    <li>listAppointmentsMgr() - vypíše všechny dostupné appointmenty podle zvoleného filtru a dovolí jejich úpravu -
+    <li>listAppointmentsMgr() - vypĂ­ĹĄe vĹĄechny dostupnĂŠ appointmenty podle zvolenĂŠho filtru a dovolĂ­ jejich Ăşpravu -
         role manager
     </li>
-    <li>listTicketsMgr() - vypíše všechny dostupné tickety podle zvoleného filtru a dovolí jejich úpravu - role
-        manager a user jako obyvatel města (nemá přístup k změně stavu)
+    <li>listTicketsMgr() - vypĂ­ĹĄe vĹĄechny dostupnĂŠ tikety podle zvolenĂŠho filtru a dovolĂ­ jejich Ăşpravu - role
+        manager a user jako obyvatel mÄsta (nemĂĄ pĹĂ­stup k zmÄnÄ stavu)
     </li>
-    <li>listUsers() - zobrazí výpis všech uživateků a dovoluje mazání účtů - role admin</li>
-    <li>listAppTech() - zobrazí výpis všech appointmentů na hlavní straně po přihlášení na technika a umožňuje změnu
-        hodnot appointů
+    <li>listUsers() - zobrazĂ­ vĂ˝pis vĹĄech uĹživatekĹŻ a dovoluje mazĂĄnĂ­ ĂşÄtĹŻ - role admin</li>
+    <li>listAppTech() - zobrazĂ­ vĂ˝pis vĹĄech appointmentĹŻ na hlavnĂ­ stranÄ po pĹihlĂĄĹĄenĂ­ na technika a umoĹžĹuje zmÄnu
+        hodnot appointĹŻ
     </li>
-    <li>listAppDetails() - zobrazení detailu appointmentu a dovolí úpravu jeho stavu a přidání komentářů - role
+    <li>listAppDetails() - zobrazenĂ­ detailu appointmentu a dovolĂ­ Ăşpravu jeho stavu a pĹidĂĄnĂ­ komentĂĄĹĹŻ - role
         technik
     </li>
-    <li>listAppTicket() - pomocí ní technik uvidí původní ticket s jeho detailem, podle kterého byl vytvořen příslušný
-        appointment, přes který se na něj dostal - role technik
+    <li>listAppTicket() - pomocĂ­ nĂ­ technik uvidĂ­ pĹŻvodnĂ­ tiket s jeho detailem, podle kterĂŠho byl vytvoĹen pĹĂ­sluĹĄnĂ˝
+        appointment, pĹes kterĂ˝ se na nÄj dostal - role technik
     </li>
-    <li>reportProblem() - umožňuje nahlásit problém do databáze (z problému se stane ticket) od uživatele</li>
+    <li>reportProblem() - umoĹžĹuje nahlĂĄsit problĂŠm do databĂĄze (z problĂŠmu se stane tiket) od uĹživatele</li>
 </ul>
 
-<h3>Databáze</h3>
-<p>Schéma relační databáze:</p>
-<img class="img" src="images/Diag.png" alt="Schéma relační databáze">
-<p>Schéma vygenerované databází:</p>
-<img class="imgS" src="images/diagramMYSQL.png" alt="Schéma vygenerované databází">
+<h3>DatabĂĄze</h3>
+<p>SchĂŠma relaÄnĂ­ databĂĄze:</p>
+<img class="img" src="images/Diag.png" alt="SchĂŠma relaÄnĂ­ databĂĄze">
+<p>SchĂŠma vygenerovanĂŠ databĂĄzĂ­:</p>
+<img class="imgS" src="images/diagramMYSQL.png" alt="SchĂŠma vygenerovanĂŠ databĂĄzĂ­">
 
 <h2>Instalace</h2>
-Stručně popište:
+StruÄnÄ popiĹĄte:
 <ul>
     <li>Postup instalace na server:</li>
-    <ul>
-        <li>Nahrát soubory na server</li>
-        <li>Vytvořit složku "images" v kořenovém adresáři, ve kterém se nachází soubor main.php</li>
-        <li></li>
-        <li></li>
-        <li>V případě, že se soubor main.php neodkazuje na správnou databází, je nutné přepsat připojení k databázi</li>
-    </ul>
+    <ol>
+        <li>NahrĂĄt soubory na server</li>
+        <li>VytvoĹit sloĹžku "images" v koĹenovĂŠm adresĂĄĹi, ve kterĂŠm se nachĂĄzĂ­ soubor main.php</li>
+        <li>PĹidat pĹĂ­stupovĂŠ prĂĄva vĹĄem souborĹŻm na 0644</li>
+        <li>V pĹĂ­padÄ, Ĺže se soubor main.php neodkazuje na sprĂĄvnou databĂĄzĂ­, je nutnĂŠ pĹepsat pĹipojenĂ­ k databĂĄzi</li>
 
-    <li>Softwarové požadavky:</li>
+    </ol>
+
+    <li>SoftwarovĂŠ poĹžadavky:</li>
     <ul>
         <li>PHP 8.1, MYSQL a HTML5</li>
     </ul>
-    <li>Jak rozbalit, konfigurovat, inicializovat databázi:</li>
+    <li>Jak rozbalit, konfigurovat, inicializovat databĂĄzi:</li>
     <ol>
-        <li>Připojit se na databázový server</li>
-        <li>Spustit na serveru .sql soubor s databází</li>
-        <li>V případě, že se soubor hash_help.php neodkazuje na správnou databází, je nutné přepsat připojení k databázi</li>
-        <li>Pustit hesh_help.php - tento script vymění všechna hesla v databázi za zahashované (používá se pouze jednou
-            při inicializaci databáze)
+        <li>PĹipojit se na databĂĄzovĂ˝ server</li>
+        <li>Spustit na serveru .sql soubor s databĂĄzĂ­</li>
+        <li>V pĹĂ­padÄ, Ĺže se soubor hash_help.php neodkazuje na sprĂĄvnou databĂĄzĂ­, je nutnĂŠ pĹepsat pĹipojenĂ­ k
+            databĂĄzi
         </li>
-        <li>Užívat si funkčnost našeho produktu</li>
+        <li>Pustit hesh_help.php - tento script vymÄnĂ­ vĹĄechna hesla v databĂĄzi za zahashovanĂŠ (pouĹžĂ­vĂĄ se pouze jednou
+            pĹi inicializaci databĂĄze)
+        </li>
+        <li>UĹžĂ­vat si funkÄnost naĹĄeho produktu</li>
     </ol>
 </ul>
 
-<h2>Známé problémy</h2>
-<p>Nelze přidat víc než jeden obrázek při registraci tiketu a jeho velikost není omezená.</p>
+<h2>ZnĂĄmĂŠ problĂŠmy</h2>
+<p>Nelze pĹidat vĂ­ce neĹž jeden obrĂĄzek pĹi registraci tiketu a jeho velikost nenĂ­ omezenĂĄ.</p>
 
 
 <style type="text/css">
