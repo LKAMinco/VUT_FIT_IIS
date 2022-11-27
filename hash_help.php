@@ -3,7 +3,7 @@ session_start();
 date_default_timezone_set('Europe/Prague');
 
 try {
-    $db = new PDO("mysql:host=localhost;dbname=xcesko00;port=/var/run/mysql/mysql.sock", 'xcesko00', 'i4okonun');
+    $db = new PDO("mysql:host=remotemysql.com;dbname=eUGDvDb3sy;port=3306", 'eUGDvDb3sy', '7tTC6lIx7i');
 } catch (PDOException $e) {
     echo "Connection error: ".$e->getMessage();
     die();
@@ -17,4 +17,5 @@ function hashHelp($db)
         $db->query("UPDATE user SET pwd = '" . $hash_pwd . "'WHERE email = '" . $row['email']. "'");
     }
 }
+hashHelp($db);
 ?>

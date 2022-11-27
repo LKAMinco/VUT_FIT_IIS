@@ -7,7 +7,7 @@ date_default_timezone_set('Europe/Prague');
 
 
 try {
-    $db = new PDO("mysql:host=localhost;dbname=xcesko00;port=/var/run/mysql/mysql.sock", 'xcesko00', 'i4okonun');
+    $db = new PDO("mysql:host=remotemysql.com;dbname=eUGDvDb3sy;port=3306", 'eUGDvDb3sy', '7tTC6lIx7i');
 } catch (PDOException $e) {
     echo "Connection error: ".$e->getMessage();
     die();
@@ -455,7 +455,8 @@ function openAppointmentDetailsMgr($db, $file){
         setElement( $doc, 'input', '', NULL, 'id_comment', 'hidden', $row['id_comment'], $form, NULL);
 
         $input = $doc->getElementById('add_appointment_comment_btn');
-        setElement( $doc, 'input', '', NULL, 'open_ticket_mgr', 'hidden', $_POST['open_ticket_mgr'], $form, NULL);
+        if(isset($_POST['open_ticket_mgr']))
+            setElement( $doc, 'input', '', NULL, 'open_ticket_mgr', 'hidden', $_POST['open_ticket_mgr'], $form, NULL);
         setElement( $doc, 'button', 'Remove', 'remove_comment_appointment_btn', 'remove_appointment_comment', 'submit', $_POST['open_appointment_mgr'], $form, NULL);
 
         $divInternal->appendChild($form);
@@ -1594,7 +1595,7 @@ if (isset($_POST['login'])) {
                 echo $doc->saveHTML();
             }
         } else {
-            $descBox->appendChild($fragment);
+            //$descBox->appendChild($fragment);
             echo $doc->saveHTML();
         }
     } else {
