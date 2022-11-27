@@ -27,7 +27,7 @@
 </head>
 <body>
 
-<h1>Chytré město</h1> 
+<h1>Chytré město</h1>
 
 <dl>
     <dt>Autoři</dt>
@@ -111,99 +111,114 @@
 <h3>Video</h3>
 <dd><a href="https://drive.google.com/drive/u/2/folders/13uGcJch1EIcwZGsZP-WkMSORJD7va2WG">https://drive.google.com/drive/u/2/folders/13uGcJch1EIcwZGsZP-WkMSORJD7va2WG</a>
 
-<h2>Implementace</h2>
-<p>V našem projektu jsme postupovali podle modelu MVC. Základ každé stránky je napsán v HTML s funkcí "view", který
-    podle
-    upravujeme pomocí PHP kódu, který plní úlohu "controler". Obě tyto složky doplňuje databáze psaná v MYSQL, která
-    přestavuje "model". Databázi jsme implementovali pomocí schéma relační databáze. S databází komunikujeme pomocí PDO.
-    PDO v PHP nabízí vrstvu abstrakce pro přístup k datům, což znamená, že můžeme zadávat dotazy a načítat data pomocí
-    stejných funkcí bez ohledu na to, jakou databázi používáme.</p>
-<p>Náš PHP kód je obsažen v souboru main.php a v něm spracováváme každý jednotlivý požadavek, který přijde od uživatele
-    v superglobálu $_POST. Tento požadavek vzniká po kliknutí na tlačítko uživatelem. Podle toho se volání jednolitvé
-    funkce a konstrukce. Každá zavolaná funkce provede akci, která např. modifikuje HTML - přidává tlačítka, mění
-    formuláře, pracuje s hodnotama z databáze a vypisuje je na stránku a zpracovává získané hodnoty od uživatele. </p>
-<p>Soubor main.php je rozdělený na 3 části. V první části se inicializuje session a připojí se k databází na server.
-    Druhá část obsahuje 9 funkcí, které složí pro správu uživateků a jejich požadavků a 5 pomocných funkcí. </p>
-<h4>Hlavní funkce main.php:</h4>
-<ul>
-    <li>openAppointmentDetailsMgr() - otevře jeden konkrétní appointment, který je možné upravit, zobrazí všechny jeho
-        vlastnosti a komentáře - role manager
-    </li>
-    <li>openTicketDetailsMgr()- otevře jeden konkrétní tiket, který je možné upravit, zobrazí všechny jeho vlastnosti a
-        komentáře - role manager a user jako obyvatel města (nemá přístup k změně stavu)
-    </li>
-    <li>listAppointmentsMgr() - vypíše všechny dostupné appointmenty podle zvoleného filtru a dovolí jejich úpravu -
-        role manager
-    </li>
-    <li>listTicketsMgr() - vypíše všechny dostupné tikety podle zvoleného filtru a dovolí jejich úpravu - role
-        manager a user jako obyvatel města (nemá přístup k změně stavu)
-    </li>
-    <li>listUsers() - zobrazí výpis všech uživateků a dovoluje mazání účtů - role admin</li>
-    <li>listAppTech() - zobrazí výpis všech appointmentů na hlavní straně po přihlášení na technika a umožňuje změnu
-        hodnot appointů
-    </li>
-    <li>listAppDetails() - zobrazení detailu appointmentu a dovolí úpravu jeho stavu a přidání komentářů - role
-        technik
-    </li>
-    <li>listAppTicket() - pomocí ní technik uvidí původní tiket s jeho detailem, podle kterého byl vytvořen příslušný
-        appointment, přes který se na něj dostal - role technik
-    </li>
-    <li>reportProblem() - umožňuje nahlásit problém do databáze (z problému se stane tiket) od uživatele</li>
-</ul>
-
-<h3>Databáze</h3>
-<p>Schéma relační databáze:</p>
-<img class="img" src="images/Diag.png" alt="Schéma relační databáze">
-<p>Schéma vygenerované databází:</p>
-<img class="imgS" src="images/diagramMYSQL.png" alt="Schéma vygenerované databází">
-
-<h2>Instalace</h2>
-Stručně popište:
-<ul>
-    <li>Postup instalace na server:</li>
-    <ol>
-        <li>Nahrát soubory na server</li>
-        <li>Vytvořit složku "images" v kořenovém adresáři, ve kterém se nachází soubor main.php</li>
-        <li>Přidat přístupové práva všem souborům na 0644</li>
-        <li>V případě, že se soubor main.php neodkazuje na správnou databází, je nutné přepsat připojení k databázi</li>
-
-    </ol>
-
-    <li>Softwarové požadavky:</li>
+    <h2>Implementace</h2>
+    <p>V našem projektu jsme postupovali podle modelu MVC. Základ každé stránky je napsán v HTML s funkcí "view", který
+        podle
+        upravujeme pomocí PHP kódu, který plní úlohu "controler". Obě tyto složky doplňuje databáze psaná v MYSQL, která
+        přestavuje "model". Databázi jsme implementovali pomocí schéma relační databáze. S databází komunikujeme pomocí
+        PDO.
+        PDO v PHP nabízí vrstvu abstrakce pro přístup k datům, což znamená, že můžeme zadávat dotazy a načítat data
+        pomocí
+        stejných funkcí bez ohledu na to, jakou databázi používáme.</p>
+    <p>Náš PHP kód je obsažen v souboru main.php a v něm spracováváme každý jednotlivý požadavek, který přijde od
+        uživatele
+        v superglobálu $_POST. Tento požadavek vzniká po kliknutí na tlačítko uživatelem. Podle toho se volání
+        jednolitvé
+        funkce a konstrukce. Každá zavolaná funkce provede akci, která např. modifikuje HTML - přidává tlačítka, mění
+        formuláře, pracuje s hodnotama z databáze a vypisuje je na stránku a zpracovává získané hodnoty od
+        uživatele. </p>
+    <p>Soubor main.php je rozdělený na 3 části. V první části se inicializuje session a připojí se k databází na server.
+        Druhá část obsahuje 9 funkcí, které složí pro správu uživateků a jejich požadavků a 5 pomocných funkcí. </p>
+    <h4>Hlavní funkce main.php:</h4>
     <ul>
-        <li>PHP 8.1, MYSQL a HTML5</li>
+        <li>openAppointmentDetailsMgr() - otevře jeden konkrétní appointment, který je možné upravit, zobrazí všechny
+            jeho
+            vlastnosti a komentáře - role manager
+        </li>
+        <li>openTicketDetailsMgr()- otevře jeden konkrétní tiket, který je možné upravit, zobrazí všechny jeho
+            vlastnosti a
+            komentáře - role manager a user jako obyvatel města (nemá přístup k změně stavu)
+        </li>
+        <li>listAppointmentsMgr() - vypíše všechny dostupné appointmenty podle zvoleného filtru a dovolí jejich úpravu -
+            role manager
+        </li>
+        <li>listTicketsMgr() - vypíše všechny dostupné tikety podle zvoleného filtru a dovolí jejich úpravu - role
+            manager a user jako obyvatel města (nemá přístup k změně stavu)
+        </li>
+        <li>listUsers() - zobrazí výpis všech uživateků a dovoluje mazání účtů - role admin</li>
+        <li>listAppTech() - zobrazí výpis všech appointmentů na hlavní straně po přihlášení na technika a umožňuje změnu
+            hodnot appointů
+        </li>
+        <li>listAppDetails() - zobrazení detailu appointmentu a dovolí úpravu jeho stavu a přidání komentářů - role
+            technik
+        </li>
+        <li>listAppTicket() - pomocí ní technik uvidí původní tiket s jeho detailem, podle kterého byl vytvořen
+            příslušný
+            appointment, přes který se na něj dostal - role technik
+        </li>
+        <li>reportProblem() - umožňuje nahlásit problém do databáze (z problému se stane tiket) od uživatele</li>
     </ul>
-    <li>Jak rozbalit, konfigurovat, inicializovat databázi:</li>
-    <ol>
-        <li>Připojit se na databázový server</li>
-        <li>Spustit na serveru .sql soubor s databází</li>
-        <li>V případě, že se soubor hash_help.php neodkazuje na správnou databází, je nutné přepsat připojení k
-            databázi
-        </li>
-        <li>Pustit hesh_help.php - tento script vymění všechna hesla v databázi za zahashované (používá se pouze jednou
-            při inicializaci databáze)
-        </li>
-        <li>Užívat si funkčnost našeho produktu</li>
-    </ol>
-</ul>
-
-<h2>Známé problémy</h2>
-<p>Nelze přidat více než jeden obrázek při registraci tiketu a jeho velikost není omezená.</p>
+    <h4>hash_help.php</h4>
+    <p>Pomocný script hash_help.php slouží k prvotnímu zahashování hesel. Zvolili jsme metodu hashování pomocí PHP
+        funkce password_hash().</p>
 
 
-<style type="text/css">
-    .img {
-        width: 70%;
-    }
+    <h3>Databáze</h3>
+    <p>Schéma relační databáze:</p>
+    <img class="img" src="images/Diag.png" alt="Schéma relační databáze">
+    <p>Schéma vygenerované databází:</p>
+    <img class="imgS" src="images/diagramMYSQL.png" alt="Schéma vygenerované databází">
 
-    .imgB {
-        height: 1000px;
-    }
+    <h2>Instalace</h2>
+    Stručně popište:
+    <ul>
+        <li>Postup instalace na server:</li>
+        <ol>
+            <li>Nahrát soubory na server</li>
+            <li>Vytvořit složku "images" v kořenovém adresáři, ve kterém se nachází soubor main.php</li>
+            <li>Přidat přístupové práva všem souborům na 0644</li>
+            <li>V případě, že se soubor main.php neodkazuje na správnou databází, je nutné přepsat připojení k
+                databázi
+            </li>
 
-    .imgS {
-        width: 50%;
-    }
-</style>
+        </ol>
+
+        <li>Softwarové požadavky:</li>
+        <ul>
+            <li>PHP 8.1, MYSQL a HTML5</li>
+        </ul>
+        <li>Jak rozbalit, konfigurovat, inicializovat databázi:</li>
+        <ol>
+            <li>Připojit se na databázový server</li>
+            <li>Spustit na serveru .sql soubor s databází</li>
+            <li>V případě, že se soubor hash_help.php neodkazuje na správnou databází, je nutné přepsat připojení k
+                databázi
+            </li>
+            <li>Pustit hesh_help.php - tento script vymění všechna hesla v databázi za zahashované (používá se pouze
+                jednou
+                při inicializaci databáze)
+            </li>
+            <li>Užívat si funkčnost našeho produktu</li>
+        </ol>
+    </ul>
+
+    <h2>Známé problémy</h2>
+    <p>Nelze přidat více než jeden obrázek při registraci tiketu a jeho velikost není omezená.</p>
+
+
+    <style type="text/css">
+        .img {
+            width: 70%;
+        }
+
+        .imgB {
+            height: 1000px;
+        }
+
+        .imgS {
+            width: 50%;
+        }
+    </style>
 
 </body>
 </html>
