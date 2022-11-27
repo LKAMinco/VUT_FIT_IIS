@@ -3,7 +3,7 @@ session_start();
 date_default_timezone_set('Europe/Prague');
 
 try {
-    $db = new PDO("mysql:host=remotemysql.com;dbname=eUGDvDb3sy;port=3306", 'eUGDvDb3sy', '7tTC6lIx7i');
+    $db = new PDO("mysql:host=localhost;dbname=xsmyka01;port=/var/run/mysql/mysql.sock", 'xsmyka01', 'kor5ergu');
     hashHelp($db);
 } catch (PDOException $e) {
     echo "Connection error: " . $e->getMessage();

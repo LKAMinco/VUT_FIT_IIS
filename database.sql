@@ -60,14 +60,6 @@ CREATE TABLE comment
     FOREIGN KEY (parent_appointment) REFERENCES appointment (id_appointment)
 );
 
-CREATE TRIGGER acc_deleted BEFORE DELETE ON user
-    FOR EACH ROW
-    BEGIN
-        UPDATE ticket SET author = '[DELETED ACCOUNT]' WHERE author = OLD.email;
-        UPDATE appointment SET author = '[DELETED ACCOUNT]' WHERE author = OLD.email;
-        UPDATE comment SET author = '[DELETED ACCOUNT]' WHERE author = OLD.email;
-    END;
-
 -- INSERT USERS --
 
 INSERT INTO user(first_name, last_name, date_of_birth, residence, access_type, specialization, email, pwd)

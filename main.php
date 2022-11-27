@@ -7,18 +7,20 @@ date_default_timezone_set('Europe/Prague');
 
 
 try {
-    $db = new PDO("mysql:host=remotemysql.com;dbname=eUGDvDb3sy;port=3306", 'eUGDvDb3sy', '7tTC6lIx7i');
+    $db = new PDO("mysql:host=localhost;dbname=xsmyka01;port=/var/run/mysql/mysql.sock", 'xsmyka01', 'kor5ergu');
 } catch (PDOException $e) {
     echo "Connection error: " . $e->getMessage();
     die();
 }
 
 // automatically logs out user after 30 min of inactivity
-if (!isset($_COOKIE['username']) && !isset($_POST['login'])) {
+if (!isset($_COOKIE['username']) && !isset($_POST['login']) && !isset($_POST['register_submit'])) {
     session_destroy();
     header("Location: wrong_access.html");
 } else {
-    setcookie('username', $_SESSION['username'], time() + 3600, '/', NULL, true, true);
+    if(isset($_SESSION['username'])) {
+        setcookie('username', $_SESSION['username'], time() + 3600);
+    }
 }
 
 /* -- Part Two: Function for displaying data in HTML page -- */
@@ -165,15 +167,21 @@ function editUser($db, $file){
 
     // Parameters for keeping active search filter
     $form = $doc->getElementById('form_edit_back');
-    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+    if(isset($_POST['admin_filter']))
+        setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+    if(isset($_POST['tapp_filter1']))
     setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
+    if(isset($_POST['tapp_filter2']))
     setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
 
     // Parameters for keeping active search filter
     $form = $doc->getElementById('form_edit');
-    setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
-    setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
-    setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
+    if(isset($_POST['admin_filter']))
+        setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+    if(isset($_POST['tapp_filter1']))
+        setElement( $doc, 'input', '', NULL, 'tapp_filter1', 'hidden', $_POST['tapp_filter1'], $form, NULL);
+    if(isset($_POST['tapp_filter2']))
+        setElement( $doc, 'input', '', NULL, 'tapp_filter2', 'hidden', $_POST['tapp_filter2'], $form, NULL);
 
     $button = $doc->getElementById('edit_btn');
     $button->setAttribute('value', $_SESSION['username']);
@@ -197,9 +205,11 @@ function editUser($db, $file){
     }
 
     // Error message for invalid new password
-    if ($_POST['edit_submit'] == 'None'){
-        $text = $doc->getElementById('info_msg');
-        $text->nodeValue = 'Passwords do not match';
+    if(isset($_POST['edit_submit'])) {
+        if ($_POST['edit_submit'] == 'None') {
+            $text = $doc->getElementById('info_msg');
+            $text->nodeValue = 'Passwords do not match';
+        }
     }
     // Fills input fields with current user data
     $values = [
@@ -241,6 +251,7 @@ function openUser($db, $file){
     $text->setAttribute('value', $_SESSION['username']);
 
     echo $doc->saveHTML();
+    return NULL;
 }
 
 // Function completes page to create service appointments
@@ -311,7 +322,8 @@ function openAppointmentDetailsMgr($db, $file){
         $form = $doc->getElementById('show_appointment_from_ticket');
         setElement( $doc, 'input', '', NULL, 'appointments_assignee_filter', 'hidden', $_POST['appointments_assignee_filter'], $form, NULL);
         setElement( $doc, 'input', '', NULL, 'appointments_cond_filter', 'hidden', $_POST['appointments_cond_filter'], $form, NULL);
-        setElement( $doc, 'input', '', NULL, 'open_ticket_mgr', 'hidden', $_POST['open_ticket_mgr'], $form, NULL);
+        if(isset($_POST['open_ticket_mgr']))
+            setElement( $doc, 'input', '', NULL, 'open_ticket_mgr', 'hidden', $_POST['open_ticket_mgr'], $form, NULL);
         setElement( $doc, 'button', 'Show Ticket', 'ticket_from_appointment_btn', 'open_ticket_from_appointment_mgr', 'submit', $_POST['open_appointment_mgr'], $form, NULL);
     }
 
@@ -343,8 +355,10 @@ function openAppointmentDetailsMgr($db, $file){
         $form->setAttribute('name', 'change_assignee_detail');
 
         // Parameters for keeping active search filter
-        setElement( $doc, 'input', '', NULL, 'appointments_assignee_filter', 'hidden', $_POST['appointments_assignee_filter'], $form, NULL);
-        setElement( $doc, 'input', '', NULL, 'appointments_cond_filter', 'hidden', $_POST['appointments_cond_filter'], $form, NULL);
+        if(isset($_POST['appointments_assignee_filter']))
+            setElement( $doc, 'input', '', NULL, 'appointments_assignee_filter', 'hidden', $_POST['appointments_assignee_filter'], $form, NULL);
+        if(isset($_POST['appointments_cond_filter']))
+            setElement( $doc, 'input', '', NULL, 'appointments_cond_filter', 'hidden', $_POST['appointments_cond_filter'], $form, NULL);
 
         $div = $doc->createElement('div');
         $div->setAttribute('id', 'appointment_detail_list_btn_div');
@@ -464,7 +478,8 @@ function openAppointmentDetailsMgr($db, $file){
 
     // Form to add comments to service appointment
     $input = $doc->getElementById('add_appointment_comment_btn');
-    setElement( $doc, 'input', '', NULL, 'open_ticket_mgr', 'hidden', $_POST['open_ticket_mgr'], $form, NULL);
+    if(isset($_POST['open_ticket_mgr']))
+        setElement( $doc, 'input', '', NULL, 'open_ticket_mgr', 'hidden', $_POST['open_ticket_mgr'], $form, NULL);
     setElement( $doc, 'input', '', NULL, 'appointment_comment_author', 'hidden', $_SESSION['username'], $form, NULL);
     setElement( $doc, 'input', '', NULL, 'appointment_comment_date', 'hidden', date('Y-m-d H:i:s', time()), $form, NULL);
 
@@ -492,8 +507,10 @@ function openTicketDetailsMgr($db, $file)
     $form = $doc->getElementById('get_back');
 
     // Parameters for keeping active search filter
-    setElement( $doc, 'input', '', NULL, 'ticket_type_filter', 'hidden', $_POST['ticket_type_filter'], $form, NULL);
-    setElement( $doc, 'input', '', NULL, 'ticket_cond_filter', 'hidden', $_POST['ticket_cond_filter'], $form, NULL);
+    if(isset($_POST['ticket_type_filter']))
+        setElement( $doc, 'input', '', NULL, 'ticket_type_filter', 'hidden', $_POST['ticket_type_filter'], $form, NULL);
+    if(isset($_POST['ticket_cond_filter']))
+        setElement( $doc, 'input', '', NULL, 'ticket_cond_filter', 'hidden', $_POST['ticket_cond_filter'], $form, NULL);
     // When ticket was opened from appointment
     if (isset($_POST['open_ticket_from_appointment_mgr'])) {
         setElement( $doc, 'input', '', NULL, 'appointments_assignee_filter', 'hidden', $_POST['appointments_assignee_filter'], $form, NULL);
@@ -576,8 +593,10 @@ function openTicketDetailsMgr($db, $file)
         $form->setAttribute('name', 'change_cond_detail');
 
         // Parameters for keeping active search filter
-        setElement( $doc, 'input', '', NULL, 'ticket_type_filter', 'hidden', $_POST['ticket_type_filter'], $form, NULL);
-        setElement( $doc, 'input', '', NULL, 'ticket_cond_filter', 'hidden', $_POST['ticket_cond_filter'], $form, NULL);
+        if(isset($_POST['ticket_type_filter']))
+            setElement( $doc, 'input', '', NULL, 'ticket_type_filter', 'hidden', $_POST['ticket_type_filter'], $form, NULL);
+        if(isset($_POST['ticket_cond_filter']))
+            setElement( $doc, 'input', '', NULL, 'ticket_cond_filter', 'hidden', $_POST['ticket_cond_filter'], $form, NULL);
 
         // Checks if logged user is manager or resident
         if (isset($_SESSION['username']) && $_SESSION['access_type'] == 'USER') {
@@ -1090,7 +1109,7 @@ function listAppTech($db, $file)
     } else if ($_POST['tapp_filter1'] == "Oldest to latest") {
         $temp1 = " ORDER BY estimation_date DESC";
     }
-
+    $temp2 = "";
     if ($_POST['tapp_filter2'] == "All conditions") {
         $temp2 = "";
     } else if ($_POST['tapp_filter2'] == "In progress") {
@@ -1510,6 +1529,9 @@ function reportProblem($db)
     if ($_FILES['uploadfile']['type'] == ''){
         $values['image'] = NULL;
     }
+    else{
+        chmod($folder, 0644);
+    }
 
     $stmt = $db->prepare("INSERT INTO ticket (title, address, category, descript, cond, author, date_add, image) VALUES (:title, :address, :category, :descript, :cond, :author, :date_add, :image)");
     $stmt->execute($values);
@@ -1543,27 +1565,27 @@ if (isset($_POST['login'])) {
         if(password_verify($_POST['pwd_login'], $row['pwd'])) {
             $_SESSION['username'] = $_POST['uemail_login'];
             if ($row['access_type'] == 'ADMIN') {
-                setcookie('access_type', 'ADMIN', time() + 3600, '/', NULL, true, true);
-                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
+                setcookie('access_type', 'ADMIN', time() + 3600);
+                setcookie('username', $_POST['uemail_login'], time() + 3600);
                 $_SESSION['access_type'] = 'ADMIN';
                 $_POST['admin_filter'] = 'All Users';
                 listUsers($db, 'admin.html');
             } elseif ($row['access_type'] == 'MANAGER') {
-                setcookie('access_type', 'MANAGER', time() + 3600, '/', NULL, true, true);
-                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
+                setcookie('access_type', 'MANAGER', time() + 3600);
+                setcookie('username', $_POST['uemail_login'], time() + 3600);
                 $_SESSION['access_type'] = 'MANAGER';
                 $_POST['admin_filter'] = 'TECHNICIAN';
                 listUsers($db, 'manager.html');
             } elseif ($row['access_type'] == 'TECHNICIAN') {
-                setcookie('access_type', 'TECHNICIAN', time() + 3600, '/', NULL, true, true);
-                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
+                setcookie('access_type', 'TECHNICIAN', time() + 3600);
+                setcookie('username', $_POST['uemail_login'], time() + 3600);
                 $_SESSION['access_type'] = 'TECHNICIAN';
                 $_POST['tapp_filter1'] = 'All my appoinments';
                 $_POST['tapp_filter2'] = 'All condition';
                 listAppTech($db, 'technic.html');
             } elseif ($row['access_type'] == 'USER') {
-                setcookie('access_type', 'USER', time() + 3600, '/', NULL, true, true);
-                setcookie('username', $_POST['uemail_login'], time() + 3600, '/', NULL, true, true);
+                setcookie('access_type', 'USER', time() + 3600);
+                setcookie('username', $_POST['uemail_login'], time() + 3600);
                 $_SESSION['access_type'] = 'USER';
                 openUser($db, 'user.html');
             } else {
@@ -1581,10 +1603,10 @@ if (isset($_POST['login'])) {
     }
 } else if (isset($_POST['logout'])) {
     if (isset($_COOKIE['access_type'])) {
-        setcookie('access_type', '', time() - 3600, '/', NULL, true, true);
+        setcookie('access_type', '', time() - 3600);
     }
     if (isset($_COOKIE['username'])) {
-        setcookie('username', '', time() - 3600, '/', NULL, true, true);
+        setcookie('username', '', time() - 3600);
     }
     session_destroy();
     header('Location: index.html');
@@ -1642,7 +1664,8 @@ if (isset($_POST['login'])) {
             $descBox = $doc->getElementById('info_msg')->nodeValue = 'Technician has been registered!';
 
             $form = $doc->getElementById('form_register_back');
-            setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
+            if(isset($_POST['admin_filter']))
+                setElement( $doc, 'input', '', NULL, 'admin_filter', 'hidden', $_POST['admin_filter'], $form, NULL);
             echo $doc->saveHTML();
         }
         else{
@@ -1663,11 +1686,28 @@ if (isset($_POST['login'])) {
 } else if (isset($_POST['submit_problem'])) {
     reportProblem($db);
 } else if (isset($_POST['remove'])) {
+    $stmt = $db->query("SET FOREIGN_KEY_CHECKS=0;");
+    $values = [
+        'email' => $_POST['remove'],
+    ];
+    $stmt = $db->prepare("UPDATE ticket SET author = '[DELETED ACCOUNT]' where author = :email");
+    $stmt->execute($values);
+    $values = [
+        'email' => $_POST['remove'],
+    ];
+    $stmt = $db->prepare("UPDATE appointment SET author = '[DELETED ACCOUNT]' where author = :email");
+    $stmt->execute($values);
+    $values = [
+        'email' => $_POST['remove'],
+    ];
+    $stmt = $db->prepare("UPDATE comment SET author = '[DELETED ACCOUNT]' where author = :email");
+    $stmt->execute($values);
     $values = [
         'email' => $_POST['remove'],
     ];
     $stmt = $db->prepare("DELETE FROM user where email = :email");
     $stmt->execute($values);
+    $stmt = $db->query("SET FOREIGN_KEY_CHECKS=1;");
 
     $_POST['admin_filter'] = $_POST['filter_status'];
     if(isset($_POST['admin_remove'])){
@@ -2012,6 +2052,21 @@ if (isset($_POST['login'])) {
     $values = [
         'email' => $_SESSION['username'],
     ];
+    $stmt = $db->prepare("UPDATE ticket SET author = '[DELETED ACCOUNT]' where author = :email");
+    $stmt->execute($values);
+    $values = [
+        'email' => $_SESSION['username'],
+    ];
+    $stmt = $db->prepare("UPDATE appointment SET author = '[DELETED ACCOUNT]' where author = :email");
+    $stmt->execute($values);
+    $values = [
+        'email' => $_SESSION['username'],
+    ];
+    $stmt = $db->prepare("UPDATE comment SET author = '[DELETED ACCOUNT]' where author = :email");
+    $stmt->execute($values);
+    $values = [
+        'email' => $_SESSION['username'],
+    ];
     $stmt = $db->prepare("DELETE FROM user where email = :email");
     $stmt->execute($values);
     $stmt = $db->query("SET FOREIGN_KEY_CHECKS=1;");
@@ -2035,10 +2090,10 @@ if (isset($_POST['login'])) {
 } else{
     var_dump($_POST);
     if (isset($_COOKIE['access_type'])) {
-        setcookie('access_type', '', time() - 3600, '/', NULL, true, true);
+        setcookie('access_type', '', time() - 3600);
     }
     if (isset($_COOKIE['username'])) {
-        setcookie('username', '', time() - 3600, '/', NULL, true, true);
+        setcookie('username', '', time() - 3600);
     }
     session_destroy();
     header('Location: index.html');
