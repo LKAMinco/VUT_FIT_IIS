@@ -7,9 +7,9 @@ date_default_timezone_set('Europe/Prague');
 
 
 try {
-    $db = new PDO("mysql:host=localhost;dbname=xsmyka01;port=/var/run/mysql/mysql.sock", 'xsmyka01', 'kor5ergu');
+    $db = new PDO("mysql:host=localhost;dbname=xcesko00;port=/var/run/mysql/mysql.sock", 'xcesko00', 'i4okonun');
 } catch (PDOException $e) {
-    echo "Connection error: " . $e->getMessage();
+    echo "Connection error: ".$e->getMessage();
     die();
 }
 
