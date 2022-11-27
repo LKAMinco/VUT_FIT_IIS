@@ -836,11 +836,6 @@ function listAppointmentsMgr($db, $file)
 // Function lists all tickets to manager or user resident
 function listTicketsMgr($db, $file)
 {
-    // Access rights check
-    if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'USER'){
-        $meta = $doc->getElementById('redirect');
-        $meta->setAttribute('content', '3800;url=main.php');
-    }
 
     $query_cond = "";
     // Seaches database by filters
@@ -862,6 +857,12 @@ function listTicketsMgr($db, $file)
     $html = file_get_contents($file);
     $doc = new DOMDocument();
     $doc->loadHTML($html);
+
+    // Access rights check
+    if($_SESSION['access_type'] == 'MANAGER' || $_SESSION['access_type'] == 'USER'){
+        $meta = $doc->getElementById('redirect');
+        $meta->setAttribute('content', '3800;url=main.php');
+    }
 
     $table = $doc->getElementById('tickets_search_results');
 
@@ -964,6 +965,10 @@ function listTicketsMgr($db, $file)
 // Function lists users in basic admin/manager page
 function listUsers($db, $file)
 {
+    $html = file_get_contents($file);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+
     // Access rights check
     if($file == 'admin.html'){
         if($_SESSION['access_type'] == 'ADMIN'){
@@ -987,10 +992,6 @@ function listUsers($db, $file)
         $stmt = $db->prepare("SELECT first_name, last_name, email, access_type FROM user WHERE access_type = :access_type");
         $stmt->execute($values);
     }
-
-    $html = file_get_contents($file);
-    $doc = new DOMDocument();
-    $doc->loadHTML($html);
 
     // Parameters for keeping active search filter
     // Also sets edit user button values for each user type
@@ -1068,6 +1069,9 @@ function listUsers($db, $file)
 // Function displays all technician's service appointments
 function listAppTech($db, $file)
 {
+    $html = file_get_contents($file);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
     // Access rights check
     if($_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
@@ -1099,9 +1103,6 @@ function listAppTech($db, $file)
 
     $stmt = $db->prepare($temp . $temp2 . $temp1);
     $stmt->execute($values);
-    $html = file_get_contents($file);
-    $doc = new DOMDocument();
-    $doc->loadHTML($html);
 
     // Parameters for keeping active search filter
     $filterForm = $doc->getElementById($_POST['tapp_filter1']);
@@ -1189,15 +1190,14 @@ function listAppTech($db, $file)
 // Function displays service appointment's details to technician
 function listAppDetails($db, $file)
 {
+    $html = file_get_contents($file);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
     // Access rights check
     if($_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
         $meta->setAttribute('content', '3800;url=main.php');
     }
-
-    $html = file_get_contents($file);
-    $doc = new DOMDocument();
-    $doc->loadHTML($html);
 
     $doc->getElementById('th_ass')->nodeValue = 'Author';
     $form = $doc->getElementById('get_back_btn');
@@ -1358,15 +1358,14 @@ function listAppDetails($db, $file)
 
 // Function displays ticket details to technician
 function listAppTicket($db, $file){
+    $html = file_get_contents($file);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
     // Access rights check
     if($_SESSION['access_type'] == 'TECHNICIAN'){
         $meta = $doc->getElementById('redirect');
         $meta->setAttribute('content', '3800;url=main.php');
     }
-
-    $html = file_get_contents($file);
-    $doc = new DOMDocument();
-    $doc->loadHTML($html);
 
     // Parameters for keeping active search filter
     $button = $doc->getElementById('get_back_btn');
@@ -1483,16 +1482,15 @@ function returnData($doc, $values, $msg, $can_login)
 // Function creates ticket from user's report
 function reportProblem($db)
 {
+    $html = file_get_contents('report.html');
+    libxml_use_internal_errors(true);
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
     // Access rights check
     if($_SESSION['access_type'] == 'USER'){
         $meta = $doc->getElementById('redirect');
         $meta->setAttribute('content', '3800;url=main.php');
     }
-
-    $html = file_get_contents('report.html');
-    libxml_use_internal_errors(true);
-    $doc = new DOMDocument();
-    $doc->loadHTML($html);
 
     $tempname = $_FILES["uploadfile"]["tmp_name"];
     $ext = pathinfo($_FILES["uploadfile"]["name"], PATHINFO_EXTENSION);
