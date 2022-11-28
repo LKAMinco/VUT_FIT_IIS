@@ -189,22 +189,18 @@
         </ul>
         <li>Jak rozbalit, konfigurovat, inicializovat databázi:</li>
         <ol>
-            <li>Připojit se na databázový server</li>
-            <li>Spustit na serveru .sql soubor s databází</li>
-            <li>V případě, že se soubor hash_help.php neodkazuje na správnou databází, je nutné přepsat připojení k
-                databázi
-            </li>
-            <li>Pustit hesh_help.php - tento script vymění všechna hesla v databázi za zahashované (používá se pouze
-                jednou
-                při inicializaci databáze)
-            </li>
+            <li>Na hlavní stránce naší aplikace je tlačítko, které resetuje databázi do původního stavu.</li>
+            <li>Ekvivalence kroku 1. je spustit script hash_help.php, který je volán tlačítkem "reset database".</li>
             <li>Užívat si funkčnost našeho produktu</li>
         </ol>
     </ul>
 
     <h2>Známé problémy</h2>
     <p>Nelze přidat více než jeden obrázek při registraci tiketu a jeho velikost není omezená.</p>
-
+    <p>Měli jsme problém s přístupem na naši databázi na Evě, proto jsme se rozhodli využít tento server (<a
+            href="https://remotemysql.com/phpmyadmin/index.php?db=eUGDvDb3sy">https://remotemysql.com/phpmyadmin/index.php?db=eUGDvDb3sy</a>)
+        u kterého se
+        nám ale jednou stalo, že měl výpadek. Bohužel tento případný výpadek nemůžeme ovlivnit.</p>
 
     <style type="text/css">
         .img {
