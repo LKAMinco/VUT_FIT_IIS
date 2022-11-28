@@ -590,3 +590,11 @@ select:hover {
 #tickets_search_results_admin tr:not(:first-child) td:last-child{
     background: none;
 }
+
+#reset_form{
+    width: 100%;
+ }
+
+#reset_btn{
+    width: 99%;
+}

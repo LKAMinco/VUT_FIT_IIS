@@ -17,5 +17,14 @@ function hashHelp($db)
         $db->query("UPDATE user SET pwd = '" . $hash_pwd . "'WHERE email = '" . $row['email']. "'");
     }
 }
+
+$database = fopen("database.sql", "r") or die("Unable to open file!");
+
+$string = fread($database,filesize("database.sql"));
+
+$db->query($string);
 hashHelp($db);
+
+header('Location: index.html');
+
 ?>
